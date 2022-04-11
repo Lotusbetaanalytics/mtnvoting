@@ -7,3 +7,14 @@
     padding: 3rem 0;
     background: white;
 }
+
+.mtn__logo{
+    display: flex;
+    padding: .5rem;
+    height: 5rem;
+    overflow: hidden;
+    img{
+        object-fit: contain;
+        max-height: 4rem;
+    }
+}

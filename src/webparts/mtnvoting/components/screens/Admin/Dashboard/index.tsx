@@ -5,6 +5,7 @@ const AdminDashboard = () => {
     return (
         <div className='appContainer'>
             <AdminNavigation />
+            <div className='contentsRight'></div>
         </div>
     )
 }
