@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Gothic+A1&display=swap');
+
+@font-face {
+  font-family: "MTNBrighterSans-Medium";
+  src: url("https://mtnonline.com/smartanalytics/assets/assets/fonts/MTNBrighterSans-Medium.eot");
+  src: url("https://mtnonline.com/smartanalytics/assets/assets/fonts/MTNBrighterSans-Medium.woff") format("woff");
+  }
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  // font-family: 'Gothic A1', sans-serif;
+  font-family: MTNBrighterSans-Medium;
+}
+
+.mtn__btn {
+    height: 3.5rem;
+    outline: none;
+    padding: 1rem 3rem;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    align-items: center;
+  }
+  
+.mtn__black {
+    background: #000;
+  }
+  .mtn__yellow{
+      background: rgba(255, 196, 35, 1);
+      color: #000;
+  }
+  .minimizeBtn {
+    display: flex;
+    justify-content: flex-start;
+  }
