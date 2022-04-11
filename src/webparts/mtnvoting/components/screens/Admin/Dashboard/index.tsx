@@ -1,8 +1,11 @@
 import * as React from 'react'
+import { AdminNavigation } from '../../../containers'
 
 const AdminDashboard = () => {
     return (
-        <div>Dashboard</div>
+        <div className='appContainer'>
+            <AdminNavigation />
+        </div>
     )
 }
 
