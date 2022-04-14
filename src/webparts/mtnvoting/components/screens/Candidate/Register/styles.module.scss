@@ -1,0 +1,14 @@
+.formContainer{
+display: grid;
+background-color: red;
+grid-template-columns: 50% 50%;
+
+width: 90%;
+}
+.inputContainer{
+    display: grid;
+    background-color: rgb(203, 198, 198);
+}
+p {
+    margin:2% 0 0 7%;
+}

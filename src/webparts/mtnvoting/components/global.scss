@@ -48,6 +48,15 @@
 .mtn__black {
     background: #000;
   }
+
+  .mtn__white {
+    background: rgb(255, 255, 255);
+  }
+  .mtn__white_blackColor {
+    background: rgb(255, 255, 255);
+    color: #000;
+  }
+
   .mtn__yellow{
       background: rgba(255, 196, 35, 1);
       color: #000;
@@ -164,5 +173,34 @@
       border: 1px solid #FFCC00;
       outline: 1px solid #FFCC00;
     }
-   
-  }
+    
+}
+input[type="radio"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  background-clip: content-box;
+  border: 1px solid gainsboro;
+  border-radius: 50%;
+  margin:0 1rem;
+
+
+}
+input[type="radio"]:checked {
+  background-color: #FFCC00;
+}
+.most__RadioContainer{
+  display: flex;
+  // justify-content: space-between;
+}
+.radioFlex{flex-direction: row;
+justify-content: left;
+align-items: center;}
+.radioContainer{
+  padding: 1rem 2.2rem;
+  width: 100%;
+  
+}
