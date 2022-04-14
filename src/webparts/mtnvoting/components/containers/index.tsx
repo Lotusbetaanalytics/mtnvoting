@@ -7,3 +7,4 @@ export { default as Spinner } from "./Spinner";
 export { default as Textarea } from "./Forms/Textarea";
 export { default as Input } from "./Forms/Input";
 export { default as Select } from "./Forms/Select";
+export { default as NomineeCard } from "./NomineeCard/";
