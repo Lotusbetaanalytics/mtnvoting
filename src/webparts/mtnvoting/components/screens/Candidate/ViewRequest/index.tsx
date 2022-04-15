@@ -7,17 +7,22 @@ import CandidateNavigation from '../../../containers/candidateNavigation'
 
 const ViewRequest = ({ history}) => {
 
+    const id = 2;
+
     const [data, setData] = React.useState({} as any)
     const [loading, setLoading] = React.useState(false)
-    const [comments, setComments] = React.useState("")
     React.useEffect(() => {
-        // setLoading(true)
-        // sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
+        setLoading(true)
+        sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
             ((res) => {
                 setData(res[0])
-                // setLoading(false)
+                setLoading(false)
             })
     }, [])
+
+    const editHandler = ()=> {
+        history.push(`/candidate/edit`)
+    }
 
     return (
         <div className='appContainer'>
@@ -37,6 +42,14 @@ const ViewRequest = ({ history}) => {
                         <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
                         <Text title="Passport photograph" value={data.PassportPhotograph} size="small"/>
                         <Text title="State your five point agenda" value={data.Agenda} size="medium" />
+                        <div className="minimizeBtn_">
+                <button onClick={editHandler}
+                  className="mtn__btn mtn__yellow bg"
+                >
+                  Edit
+                </button>
+              </div>
+
 
                     </div>}
 

@@ -8,3 +8,4 @@ export { default as ErrorScreen } from "./Error";
 export {default as CandidateDashboard} from "./Candidate/Dashboard";
 export {default as ViewRequest} from "./Candidate/ViewRequest";
 export {default as  candidateRegister} from "./Candidate/Register"
+export {default as CandidateEdit} from "./Candidate/Register/edit"

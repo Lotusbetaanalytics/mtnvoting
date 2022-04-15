@@ -65,6 +65,10 @@
     display: flex;
     justify-content: flex-start;
   }
+  .minimizeBtn {
+    display: flex;
+    justify-content: end;
+  }
 
 //   Page Setup
   .appContainer{
@@ -84,6 +88,17 @@
     flex: 0.87;
     padding: .5rem 2rem;
     background: #C4C4C430;
+
+  }
+  .contentsRight_ {
+    flex-grow: 1;
+    padding: 0;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    flex: 0.87;
+    padding: .5rem 2rem;
+    
 
   }
   .textContainer{
@@ -200,7 +215,8 @@ input[type="radio"]:checked {
 justify-content: left;
 align-items: center;}
 .radioContainer{
-  padding: 1rem 2.2rem;
+  padding: 0.5rem 0 1.5rem 2.2rem;
   width: 100%;
+  font-size: 12px;
   
 }

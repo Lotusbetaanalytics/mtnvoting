@@ -17,7 +17,10 @@ import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/candidateNavigation";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 
-const CandidateRegister = ({ history }) => {
+const CandidateEdit
+ = ({ history }) => {
+
+  
 
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -30,6 +33,20 @@ const CandidateRegister = ({ history }) => {
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [data, setData] = React.useState({} as any)
+
+
+  const id = 2;
+
+  React.useEffect(() => {
+    setLoading(true)
+    sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
+        ((res) => {
+            setData(res[0])
+            setLoading(false)
+        })
+}, []);
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
@@ -93,7 +110,7 @@ const CandidateRegister = ({ history }) => {
             <p>Employee Name</p>
             <Input
               title=""
-              value={employeeName}
+              value={data.EmployeeName}
               onChange={(e) => setEmployeeName(e.target.value)}
               type="text"
               readOnly={false}
@@ -103,7 +120,7 @@ const CandidateRegister = ({ history }) => {
             <p>Employee Email</p>
             <Input
               title=""
-              value={employeeEmail}
+              value={data.EmployeeEmail}
               onChange={(e) => setEmployeeEmail(e.target.value)}
               type="email"
               readOnly={false}
@@ -113,7 +130,7 @@ const CandidateRegister = ({ history }) => {
             <p>Date Employed</p>
             <Input
               title=""
-              value={dateEmployed}
+              value={data.DateEmployed}
               onChange={(e) => setDateEmployed(e.target.value)}
               type="date"
               readOnly={false}
@@ -123,7 +140,7 @@ const CandidateRegister = ({ history }) => {
             <p>Job level</p>
             <Select
               onChange={(e) => setJobLevel(e.target.value)}
-              value={jobLevel}
+              value={data.JobLevel}
               title=""
               options={jobLevelData}
             />
@@ -132,7 +149,7 @@ const CandidateRegister = ({ history }) => {
             <p>Region</p>
             <Select
               onChange={(e) => setRegion(e.target.value)}
-              value={region}
+              value={data.Region}
               title=""
               options={regionData}
             />
@@ -141,7 +158,7 @@ const CandidateRegister = ({ history }) => {
             <p>Location</p>
             <Select
               onChange={(e) => setLocation(e.target.value)}
-              value={location}
+              value={data.Location}
               title=""
               options={locationData}
             />
@@ -151,6 +168,7 @@ const CandidateRegister = ({ history }) => {
               onChange={(e) => setService(e.target.value)}
               title="Have you served on the council before?"
               options={serviceData}
+              
             />
           </div>
           <div className={styles.inputContainer}>
@@ -173,6 +191,7 @@ const CandidateRegister = ({ history }) => {
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
                 }
+                
               }}
 
             />
@@ -183,7 +202,7 @@ const CandidateRegister = ({ history }) => {
             <Textarea
               onChange={(e) => setAgenda(e.target.value)}
               title=""
-              value={agenda}
+              value={data.Agenda}
             />
           </div>
           <div className={styles.inputContainer}></div>
@@ -236,4 +255,5 @@ const CandidateRegister = ({ history }) => {
   );
 };
 
-export default CandidateRegister;
+export default CandidateEdit
+;
