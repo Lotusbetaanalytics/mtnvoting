@@ -4,4 +4,7 @@ export { default as AdminViewPending } from "./Admin/Pending/View";
 export { default as AdminApproved } from "./Admin/Approved";
 export { default as AdminViewApproved } from "./Admin/Approved/View";
 export { default as AdminDeclined } from "./Admin/Declined";
+export { default as LandingPage } from "./LandingPage";
+export { default as LandingPage2 } from "./LandingPage2";
+export { default as EmployeeRegistration } from "./EmployeeRegistration";
 export { default as ErrorScreen } from "./Error";
