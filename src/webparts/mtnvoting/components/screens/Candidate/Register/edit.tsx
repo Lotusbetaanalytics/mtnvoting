@@ -11,16 +11,19 @@ import {
   ImageUpload,
 } from "../../../containers";
 import styles from "./styles.module.scss";
-
+import "@pnp/sp/webs";
+import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/candidateNavigation";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
+import { values } from "lodash";
 
-const CandidateEdit
- = ({ history }) => {
+const CandidateEdit = ({ history }) => {
+  const [loading, setLoading] = React.useState(false);
+  const [data, setData] = React.useState({} as any);
 
-  
+  console.log(data.EmployeeName);
 
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -33,28 +36,48 @@ const CandidateEdit
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [data, setData] = React.useState({} as any)
-
-
-  const id = 2;
+  const [id,setId] = React.useState("");
 
   React.useEffect(() => {
-    setLoading(true)
-    sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
-        ((res) => {
-            setData(res[0])
-            setLoading(false)
-        })
-}, []);
+    setLoading(true);
+    sp.profiles.myProperties
+      .get()
+
+      .then((response) => {
+        sp.web.lists
+        .getByTitle(`Nominees`)
+        .items.filter(`EmployeeEmail eq '${response.Email}'`)
+        .get()
+        .then((res) => {
+          setData(res[0]);
+          setLoading(false);
+          setEmployeeName(res[0].EmployeeName)
+          setEmployeeEmail(res[0].EmployeeEmail)
+          setDateEmployed(res[0].DateEmployed)
+          setJobLevel(res[0].JobLevel)
+          setRegion(res[0].Region)
+          setLocation(res[0].Location)
+          setService(res[0].ServedOnTheCouncil)
+          setDisciplinary(res[0].DisciplinarySanction)
+          setPassport(res[0].PassportPhotograph)
+          setAgenda(res[0].Agenda)
+          setId(res[0].id)
+          console.log(res);
+          
+        });
+      });
+   
+  }, []);
+
+  
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
   const regionData = [
-    { value: "western Region" },
-    { value: "northern region" },
-    { value: "easter region" },
-    { value: "southern region" },
+    { value: "WESTERN REGION" },
+    { value: "NORTHERN REGION" },
+    { value: "EASTERN REGION" },
+    { value: "SOUTHERN REGION" },
   ];
 
   const locationData = [
@@ -73,32 +96,32 @@ const CandidateEdit
     setOpen(true);
   };
   const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"))
-    sp.web.lists.getByTitle("Nominees").items.add({
-      EmployeeName: employeeName,
-      EmployeeEmail: employeeEmail,
-      DateEmployed: dateEmployed,
-      JobLevel: jobLevel,
-      Region: region,
-      Location: location,
-      ServedOnTheCouncil: service,
-      DisciplinarySanction: disciplinary,
-      PassportPhotograph: imagePassport,
-      Agenda: agenda
-    }).then((res) => {
-      setOpen(false)
-      swal("Success", "You have Successfully Registered", "success");
-      setTimeout(function () {
-        localStorage.removeItem("dp")
-        history.push(`/candidate`);
-
-      }, 2000);
-    }).catch((e) => {
-      swal("Warning!", "An Error Occured, Try Again!", "error");
-      console.error(e);
-    });
-
-  }
+    const imagePassport = JSON.parse(localStorage.getItem("dp"));
+    sp.web.lists.getByTitle("Nominees").items.getById(id).update({
+        EmployeeName: employeeName,
+        EmployeeEmail: employeeEmail,
+        DateEmployed: dateEmployed,
+        JobLevel: jobLevel,
+        Region: region,
+        Location: location,
+        ServedOnTheCouncil: service,
+        DisciplinarySanction: disciplinary,
+        PassportPhotograph: imagePassport,
+        Agenda: agenda,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "You have Successfully Registered", "success");
+        setTimeout(function () {
+          localStorage.removeItem("dp");
+          history.push(`/candidate`);
+        }, 2000);
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
 
   return (
     <div className="appContainer">
@@ -110,7 +133,7 @@ const CandidateEdit
             <p>Employee Name</p>
             <Input
               title=""
-              value={data.EmployeeName}
+              value={employeeName}
               onChange={(e) => setEmployeeName(e.target.value)}
               type="text"
               readOnly={false}
@@ -120,7 +143,7 @@ const CandidateEdit
             <p>Employee Email</p>
             <Input
               title=""
-              value={data.EmployeeEmail}
+              value={employeeEmail}
               onChange={(e) => setEmployeeEmail(e.target.value)}
               type="email"
               readOnly={false}
@@ -130,7 +153,7 @@ const CandidateEdit
             <p>Date Employed</p>
             <Input
               title=""
-              value={data.DateEmployed}
+              value={dateEmployed}
               onChange={(e) => setDateEmployed(e.target.value)}
               type="date"
               readOnly={false}
@@ -140,7 +163,7 @@ const CandidateEdit
             <p>Job level</p>
             <Select
               onChange={(e) => setJobLevel(e.target.value)}
-              value={data.JobLevel}
+              value={jobLevel}
               title=""
               options={jobLevelData}
             />
@@ -149,7 +172,7 @@ const CandidateEdit
             <p>Region</p>
             <Select
               onChange={(e) => setRegion(e.target.value)}
-              value={data.Region}
+              value={region}
               title=""
               options={regionData}
             />
@@ -158,7 +181,7 @@ const CandidateEdit
             <p>Location</p>
             <Select
               onChange={(e) => setLocation(e.target.value)}
-              value={data.Location}
+              value={location}
               title=""
               options={locationData}
             />
@@ -168,7 +191,7 @@ const CandidateEdit
               onChange={(e) => setService(e.target.value)}
               title="Have you served on the council before?"
               options={serviceData}
-              
+              value={service}
             />
           </div>
           <div className={styles.inputContainer}>
@@ -176,11 +199,13 @@ const CandidateEdit
               onChange={(e) => setDisciplinary(e.target.value)}
               title="Do you have any disciplinary sanction?"
               options={disciplinaryData}
+              value={disciplinary}
             />
           </div>
           <div className={styles.inputContainer}>
             <ImageUpload
-            title="Upload your picture"
+              title="Upload your picture"
+              value={""}
               onChange={(e) => {
                 reader.readAsDataURL(e.target.files[0]);
 
@@ -190,10 +215,9 @@ const CandidateEdit
                 };
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
-                }
+                };
                 
               }}
-
             />
           </div>
 
@@ -202,7 +226,7 @@ const CandidateEdit
             <Textarea
               onChange={(e) => setAgenda(e.target.value)}
               title=""
-              value={data.Agenda}
+              value={agenda}
             />
           </div>
           <div className={styles.inputContainer}></div>
@@ -226,13 +250,14 @@ const CandidateEdit
                 content={
                   <div className="mtn__InputFlex">
                     <p>
-                      kindly click on check box to confirm you have read the terms
-                      and agreement
+                      kindly click on check box to confirm you have read the
+                      terms and agreement
                     </p>
                     <Radio
                       onChange={(e) => setDisciplinary(e.target.value)}
                       title="Do you agree to the terms and condition?"
                       options={termsData}
+                      value={disciplinary}
                     />
 
                     <button
@@ -255,5 +280,4 @@ const CandidateEdit
   );
 };
 
-export default CandidateEdit
-;
+export default CandidateEdit;

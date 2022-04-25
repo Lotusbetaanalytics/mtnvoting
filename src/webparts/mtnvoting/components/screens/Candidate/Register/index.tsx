@@ -11,7 +11,8 @@ import {
   ImageUpload,
 } from "../../../containers";
 import styles from "./styles.module.scss";
-
+import "@pnp/sp/webs";
+import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/candidateNavigation";
@@ -29,6 +30,7 @@ const CandidateRegister = ({ history }) => {
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
+  const [terms,setTerms] = React.useState("") 
   const [open, setOpen] = React.useState(false);
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
@@ -55,6 +57,16 @@ const CandidateRegister = ({ history }) => {
   const approveHandler = () => {
     setOpen(true);
   };
+  React.useEffect(()=> {
+    sp.profiles.myProperties.get()
+
+            .then((response) => {
+
+                setEmployeeName(response.DisplayName)
+                setEmployeeEmail(response.Email)
+              });
+  },[])
+
   const submitHandler = () => {
     const imagePassport = JSON.parse(localStorage.getItem("dp"))
     sp.web.lists.getByTitle("Nominees").items.add({
@@ -86,86 +98,71 @@ const CandidateRegister = ({ history }) => {
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
-      <div className="contentsRight_">
+      <div className="contentsRight_ mtn_gray">
         <Header title="Registration" />
-        <div className={styles.formContainer}>
-          <div className={styles.inputContainer}>
-            <p>Employee Name</p>
+        <div className="mtn__InputFlex">
             <Input
-              title=""
+              title="Employee Name"
               value={employeeName}
               onChange={(e) => setEmployeeName(e.target.value)}
               type="text"
-              readOnly={false}
+              readOnly={true}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Employee Email</p>
+          
             <Input
-              title=""
+              title="Employee Email"
               value={employeeEmail}
               onChange={(e) => setEmployeeEmail(e.target.value)}
               type="email"
-              readOnly={false}
+              readOnly={true}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Date Employed</p>
+          
+
             <Input
-              title=""
+              title="Date Employed"
               value={dateEmployed}
               onChange={(e) => setDateEmployed(e.target.value)}
               type="date"
-              readOnly={false}
+              
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Job level</p>
             <Select
               onChange={(e) => setJobLevel(e.target.value)}
               value={jobLevel}
-              title=""
+              title="Job level"
               options={jobLevelData}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Region</p>
+        
             <Select
               onChange={(e) => setRegion(e.target.value)}
               value={region}
-              title=""
+              title="Region"
               options={regionData}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Location</p>
+
             <Select
               onChange={(e) => setLocation(e.target.value)}
               value={location}
-              title=""
+              title="Location"
               options={locationData}
             />
-          </div>
-          <div className={styles.inputContainer}>
             <Radio
               onChange={(e) => setService(e.target.value)}
               title="Have you served on the council before?"
               options={serviceData}
+              value={service}
             />
-          </div>
-          <div className={styles.inputContainer}>
             <Radio
               onChange={(e) => setDisciplinary(e.target.value)}
               title="Do you have any disciplinary sanction?"
               options={disciplinaryData}
+              value={disciplinary}
             />
-          </div>
-          <div className={styles.inputContainer}>
+  
             <ImageUpload
             title="Upload your picture"
+            value={passport}
               onChange={(e) => {
                 reader.readAsDataURL(e.target.files[0]);
-
                 reader.onload = function () {
                   console.log(reader.result); //base64encoded string
                   localStorage.setItem("dp", JSON.stringify(reader.result));
@@ -176,16 +173,14 @@ const CandidateRegister = ({ history }) => {
               }}
 
             />
-          </div>
-
-          <div className={styles.inputContainer}>
-            <p>State your five point agenda</p>
+          
+          
             <Textarea
               onChange={(e) => setAgenda(e.target.value)}
-              title=""
+              title="State your five point agenda"
               value={agenda}
             />
-          </div>
+        
           <div className={styles.inputContainer}></div>
           <div className={styles.inputContainer}>
             <div className="radioContainer">
@@ -214,6 +209,7 @@ const CandidateRegister = ({ history }) => {
                       onChange={(e) => setDisciplinary(e.target.value)}
                       title="Do you agree to the terms and condition?"
                       options={termsData}
+                      value={terms}
                     />
 
                     <button

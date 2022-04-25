@@ -1,23 +1,33 @@
 import * as React from 'react'
 import {  Text, Header, Spinner, Textarea, Modal } from '../../../containers'
-
+import "@pnp/sp/webs";
+import "@pnp/sp/site-users/web";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
 import CandidateNavigation from '../../../containers/candidateNavigation'
 
 const ViewRequest = ({ history}) => {
 
-    const id = 2;
+    
 
     const [data, setData] = React.useState({} as any)
     const [loading, setLoading] = React.useState(false)
     React.useEffect(() => {
-        setLoading(true)
-        sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
-            ((res) => {
-                setData(res[0])
-                setLoading(false)
-            })
+        setLoading(true);
+    sp.profiles.myProperties
+      .get()
+
+      .then((response) => {
+        sp.web.lists
+        .getByTitle(`Nominees`)
+        .items.filter(`EmployeeEmail eq '${response.Email}'`)
+        .get()
+        .then((res) => {
+          setData(res[0]);
+          setLoading(false);
+          console.log(res);
+        });
+      });
     }, [])
 
     const editHandler = ()=> {
@@ -40,8 +50,9 @@ const ViewRequest = ({ history}) => {
                         <Text title="Location" value={data.Location}  />
                         <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} size="small"/>
                         <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                        <Text title="Passport photograph" value={data.PassportPhotograph} size="small"/>
+                        <Text title="Passport photograph" value={data.PassportPhotograph}  size="small"/>
                         <Text title="State your five point agenda" value={data.Agenda} size="medium" />
+                        <div className='imageContainer'><img src={data.PassportPhotograph} alt="" /></div>
                         <div className="minimizeBtn_">
                 <button onClick={editHandler}
                   className="mtn__btn mtn__yellow bg"
