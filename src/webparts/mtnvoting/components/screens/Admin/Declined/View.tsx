@@ -73,7 +73,6 @@ const AdminViewDeclined = ({ history, match }) => {
                     <div className='viewFlex'>
                         <div className='photo'>
                             {data.PassportPhotograph && <div>
-                                <p>Passport photograph</p>
                                 <img src={data.PassportPhotograph} alt={data.EmployeeName} />
                             </div>}
                         </div>

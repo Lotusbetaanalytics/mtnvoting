@@ -51,7 +51,6 @@ const AdminViewApproved = ({ history, match }) => {
                     <div className='viewFlex'>
                         <div className='photo'>
                             {data.PassportPhotograph && <div>
-                                <p>Passport photograph</p>
                                 <img src={data.PassportPhotograph} alt={data.EmployeeName} />
                             </div>}
                         </div>
@@ -65,14 +64,12 @@ const AdminViewApproved = ({ history, match }) => {
                             <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
                             <Text title="If yes, state the period you served " value={data.PeriodServed} />
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                            <Text title="Passport photograph" value={data.PassportPhotograph} />
                             <Text title="State your five point agenda" value={data.Agenda} size="large" />
-
+                            <div className='minimizeBtn'>
+                                <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Revoke</button>
+                            </div>
                         </div>}
-                        <div className='minimizeBtn'>
-                            <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Revoke</button>
 
-                        </div>
                     </div>
                     {/* Modal */}
                     <Modal
