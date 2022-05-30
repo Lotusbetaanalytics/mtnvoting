@@ -41,10 +41,18 @@ const ViewRequest = ({ history}) => {
             <div className='contentsRight'>
                 <Header title='My Request' />
                 <div className='textContainer'>
+                <div className='viewFlex'>
+                      <div className='photo'>
+                        {data.PassportPhotograph && <div>
+                                <img src={data.PassportPhotograph} alt={data.EmployeeName} />
+                            </div>}
+                          </div>
+                  </div>
+
                     {loading ? <Spinner /> :
                     
                      <div className='textContainerFlex'>
-                        <div className='imageContainer'><img src={data.PassportPhotograph} alt="" /></div>
+                        
                         <Text title="Employee Name" value={data.EmployeeName} size="small" />
                         <Text title="Employee Email" value={data.EmployeeEmail} size="small" />
                         <Text title="Status" value={data.Status} size="small" />

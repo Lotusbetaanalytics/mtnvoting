@@ -3,21 +3,27 @@ import {  Card, Card2, Header } from '../../../containers'
 import CandidateNavigation from '../../../containers/candidateNavigation'
 import styles from './styles.module.scss'
 import { sp } from "@pnp/sp";
+import "@pnp/sp/webs";
+import "@pnp/sp/site-users/web";
 const CandidateDashboard = () => {
 
-    // const [voteNumber,setVoteNumber] = React.useState("");
-    // const [voteDate,setVoteDate] =React.useState("");
+    const [voteNumber,setVoteNumber] = React.useState("");
+    const [voteDate,setVoteDate] =React.useState("");
 
-    // React.useEffect(() => {
-    //     sp.web.lists.getByTitle(`ClaimEntry`).items.get().then
-    //         ((response) => {
-    //             setVoteNumber(response.length)
-    //         })
-    //     sp.web.lists.getByTitle(`Policy Entry`).items.get().then
-    //         ((response) => {
-    //             setVoteDate(response)
-    //         })
-    // }, [])
+    React.useEffect(() => {
+        sp.profiles.myProperties
+        .get()
+        .then((response) => {
+          sp.web.lists
+            .getByTitle(`Constituency`)
+            .items.filter(`Date eq '${response.Date}'`)
+            .get()
+            .then((res) => {
+              setVoteDate(res[0])
+    })})
+    }, [])
+
+    console.log(voteDate)
     
     return (
         <div className='appContainer'>
