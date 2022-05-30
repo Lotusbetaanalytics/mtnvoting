@@ -1,11 +1,12 @@
 import * as React from 'react'
 import styles from './styles.module.scss'
-const Card = ({ title, count, color }) => {
+import { Link } from 'react-router-dom'
+const Card = ({ title, count, color, url }) => {
     return (
-        <div className={`${styles.card} ${color}`}>
+        <Link to={url} className={`${styles.card} ${color}`}>
             <h5>{title}</h5>
             <h1>{count}</h1>
-        </div>
+        </Link>
     )
 }
 

@@ -18,9 +18,11 @@ const AdminPending = ({ history }) => {
         { title: "Employee Name", field: "EmployeeName", type: "string" as const },
         { title: "Email", field: "EmployeeEmail", type: "string" as const },
         { title: "Date Employed", field: "DateEmployed", type: "string" as const },
-        { title: "Job Level", field: " JobLevel", type: "string" as const },
+        { title: "Job Level", field: "JobLevel", type: "string" as const },
         { title: "Region", field: "Region", type: "string" as const },
         { title: "Location", field: "Location", type: "string" as const },
+        { title: "Status", field: "Status", type: "string" as const },
+
 
     ]);
 
@@ -45,7 +47,7 @@ const AdminPending = ({ history }) => {
                     options={{
                         exportButton: true,
                         actionsCellStyle: {
-                            backgroundColor: "#C4C4C430",
+                            backgroundColor: "none",
                             color: "#FF00dd",
                         },
                         actionsColumnIndex: -1,
@@ -56,7 +58,12 @@ const AdminPending = ({ history }) => {
                         },
 
                     }}
-                    style={{ boxShadow: "none", width: "100%" }}
+                    style={{
+                        boxShadow: "none",
+                        width: "100%",
+                        background: "none",
+                        fontSize: "13px",
+                    }}
                     // icons={{Add: () => 'Add Row'}}
                     actions={[
                         {

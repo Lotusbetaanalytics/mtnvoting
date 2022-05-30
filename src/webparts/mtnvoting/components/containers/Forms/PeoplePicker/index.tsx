@@ -4,22 +4,22 @@ import '@pnp/graph/users';
 
 
 
-const PeoplePicker = ({ onChange, value, title, required = false, filter, size = "mtn__child" }) => {
+const PeoplePicker = ({ onChange, value, title, required = false, filter, size = "mtn__child", readOnly = false, }) => {
 
     const [user, setUser] = React.useState([])
     React.useEffect(() => {
         graph.users.top(999).get().then(u => setUser(u));
     }, []);
     return <div className={`mtn__InputContainer ${size}`}>
-        <label>{title}</label>
-        <input onChange={onChange} value={value} list="users" required={required} placeholder={title} />
-
+        <label>{title} {required && <span className='required'>*</span>}</label>
+        <input onChange={onChange} value={value} list="users" required={required} placeholder={title} readOnly={readOnly} />
         <datalist id="users">
             <option value="">{title}</option>
             {user.map(users => (
                 <option value={users[filter]} key={users[filter]}>{users.displayName}</option>
             ))}
         </datalist>
+
     </div>;
 };
 
