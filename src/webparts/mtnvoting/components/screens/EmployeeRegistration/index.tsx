@@ -44,7 +44,7 @@ const EmployeeRegistration = ({ history }) => {
   // };
 
   const cancelHandler = () => {
-    setCancel(cancel);
+    history.push("/user/landingpage");
   };
 
   const optionRegion = [
