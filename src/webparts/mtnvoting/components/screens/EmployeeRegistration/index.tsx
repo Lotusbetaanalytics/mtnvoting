@@ -72,7 +72,7 @@ const EmployeeRegistration = ({ history }) => {
   ];
 
   return (
-    <div>
+    <div className={styles.employee__Container}>
       <div className={styles.employee__Header}>
         <div className={styles.employee__Title}>
           <h1>Pre Voting Form</h1>
@@ -98,33 +98,33 @@ const EmployeeRegistration = ({ history }) => {
                 size="mtn_child"
               />
 
-              <p>Employee Email</p>
+              {/* <p>Employee Email</p> */}
               <Input
                 type="email"
                 value={employeeEmail}
                 onChange={(e) => setEmployeeEmail(e.target.value)}
-                title=""
+                title="Employee Email"
                 required={true}
                 readOnly={false}
                 size="mtn_child"
               />
 
-              <p>Region</p>
+              {/* <p>Region</p> */}
               <Select
                 value={region}
                 onChange={(e) => setRegion(e.target.value)}
                 required={false}
-                title=""
+                title="Region"
                 options={optionRegion}
                 size="mtn_child"
               />
 
-              <p>Location</p>
+              {/* <p>Location</p> */}
               <Select
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 required={false}
-                title=""
+                title="Location"
                 options={optionLocation}
                 size="mtn_child"
               />
