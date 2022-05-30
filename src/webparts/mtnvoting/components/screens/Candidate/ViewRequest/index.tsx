@@ -5,6 +5,7 @@ import "@pnp/sp/site-users/web";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
 import CandidateNavigation from '../../../containers/candidateNavigation'
+import styles from "./styles.module.scss";
 
 const ViewRequest = ({ history}) => {
 
@@ -40,19 +41,20 @@ const ViewRequest = ({ history}) => {
             <div className='contentsRight'>
                 <Header title='My Request' />
                 <div className='textContainer'>
-                    {loading ? <Spinner /> : <div className='textContainerFlex'>
+                    {loading ? <Spinner /> :
+                    
+                     <div className='textContainerFlex'>
+                        <div className='imageContainer'><img src={data.PassportPhotograph} alt="" /></div>
                         <Text title="Employee Name" value={data.EmployeeName} size="small" />
                         <Text title="Employee Email" value={data.EmployeeEmail} size="small" />
                         <Text title="Status" value={data.Status} size="small" />
                         <Text title="Date employed" value={data.DateEmployed} size="small" />
-                        <Text title="Job Level" value={data.JobLevel}/>
                         <Text title="Region" value={data.Region} size="small" />
-                        <Text title="Location" value={data.Location}  />
+                        <Text title="Location" value={data.Location} size="small" />
                         <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} size="small"/>
-                        <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                        <Text title="Passport photograph" value={data.PassportPhotograph}  size="small"/>
+                        <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} size="small" />
                         <Text title="State your five point agenda" value={data.Agenda} size="medium" />
-                        <div className='imageContainer'><img src={data.PassportPhotograph} alt="" /></div>
+                       
                         <div className="minimizeBtn_">
                 <button onClick={editHandler}
                   className="mtn__btn mtn__yellow bg"

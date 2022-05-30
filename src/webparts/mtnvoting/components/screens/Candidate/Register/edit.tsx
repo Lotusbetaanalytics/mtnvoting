@@ -36,7 +36,7 @@ const CandidateEdit = ({ history }) => {
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const [id,setId] = React.useState("");
+  const [id,setId] = React.useState(0)
 
   React.useEffect(() => {
     setLoading(true);
@@ -61,13 +61,43 @@ const CandidateEdit = ({ history }) => {
           setDisciplinary(res[0].DisciplinarySanction)
           setPassport(res[0].PassportPhotograph)
           setAgenda(res[0].Agenda)
-          setId(res[0].id)
+          setId(res[0].Id)
           console.log(res);
           
         });
       });
    
   }, []);
+console.log(id)
+
+const submitHandler = (id) => {
+  console.log(id)
+  const imagePassport = JSON.parse(localStorage.getItem("dp"));
+  sp.web.lists.getByTitle("Nominees").items.getById(id).update({
+      EmployeeName: employeeName,
+      EmployeeEmail: employeeEmail,
+      DateEmployed: dateEmployed,
+      JobLevel: jobLevel,
+      Region: region,
+      Location: location,
+      ServedOnTheCouncil: service,
+      DisciplinarySanction: disciplinary,
+      PassportPhotograph: imagePassport,
+      Agenda: agenda,
+    })
+    .then((res) => {
+      setOpen(false);
+      swal("Success", "You have Successfully Registered", "success");
+      setTimeout(function () {
+        localStorage.removeItem("dp");
+        history.push(`/candidate`);
+      }, 2000);
+    })
+    .catch((e) => {
+      swal("Warning!", "An Error Occured, Try Again!", "error");
+      console.error(e);
+    });
+};
 
   
 
@@ -95,34 +125,7 @@ const CandidateEdit = ({ history }) => {
   const approveHandler = () => {
     setOpen(true);
   };
-  const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"));
-    sp.web.lists.getByTitle("Nominees").items.getById(id).update({
-        EmployeeName: employeeName,
-        EmployeeEmail: employeeEmail,
-        DateEmployed: dateEmployed,
-        JobLevel: jobLevel,
-        Region: region,
-        Location: location,
-        ServedOnTheCouncil: service,
-        DisciplinarySanction: disciplinary,
-        PassportPhotograph: imagePassport,
-        Agenda: agenda,
-      })
-      .then((res) => {
-        setOpen(false);
-        swal("Success", "You have Successfully Registered", "success");
-        setTimeout(function () {
-          localStorage.removeItem("dp");
-          history.push(`/candidate`);
-        }, 2000);
-      })
-      .catch((e) => {
-        swal("Warning!", "An Error Occured, Try Again!", "error");
-        console.error(e);
-      });
-  };
-
+  
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
