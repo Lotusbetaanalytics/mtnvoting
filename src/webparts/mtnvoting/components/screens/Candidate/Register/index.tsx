@@ -18,6 +18,7 @@ import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/candidateNavigation";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 
+
 const CandidateRegister = ({ history }) => {
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -33,31 +34,20 @@ const CandidateRegister = ({ history }) => {
   const [agenda, setAgenda] = React.useState("");
   const [terms, setTerms] = React.useState("");
   const [open, setOpen] = React.useState(false);
+  const [msg, setMsg] = React.useState(false);
+  const [termsMsg, setTermsMsg] = React.useState(false);
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
-  const regionData = [
-    { value: "western Region" },
-    { value: "northern region" },
-    { value: "easter region" },
-    { value: "southern region" },
-  ];
 
-  const locationData = [
-    { value: "lagos" },
-    { value: "Abuja" },
-    { value: "kano" },
-    { value: "jigawa" },
-  ];
+  
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
   const termsData = [{ value: "Yes" }, { value: "No" }];
 
   const reader = new FileReader();
 
-  const approveHandler = () => {
-    setOpen(true);
-  };
+  
   React.useEffect(() => {
     sp.profiles.myProperties
       .get()
@@ -74,38 +64,58 @@ const CandidateRegister = ({ history }) => {
               });
       });
   }, []);
+  const imagePassport = JSON.parse(localStorage.getItem("dp"));
+
+  const approveHandler = () => {
+    if (!jobLevel || 
+      !dateEmployed ||
+      !region ||
+      !location||
+      !service ||
+      !disciplinary ||
+      !imagePassport 
+      ){
+        swal("Warning!", "All Fields are required", "error");
+      } else {
+    setOpen(true);
+    
+      }
+  };
 
   const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"));
-    sp.web.lists
-      .getByTitle("Nominees")
-      .items.add({
-        EmployeeName: employeeName,
-        EmployeeEmail: employeeEmail,
-        DateEmployed: dateEmployed,
-        JobLevel: jobLevel,
-        Region: region,
-        Location: location,
-        ServedOnTheCouncil: service,
-        DisciplinarySanction: disciplinary,
-        PassportPhotograph: imagePassport,
-        Agenda: agenda,
-
+    if ( terms && terms == "No") 
+      {
+        swal("Warning!", "you have to agree with terms and condition", "error");
+      } else
+        {
+          sp.web.lists
+          .getByTitle("Nominees")
+          .items.add({
+            EmployeeName: employeeName,
+            EmployeeEmail: employeeEmail,
+            DateEmployed: dateEmployed,
+            JobLevel: jobLevel,
+            Region: region,
+            Location: location,
+            ServedOnTheCouncil: service,
+            DisciplinarySanction: disciplinary,
+            PassportPhotograph: imagePassport,
+            Agenda: agenda,  
+          })
+          .then((res) => {
+            setOpen(false);
+            swal("Success", "You have Successfully Registered", "success");
+            setTimeout(function () {
+              localStorage.removeItem("dp");
+              history.push(`/candidate`);
+            }, 2000);
+          })
+          .catch((e) => {
+            swal("Warning!", "An Error Occured, Try Again!", "error");
+            console.error(e);
+          });
+        }
         
-      })
-      
-      .then((res) => {
-        setOpen(false);
-        swal("Success", "You have Successfully Registered", "success");
-        setTimeout(function () {
-          localStorage.removeItem("dp");
-          history.push(`/candidate`);
-        }, 2000);
-      })
-      .catch((e) => {
-        swal("Warning!", "An Error Occured, Try Again!", "error");
-        console.error(e);
-      });
   };
   const regionHandler = (e) => {
     setRegion(e.target.value);
@@ -124,6 +134,7 @@ const CandidateRegister = ({ history }) => {
       <div className="contentsRight__">
         <Header title="Registration" />
         <div className="mtn__InputFlex">
+
           <Input
             title="Employee Name"
             value={employeeName}
@@ -184,8 +195,8 @@ const CandidateRegister = ({ history }) => {
             options={disciplinaryData}
             value={disciplinary}
           />
-
-          <ImageUpload
+          
+            <ImageUpload
             title="Upload your picture"
             value={passport}
             onChange={(e) => {
@@ -199,7 +210,8 @@ const CandidateRegister = ({ history }) => {
               };
             }}
           />
-
+          <div></div>
+          <div className={styles.imageContainer}><img src={imagePassport} alt={employeeName} /></div>
           <Textarea
             onChange={(e) => setAgenda(e.target.value)}
             title="State your five point agenda"
@@ -273,13 +285,14 @@ const CandidateRegister = ({ history }) => {
                   value={terms}
                 />
                 <div className="btnContainer">
-                  <button
+                    <button
                     onClick={submitHandler}
                     type="button"
                     className="mtn__btn mtn__yellow"
                   >
                     Proceed
                   </button>
+
                 </div>
               </div>
             }
