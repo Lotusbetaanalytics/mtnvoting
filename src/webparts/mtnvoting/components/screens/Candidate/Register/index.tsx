@@ -81,7 +81,17 @@ const CandidateRegister = ({ history }) => {
     
       }
   };
+  const cancelHandler = () =>{
+    setDisciplinary("");
+    setJobLevel("");
+    setRegion("");
+    setDisciplinary("")
+    setService("");
+    setLocation("");
+    setDateEmployed("");
+    setAgenda("")
 
+  }
   const submitHandler = () => {
     if ( terms && terms == "No") 
       {
@@ -219,7 +229,7 @@ const CandidateRegister = ({ history }) => {
           />
 
           <div className="minimizeBtn">
-            <button className="mtn__btn mtn__white_blackColor">Cancel</button>
+            <button className="mtn__btn mtn__white_blackColor" onClick={cancelHandler}>Cancel</button>
             <button
               className="mtn__btn mtn__yellow bg"
               onClick={approveHandler}
