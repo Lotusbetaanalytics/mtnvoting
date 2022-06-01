@@ -13,7 +13,10 @@
   // font-family: 'Gothic A1', sans-serif;
   font-family: MTNBrighterSans-Medium;
 }
-
+.right{
+  display: flex;
+  justify-content: flex-end;
+}
 .mtn__btn {
     height: 3.5rem;
     outline: none;
@@ -44,6 +47,7 @@
   border: none;
   outline: none;
   align-items: center;
+  margin-right: 1rem;
 }
 .mtn__black {
     background: #000;
@@ -55,6 +59,9 @@
   .minimizeBtn {
     display: flex;
     justify-content: flex-start;
+  }
+  .padding{
+    padding: .5rem 2rem;
   }
 
 //   Page Setup
@@ -89,7 +96,17 @@
   .textContainerFlex{
     display: flex;
     flex-wrap: wrap;
-    
+  }
+  .viewFlex{
+    display: flex;
+  }
+  .photo{
+    display: flex;
+    flex: 0.2;
+  }
+  .photo img {
+    object-fit: contain;
+    max-height: 250px;
   }
 
   .mtn__child {
@@ -100,6 +117,13 @@
   }
   .mtn__adult {
     flex-basis: 100%;
+  }
+  .mtn__InputFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: left;
+    // flex: 1;
   }
   
   .mtn__InputContainer {
@@ -165,4 +189,46 @@
       outline: 1px solid #FFCC00;
     }
    
+  }
+
+  .radioFlex{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    padding: 1rem 2rem;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    span{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    input[type="radio"] {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      padding: 2px;
+      background-clip: content-box;
+      border: 1px solid gainsboro;
+      border-radius: 50%;
+      margin:0 1rem;
+  
+  
+    }
+    input[type="radio"]:checked {
+      background-color: #FFCC00;
+    }
+  }
+  .terms p{
+    font-size: 13px;
+    line-height: 2rem;
+  }
+  .terms ul{
+    padding: .5rem 2rem;
+  }
+  .terms ul li{
+    font-size: 13px;
   }

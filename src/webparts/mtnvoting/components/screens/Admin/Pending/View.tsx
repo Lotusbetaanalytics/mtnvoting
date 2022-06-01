@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Text, Header, Spinner } from '../../../containers'
+import { AdminNavigation, Text, Header, Spinner, Modal, Textarea } from '../../../containers'
 
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
@@ -10,6 +10,8 @@ const AdminViewPending = ({ history, match }) => {
 
     const [data, setData] = React.useState({} as any)
     const [loading, setLoading] = React.useState(false)
+    const [open, setOpen] = React.useState(false)
+    const [comments, setComments] = React.useState("")
     React.useEffect(() => {
         setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
@@ -62,30 +64,84 @@ const AdminViewPending = ({ history, match }) => {
             console.error(e);
         });
     }
+    const revokeHandler = () => {
+        sp.web.lists.getByTitle("Nominees").items.getById(id).update({
+            Status: "Declined",
+            Comments: comments
+        }).then((res) => {
+            setOpen(false)
+            swal("Success", "Nominee Declined Successfully", "success");
+            setTimeout(function () {
+
+                history.push("/admin/pending")
+
+            }, 2000);
+        }).catch((e) => {
+            swal("Warning!", "An Error Occured, Try Again!", "error");
+            console.error(e);
+        });
+    }
     return (
         <div className='appContainer'>
             <AdminNavigation pending={`active`} />
             <div className='contentsRight'>
                 <Header title='Pending Request' />
                 <div className='textContainer'>
-                    {loading ? <Spinner /> : <div className='textContainerFlex'>
-                        <Text title="Employee Name" value={data.EmployeeName} />
-                        <Text title="Employee Email" value={data.EmployeeEmail} />
-                        <Text title="Date employed" value={data.DateEmployed} />
-                        <Text title="Job Level" value={data.JobLevel} />
-                        <Text title="Region" value={data.Region} />
-                        <Text title="Location" value={data.Location} />
-                        <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
-                        <Text title="If yes, state the period you served " value={data.PeriodServed} />
-                        <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                        <Text title="Passport photograph" value={data.PassportPhotograph} />
-                        <Text title="State your five point agenda" value={data.Agenda} size="large" />
+                    <div className='viewFlex'>
+                        <div className='photo'>
+                            {data.PassportPhotograph && <div>
+                                <img src={data.PassportPhotograph} alt={data.EmployeeName} />
+                            </div>}
+                        </div>
+                        {loading ? <Spinner /> : <div className='textContainerFlex'>
+                            <Text title="Employee Name" value={data.EmployeeName} />
+                            <Text title="Employee Email" value={data.EmployeeEmail} />
+                            <Text title="Date employed" value={data.DateEmployed} />
+                            <Text title="Job Level" value={data.JobLevel} />
+                            <Text title="Region" value={data.Region} />
+                            <Text title="Location" value={data.Location} />
+                            <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
+                            <Text title="If yes, state the period you served " value={data.PeriodServed} />
+                            <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
+                            <Text title="State your five point agenda" value={data.Agenda} size="large" />
+                            <div className='minimizeBtn'>
+                                <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Approve</button>
+                                <button className='mtn__btn mtn__black' onClick={() => setOpen(true)}>Decline</button>
+                            </div>
+                        </div>}
 
-                    </div>}
-                    <div className='minimizeBtn'>
-                        <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Approve</button>
-                        <button className='mtn__btn mtn__black'>Decline</button>
                     </div>
+                    {/* Modal */}
+                    <Modal
+                        isVisible={open}
+                        title="Revoke Nominee"
+                        size="md"
+                        content={
+                            <div className="mtn__InputFlex">
+
+                                <Textarea
+                                    title="Reason"
+                                    value={comments}
+                                    onChange={(e) => setComments(e.target.value)}
+                                    required={true}
+
+                                />
+                                <div className='minimizeBtn padding'>
+                                    <button
+                                        onClick={revokeHandler}
+                                        type="button"
+                                        className='mtn__btn mtn__yellow'
+                                    >Update</button>
+
+                                </div>
+                            </div>
+
+                        }
+                        onClose={() => setOpen(false)}
+
+                        footer=""
+
+                    />
                 </div>
             </div>
         </div>

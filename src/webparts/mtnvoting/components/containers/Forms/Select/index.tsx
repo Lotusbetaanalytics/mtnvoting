@@ -13,7 +13,6 @@ const Select = ({
 }) => {
   return (
     <div className={`mtn__InputContainer ${size}`}>
-      {/* <label>{title}</label> */}
       <label>{title}</label>
       <select
         onChange={onChange}

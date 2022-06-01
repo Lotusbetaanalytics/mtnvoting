@@ -1,18 +1,19 @@
 .employee__Container {
   padding: 10px;
-  background-color: whitesmoke;
   width: 100%;
+  background-color: whitesmoke;
   height: 800px;
 }
 .employee__Header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
 .employee__Title {
   display: flex;
-  // width: 25%;
+  padding: -10px -15px;
+  width: 25%;
   background-color: #ffc423;
   border-radius: 30px;
   color: black;
@@ -43,7 +44,7 @@
 
 .employee__FormContainer {
   display: grid;
-  width: 37%;
+  width: 40%;
   height: 600px;
   background-color: white;
   justify-content: center;
