@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
+import { AdminNavigation, Card, Header, MenuBar, Input, Modal, Spinner, DateInput, Select, Helpers } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
@@ -22,11 +22,19 @@ const AdminConfig = ({ history }) => {
         { title: "Constituency", field: "Title", type: "string" as const },
         { title: "Number of Applicable Nominees", field: "NomineeCount", type: "string" as const },
         { title: "Date of Voting Exercise", field: "Date", type: "string" as const },
+        { title: "Country", field: "Country", type: "string" as const },
+        { title: "Region", field: "Region", type: "string" as const },
+        { title: "Location", field: "Location", type: "string" as const },
 
     ]);
 
     const [data, setData] = React.useState([])
+    const [locations, setLocations] = React.useState([])
+    const [location, setLocation] = React.useState("")
+    const [regions, setRegions] = React.useState([])
+    const [region, setRegion] = React.useState("")
     const [Title, setTitle] = React.useState("")
+    const [country, setCountry] = React.useState("")
     const [NomineeCount, setNomineeCount] = React.useState(null)
     const [Date, setDate] = React.useState("")
     const [open, setOpen] = React.useState(false)
@@ -39,13 +47,17 @@ const AdminConfig = ({ history }) => {
             ((res) => {
                 setData(res)
             })
+        sp.web.lists.getByTitle(`Region`).items.get().then
+            ((resp) => {
+                setRegions(resp)
+            })
 
     }, [])
 
     // Menubar Items
     const menu = [
         { name: "Approvals", url: "/admin/add", },
-        { name: "Constituency", url: "/admin/config", active: true, },
+        { name: "Voting Exercise", url: "/admin/config", active: true, },
         { name: "Region", url: "/admin/region" },
         { name: "Location", url: "/admin/location" },
     ];
@@ -56,9 +68,13 @@ const AdminConfig = ({ history }) => {
             Title: Title,
             NomineeCount: NomineeCount,
             Date: Date,
+            Region: region,
+            Location: location,
+            Country: country,
+            Status: "Open"
         }).then((res) => {
             setOpen(false)
-            swal("Success", "Constituency added Successfully", "success");
+            swal("Success", "Voting Exercise added Successfully", "success");
             sp.web.lists.getByTitle(`Constituency`).items.get().then
                 ((res) => {
                     setData(res)
@@ -75,9 +91,14 @@ const AdminConfig = ({ history }) => {
         e.preventDefault()
         sp.web.lists.getByTitle("Constituency").items.getById(id).update({
             Title: Title,
+            NomineeCount: NomineeCount,
+            Date: Date,
+            Region: region,
+            Location: location,
+            Country: country
         }).then((res) => {
             setOpen(false)
-            swal("Success", "Constituency Edited Successfully", "success");
+            swal("Success", "Voting Exercise Edited Successfully", "success");
             sp.web.lists.getByTitle(`Constituency`).items.get().then
                 ((res) => {
                     setData(res)
@@ -86,12 +107,11 @@ const AdminConfig = ({ history }) => {
             swal("Warning!", "An Error Occured, Try Again!", "error");
             console.error(e);
         });
-
     }
     const deleteHandler = (id) => {
         if (window.confirm("Are you sure you want to delete")) {
             sp.web.lists.getByTitle("Constituency").items.getById(id).delete().then((res) => {
-                swal("Success", "Constituency has been deleted", "success");
+                swal("Success", "Voting Exercise has been deleted", "success");
                 sp.web.lists.getByTitle(`Constituency`).items.get().then
                     ((res) => {
                         setData(res)
@@ -105,6 +125,49 @@ const AdminConfig = ({ history }) => {
         setTitle("")
         setNomineeCount("")
         setDate("")
+        setLocation("")
+        setRegion("")
+    }
+    const regionHandler = (e) => {
+        setRegion(e.target.value)
+        sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${e.target.value}'`).get().then
+            ((res) => {
+                setLocations(res)
+            })
+    }
+
+    const stopHandler = (id) => {
+        if (window.confirm("Are you sure you stop this exercise")) {
+            sp.web.lists.getByTitle("Constituency").items.getById(id).update({
+                Status: "Closed"
+            }).then((res) => {
+                setOpen(false)
+                swal("Success", "Voting has Ended", "success");
+                sp.web.lists.getByTitle(`Constituency`).items.get().then
+                    ((res) => {
+                        setData(res)
+                    })
+            }).catch((e) => {
+                swal("Warning!", "An Error Occured, Try Again!", "error");
+                console.error(e);
+            });
+        }
+    }
+
+    const startHandler = (id) => {
+        sp.web.lists.getByTitle("Constituency").items.getById(id).update({
+            Status: "Open"
+        }).then((res) => {
+            setOpen(false)
+            swal("Success", "Voting has Started", "success");
+            sp.web.lists.getByTitle(`Constituency`).items.get().then
+                ((res) => {
+                    setData(res)
+                })
+        }).catch((e) => {
+            swal("Warning!", "An Error Occured, Try Again!", "error");
+            console.error(e);
+        });
     }
     return (
         <div className='appContainer'>
@@ -113,7 +176,7 @@ const AdminConfig = ({ history }) => {
                 <Header title='Approved Request' />
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Constituency</button>
+                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Start Voting Exercise</button>
                 </div>
                 <MaterialTable
                     title=""
@@ -153,6 +216,24 @@ const AdminConfig = ({ history }) => {
                                 setTitle(rowData.Title)
                                 setNomineeCount(rowData.NomineeCount)
                                 setDate(rowData.Date)
+                            },
+                        },
+                        {
+                            icon: "visibility",
+                            iconProps: { style: { fontSize: "20px", color: "gold" } },
+                            tooltip: "Start",
+
+                            onClick: (event, rowData) => {
+                                startHandler(rowData.ID)
+                            },
+                        },
+                        {
+                            icon: "visibility",
+                            iconProps: { style: { fontSize: "20px", color: "gold" } },
+                            tooltip: "Stop",
+
+                            onClick: (event, rowData) => {
+                                stopHandler(rowData.ID)
                             },
                         },
                         {
@@ -201,12 +282,44 @@ const AdminConfig = ({ history }) => {
                                 onChange={(e) => setDate(e.target.value)} type="text"
                                 size='mtn__adult'
                             />
+                            <Select
+                                value={region}
+                                onChange={regionHandler}
+                                required={false}
+                                title="Region"
+                                options={regions}
+                                filter={true}
+                                filterOption="Title"
+                                size='mtn__adult'
+                            />
 
-                            <button
-                                onClick={edit ? editHandler : submitHandler}
-                                type="button"
-                                className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Constituency" : "Add Constituency"}</button>
+                            <Select
+                                value={location}
+                                onChange={(e) => setLocation(e.target.value)}
+                                required={false}
+                                title="Location"
+                                options={locations}
+                                filter={true}
+                                filterOption="Title"
+                                size='mtn__adult'
+                            />
+                            <Select
+                                value={country}
+                                onChange={(e) => setCountry(e.target.value)}
+                                required={false}
+                                title="Country"
+                                options={Helpers.countries}
+                                size='mtn__adult'
+
+                            />
+                            <div className='btnContainer'>
+                                <button
+                                    onClick={edit ? editHandler : submitHandler}
+                                    type="button"
+                                    className='mtn__btn mtn__yellow'
+                                >{edit ? "Edit Voting Exercise" : "Start Voting Exercise"}</button>
+                            </div>
+
 
                         </div>
 

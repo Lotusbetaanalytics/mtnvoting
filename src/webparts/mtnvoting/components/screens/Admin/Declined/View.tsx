@@ -66,7 +66,7 @@ const AdminViewDeclined = ({ history, match }) => {
 
     return (
         <div className='appContainer'>
-            <AdminNavigation pending={`active`} />
+            <AdminNavigation declined={`active`} />
             <div className='contentsRight'>
                 <Header title='Pending Request' />
                 <div className='textContainer'>
