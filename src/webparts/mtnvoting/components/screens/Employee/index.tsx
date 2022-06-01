@@ -122,26 +122,6 @@ const EmployeeRegistration = ({ history }) => {
       });
   };
 
-  // const locationHandler = (e) => {
-
-  //   setLocation(e.target.value);
-
-  //   sp.web.lists
-
-  //     .getByTitle(`Constituency`)
-
-  //     .items.filter(`Location eq '${e.target.value}'`)
-
-  //     .get()
-
-  //     .then((res) => {
-
-  //       setConstituencies(res);
-
-  //     });
-
-  // };
-
   return (
     <div className={styles.employee__Container}>
       <div className={styles.employee__Header}>
