@@ -161,11 +161,10 @@ const CandidateEdit = ({ history }) => {
             />
           </div>
           <div className={styles.inputContainer}>
-            <p>Job level</p>
             <Select
               onChange={(e) => setJobLevel(e.target.value)}
               value={jobLevel}
-              title=""
+              title="Job level"
               options={jobLevelData}
             />
           </div>

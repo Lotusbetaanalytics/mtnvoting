@@ -64,7 +64,8 @@ const AdminViewPending = ({ history, match }) => {
             console.error(e);
         });
     }
-    const revokeHandler = () => {
+    const revokeHandler = (e) => {
+        e.preventDefault()
         sp.web.lists.getByTitle("Nominees").items.getById(id).update({
             Status: "Declined",
             Comments: comments
@@ -117,25 +118,25 @@ const AdminViewPending = ({ history, match }) => {
                         title="Revoke Nominee"
                         size="md"
                         content={
-                            <div className="mtn__InputFlex">
+                            <form onSubmit={revokeHandler}>
+                                <div className="mtn__InputFlex">
 
-                                <Textarea
-                                    title="Reason"
-                                    value={comments}
-                                    onChange={(e) => setComments(e.target.value)}
-                                    required={true}
+                                    <Textarea
+                                        title="Reason"
+                                        value={comments}
+                                        onChange={(e) => setComments(e.target.value)}
+                                        required={true}
 
-                                />
-                                <div className='minimizeBtn padding'>
-                                    <button
-                                        onClick={revokeHandler}
-                                        type="button"
-                                        className='mtn__btn mtn__yellow'
-                                    >Update</button>
+                                    />
+                                    <div className='minimizeBtn padding'>
+                                        <button
+                                            type="submit"
+                                            className='mtn__btn mtn__yellow'
+                                        >Update</button>
 
+                                    </div>
                                 </div>
-                            </div>
-
+                            </form>
                         }
                         onClose={() => setOpen(false)}
 

@@ -45,7 +45,7 @@ const Administrator = ({ history }) => {
     // Menubar Items
     const menu = [
         { name: "Approvals", url: "/admin/add", active: true, },
-        { name: "Consituency", url: "/admin/config", },
+        { name: "Voting Exercise", url: "/admin/config", },
         { name: "Region", url: "/admin/region" },
         { name: "Location", url: "/admin/location" },
     ];

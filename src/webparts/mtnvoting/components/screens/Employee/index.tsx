@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Input, Select, Modal, Spinner } from "../../containers";
 import { sp } from "@pnp/sp";
-import { default as pnp, ItemAddResult } from "sp-pnp-js";
 import swal from "sweetalert";
 import styles from "./styles.module.scss";
 
@@ -19,20 +18,39 @@ const EmployeeRegistration = ({ history }) => {
   const submitHandler = (e) => {
     setLoading(true);
     e.preventDefault();
-    pnp.sp.web.lists
-      .getByTitle("Registration")
-      .items.add({
-        EmployeeName: employeeName,
-        EmployeeEmail: employeeEmail,
-        Region: region,
-        Location: location,
+
+    sp.web.lists.getByTitle(`Constituency`).items.filter(`Region eq '${region}' and Location eq '${location}'`).get().then
+      ((res) => {
+        const maxVoters = res[0].NomineeCount
+
+        sp.web.lists.getByTitle(`Registration`).items.filter(`Region eq '${region}' and Location eq '${location}'`).get().then
+          ((res) => {
+
+            if (res.length <= maxVoters) {
+              sp.web.lists
+                .getByTitle("Registration")
+                .items.add({
+                  EmployeeName: employeeName,
+                  EmployeeEmail: employeeEmail,
+                  Region: region,
+                  Location: location,
+                })
+                .then((res) => {
+                  setLoading(false);
+                  swal("Success", "Registration Successful", "success");
+                  history.push("/vote");
+                });
+            } else {
+              setLoading(false);
+              swal("Warning!", "Max Voters Reached", "error");
+            }
+
+          })
+
       })
-      .then((iar: ItemAddResult) => {
-        console.log(iar);
-        setLoading(false);
-        swal("Success", "Registration Successful", "success");
-        history.push("/vote");
-      });
+
+
+
 
 
   };
