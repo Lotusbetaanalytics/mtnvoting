@@ -2,7 +2,12 @@ import * as React from 'react'
 import { AdminNavigation, Card, Header } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
+
+
 const AdminApproved = ({ history }) => {
+
+
+
     type IType =
         | "string"
         | "boolean"
@@ -18,9 +23,11 @@ const AdminApproved = ({ history }) => {
         { title: "Employee Name", field: "EmployeeName", type: "string" as const },
         { title: "Email", field: "EmployeeEmail", type: "string" as const },
         { title: "Date Employed", field: "DateEmployed", type: "string" as const },
-        { title: "Job Level", field: " JobLevel", type: "string" as const },
+        { title: "Job Level", field: "JobLevel", type: "string" as const },
         { title: "Region", field: "Region", type: "string" as const },
         { title: "Location", field: "Location", type: "string" as const },
+        { title: "Status", field: "Status", type: "string" as const },
+
 
     ]);
 
@@ -32,6 +39,7 @@ const AdminApproved = ({ history }) => {
             ((res) => {
                 setData(res)
             })
+
     }, [])
     return (
         <div className='appContainer'>
@@ -45,7 +53,7 @@ const AdminApproved = ({ history }) => {
                     options={{
                         exportButton: true,
                         actionsCellStyle: {
-                            backgroundColor: "#C4C4C430",
+                            backgroundColor: "none",
                             color: "#FF00dd",
                         },
                         actionsColumnIndex: -1,
@@ -56,7 +64,12 @@ const AdminApproved = ({ history }) => {
                         },
 
                     }}
-                    style={{ boxShadow: "none", width: "100%" }}
+                    style={{
+                        boxShadow: "none",
+                        width: "100%",
+                        background: "none",
+                        fontSize: "13px",
+                    }}
                     // icons={{Add: () => 'Add Row'}}
                     actions={[
                         {

@@ -15,7 +15,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
-import CandidateNavigation from "../../../containers/candidateNavigation";
+import CandidateNavigation from "../../../containers/candidateNavigation1";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 
 
@@ -33,6 +33,8 @@ const CandidateRegister = ({ history }) => {
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
   const [terms, setTerms] = React.useState("");
+  const [constituency,setConstituency] = React.useState("");
+  const [constituencies,setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [msg, setMsg] = React.useState(false);
   const [termsMsg, setTermsMsg] = React.useState(false);
@@ -112,6 +114,7 @@ const CandidateRegister = ({ history }) => {
             DisciplinarySanction: disciplinary,
             PassportPhotograph: imagePassport,
             Agenda: agenda,  
+            Constituency : constituency
           })
           .then((res) => {
             setOpen(false);
@@ -139,12 +142,24 @@ const CandidateRegister = ({ history }) => {
       });
   };
 
+  const locationHandler = (e) => {
+    setLocation(e.target.value);
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Location eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setConstituencies(res);
+      });
+  };
+
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
       <div className="contentsRight__">
         <Header title="Registration" />
         <div className="mtn__InputFlex">
+         
 
           <Input
             title="Employee Name"
@@ -184,16 +199,26 @@ const CandidateRegister = ({ history }) => {
             filterOption="Title"
           />
 
+<Select
+            onChange={locationHandler}
+            value={location}
+            title="Region"
+            options={locations}
+            filter={true}
+            filterOption="Title"
+          />
+
           <Select
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
+          value={constituency}
+          onChange={(e) => setConstituency(e.target.value)}
           required={false}
-          title="Location"
-          options={locations}
+          title="Constituency"
+          options={constituencies}
           filter={true}
           filterOption="Title"
           size={"mtn__child"}
           />
+          
           <Radio
             onChange={(e) => setService(e.target.value)}
             title="Have you served on the council before?"

@@ -4,7 +4,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
-import CandidateNavigation from '../../../containers/candidateNavigation'
+import CandidateNavigation from '../../../containers/candidateNavigation1'
 import styles from "./styles.module.scss";
 
 const ViewRequest = ({ history}) => {

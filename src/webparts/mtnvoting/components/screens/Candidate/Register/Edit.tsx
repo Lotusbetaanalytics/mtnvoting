@@ -37,8 +37,6 @@ const CandidateEdit = ({ history }) => {
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
-  const [constituency,setConstituency] = React.useState("");
-  const [constituencies,setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
 
@@ -65,7 +63,6 @@ const CandidateEdit = ({ history }) => {
             setDisciplinary(res[0].DisciplinarySanction)
             setPassport(res[0].PassportPhotograph)
             setAgenda(res[0].Agenda)
-            setConstituency(res[0].Constituency)
             setId(res[0].id)
             console.log(res);
 
@@ -105,7 +102,6 @@ const CandidateEdit = ({ history }) => {
       DisciplinarySanction: disciplinary,
       PassportPhotograph: imagePassport,
       Agenda: agenda,
-      Constituency:constituency
     })
       .then((res) => {
         setOpen(false);
@@ -127,17 +123,7 @@ const CandidateEdit = ({ history }) => {
       ((res) => {
         setLocations(res)
       })
-     
-      const locationHandler = (e) => {
-        setLocation(e.target.value);
-        sp.web.lists
-          .getByTitle(`Constituency`)
-          .items.filter(`Location eq '${e.target.value}'`)
-          .get()
-          .then((res) => {
-            setConstituencies(res);
-          });
-        }}
+  }
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
@@ -198,6 +184,7 @@ const CandidateEdit = ({ history }) => {
             />
           </div>
           <div className={styles.inputContainer}>
+            {/* <p>Location</p> */}
             <Select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
@@ -207,16 +194,6 @@ const CandidateEdit = ({ history }) => {
               filter={true}
               filterOption="Title"
             />
-             <Select
-          value={constituency}
-          onChange={(e) => setConstituency(e.target.value)}
-          required={false}
-          title="Constituency"
-          options={constituencies}
-          filter={true}
-          filterOption="Title"
-          size={"mtn__child"}
-          />
           </div>
           <div className={styles.inputContainer}>
             <Radio

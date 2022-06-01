@@ -15,7 +15,6 @@ const DateInput = ({ onChange, value, type, title, readOnly = false, required = 
             required={required}
 
         />
-
     </div>;
 };
 

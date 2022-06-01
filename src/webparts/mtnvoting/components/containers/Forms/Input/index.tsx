@@ -13,7 +13,6 @@ const Input = ({ onChange, value, type, title, readOnly = false, required = fals
             required={required}
             onBlur={onBlur}
         />
-
     </div>;
 };
 

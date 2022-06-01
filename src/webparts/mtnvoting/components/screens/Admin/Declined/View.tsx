@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { AdminNavigation, Text, Header, Spinner, Textarea, Modal } from '../../../containers'
+import { AdminNavigation, Text, Header, Spinner, Modal, Textarea } from '../../../containers'
 
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
+import axios from 'axios'
 
-const AdminViewApproved = ({ history, match }) => {
+const AdminViewDeclined = ({ history, match }) => {
     const id = match.params.id
 
     const [data, setData] = React.useState({} as any)
     const [loading, setLoading] = React.useState(false)
-    const [open, setOpen] = React.useState(false)
-    const [comments, setComments] = React.useState("")
+
     React.useEffect(() => {
         setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
@@ -20,21 +20,42 @@ const AdminViewApproved = ({ history, match }) => {
             })
     }, [])
 
+    //     var instance = axios.create({
+    //         baseURL: 'https://some-domain.com/api/',
+    //         headers: {"X-Requested-With": "XMLHttpRequest"}
+    //       });
+
+    //       var xmlBodyStr = `<?xml version="1.0" encoding="UTF-8"?>
+    //        <req:KnownTrackingRequest xmlns:req="http://www.example.com" 
+    //                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    //                 xsi:schemaLocation="http://www.example.com
+    //                 TrackingRequestKnown.xsd">
+    //          <Request>
+    //            <ServiceHeader>
+    //               <MessageTime>2002-06-25T11:28:56-08:00</MessageTime>
+    //               <MessageReference>1234567890123456789012345678</MessageReference>
+    //               <SiteID>SiteID</SiteID>
+    //               <Password>Password</Password>
+    //            </ServiceHeader>
+    //          </Request>
+    //          <LanguageCode>en</LanguageCode>
+    //          <AWBNumber>01234567890</AWBNumber>
+    //          <LevelOfDetails>LAST_CHECK_POINT_ONLY</LevelOfDetails>`;
+
+    // var config = {
+    //      headers: {'Content-Type': 'text/xml'}
+    // };
+
+    // axios.post('https://POST_URL', xmlBodyStr, config); 
+
 
     const approveHandler = () => {
-        setOpen(true)
-    }
-
-    const revokeHandler = () => {
         sp.web.lists.getByTitle("Nominees").items.getById(id).update({
-            Status: "Revoked",
-            Comments: comments
+            Status: "Approved"
         }).then((res) => {
-            setOpen(false)
-            swal("Success", "Nominee Revoked Successfully", "success");
+            swal("Success", "Nominee Approved Successfully", "success");
             setTimeout(function () {
-
-                history.push("/admin/approved")
+                history.push("/admin/declined")
 
             }, 2000);
         }).catch((e) => {
@@ -42,11 +63,12 @@ const AdminViewApproved = ({ history, match }) => {
             console.error(e);
         });
     }
+
     return (
         <div className='appContainer'>
-            <AdminNavigation approved={`active`} />
+            <AdminNavigation declined={`active`} />
             <div className='contentsRight'>
-                <Header title='Approved Request' />
+                <Header title='Pending Request' />
                 <div className='textContainer'>
                     <div className='viewFlex'>
                         <div className='photo'>
@@ -66,45 +88,18 @@ const AdminViewApproved = ({ history, match }) => {
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
                             <Text title="State your five point agenda" value={data.Agenda} size="large" />
                             <div className='minimizeBtn'>
-                                <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Revoke</button>
+                                <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Approve</button>
                             </div>
-                        </div>}
+                        </div>
+                        }
+
 
                     </div>
-                    {/* Modal */}
-                    <Modal
-                        isVisible={open}
-                        title="Revoke Nominee"
-                        size="md"
-                        content={
-                            <div className="mtn__InputFlex">
 
-                                <Textarea
-                                    title="Reason"
-                                    value={comments}
-                                    onChange={(e) => setComments(e.target.value)}
-                                    required={true}
-
-                                />
-
-                                <button
-                                    onClick={revokeHandler}
-                                    type="button"
-                                    className='mtn__btn mtn__yellow'
-                                >Update</button>
-
-                            </div>
-                        }
-                        onClose={() => setOpen(false)}
-
-                        footer=""
-
-                    />
                 </div>
-
             </div>
         </div>
     )
 }
 
-export default AdminViewApproved
+export default AdminViewDeclined
