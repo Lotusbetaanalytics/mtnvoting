@@ -10,19 +10,21 @@ width: 70%;
 }
 .imageContainer{
     height: 200px;
-    width: 100%;
+    width: 200px;
     margin-left: 4%;
     display: flex;
+    border: 1px solid black;
 }
-.imagebox{
-    width: 200px;
-    height: 200px;
-    display: flex;
+// .imagebox{
+//     width: 200px;
+//     height: 200px;
+//     display: flex;
     
-}
+// }
 
-.imagebox img{
+.imageContainer img{
     height: 100%;
     width: 100%;
     object-fit: contain;
+   
 }

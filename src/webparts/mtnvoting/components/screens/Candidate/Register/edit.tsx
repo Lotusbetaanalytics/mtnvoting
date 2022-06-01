@@ -219,6 +219,9 @@ const CandidateEdit = ({ history }) => {
               };
             }}
           />
+          <div className={styles.imageContainer}>
+               <img src={passport} alt={employeeName} />
+          </div>
           <Textarea
             onChange={(e) => setAgenda(e.target.value)}
             title="State your five point agenda"
