@@ -7,13 +7,16 @@ import styles from "./styles.module.scss";
 const EmployeeRegistration = ({ history }) => {
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
-  const [region, setRegion] = React.useState();
+  const [region, setRegion] = React.useState("");
   const [regions, setRegions] = React.useState([]);
   const [locations, setLocations] = React.useState([]);
+  // const [title, setTitle] = React.useState("");
+  const [constituency, setConstituency] = React.useState("");
+  const [constituencies, setConstituencies] = React.useState([]);
   const [location, setLocation] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [cancel, setCancel] = React.useState(false);
-  // const [open, setOpen] = React.useState(false);
+  // const [cancel, setCancel] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const submitHandler = (e) => {
     setLoading(true);
@@ -39,6 +42,7 @@ const EmployeeRegistration = ({ history }) => {
                   EmployeeEmail: employeeEmail,
                   Region: region,
                   Location: location,
+                  Constituency: constituency,
                 })
                 .then((res) => {
                   setLoading(false);
@@ -57,9 +61,21 @@ const EmployeeRegistration = ({ history }) => {
   //   setOpen(true);
   // };
 
-  const cancelHandler = () => {
-    setCancel(cancel);
-    history.push("/");
+  const modalHandler = () => {
+    setOpen(true);
+  };
+
+  const cancelHandler = (e) => {
+    e.preventDefault();
+    setEmployeeName("");
+    setEmployeeEmail("");
+    setRegion("");
+    setLocation("");
+    setConstituency("");
+  };
+
+  const prevHandler = () => {
+    history.push("/registration");
   };
 
   React.useEffect(() => {
@@ -94,6 +110,38 @@ const EmployeeRegistration = ({ history }) => {
         setLocations(res);
       });
   };
+
+  const locationHandler = (e) => {
+    setLocation(e.target.value);
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Location eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setConstituencies(res);
+      });
+  };
+
+  // const locationHandler = (e) => {
+
+  //   setLocation(e.target.value);
+
+  //   sp.web.lists
+
+  //     .getByTitle(`Constituency`)
+
+  //     .items.filter(`Location eq '${e.target.value}'`)
+
+  //     .get()
+
+  //     .then((res) => {
+
+  //       setConstituencies(res);
+
+  //     });
+
+  // };
+
   return (
     <div className={styles.employee__Container}>
       <div className={styles.employee__Header}>
@@ -128,6 +176,7 @@ const EmployeeRegistration = ({ history }) => {
                 readOnly={false}
                 size="mtn_child"
               />
+
               <Select
                 value={region}
                 onChange={regionHandler}
@@ -141,10 +190,21 @@ const EmployeeRegistration = ({ history }) => {
 
               <Select
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
+                onChange={locationHandler}
                 required={true}
                 title="Location"
                 options={locations}
+                size="mtn_child"
+                filter={true}
+                filterOption="Title"
+              />
+
+              <Select
+                value={constituency}
+                onChange={(e) => setConstituency(e.target.value)}
+                required={true}
+                title="Constituency"
+                options={constituencies}
                 size="mtn_child"
                 filter={true}
                 filterOption="Title"
@@ -154,10 +214,30 @@ const EmployeeRegistration = ({ history }) => {
               <button
                 type="button"
                 className={styles.btnCancel}
-                onClick={cancelHandler}
+                onClick={modalHandler}
               >
                 Cancel
               </button>
+              <Modal
+                isVisible={open}
+                title="Are you sure you want to Cancel"
+                size="md"
+                content={
+                  <div className={styles.modal__Btn}>
+                    <button className={styles.btnCancel1} onClick={prevHandler}>
+                      No
+                    </button>
+                    <button
+                      className={styles.btnCancel2}
+                      onClick={cancelHandler}
+                    >
+                      Yes
+                    </button>
+                  </div>
+                }
+                onClose={() => setOpen(false)}
+                footer=""
+              />
               <button
                 type="submit"
                 className={styles.btnSubmit}
