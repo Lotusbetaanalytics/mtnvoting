@@ -16,14 +16,14 @@ const CandidateDashboard = () => {
         .then((response) => {
           sp.web.lists
             .getByTitle(`Constituency`)
-            .items.filter(`Date eq '${response.Date}'`)
+            .items.filter(`Region eq '${response.region}' and Location eq '${location}'`) 
             .get()
             .then((res) => {
-              setVoteDate(res[0])
+              console.log(res)
     })})
     }, [])
 
-    console.log(voteDate)
+    
     
     return (
         <div className='appContainer'>

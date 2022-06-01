@@ -77,9 +77,13 @@ const CandidateEdit = ({ history }) => {
       });
   }, []);
  
-  console.log(data)
+  
   const id = data.Id;
-  console.log(id)
+
+  const cancelHandler = () =>{
+    history.push(`/candidate/viewRequest`);
+
+  }
 
   const submitHandler = (id) => {
     const imagePassport = JSON.parse(localStorage.getItem("dp"));
@@ -223,7 +227,7 @@ const CandidateEdit = ({ history }) => {
         </div>
 
         <div className="minimizeBtn">
-          <button className="mtn__btn mtn__white_blackColor">Cancel</button>
+          <button className="mtn__btn mtn__white_blackColor" onClick={cancelHandler}>Cancel</button>
           <button className="mtn__btn mtn__yellow bg" onClick={approveHandler}>
             Submit
           </button>

@@ -90,6 +90,7 @@ const CandidateRegister = ({ history }) => {
     setLocation("");
     setDateEmployed("");
     setAgenda("")
+    localStorage.removeItem("dp");
 
   }
   const submitHandler = () => {
@@ -220,13 +221,16 @@ const CandidateRegister = ({ history }) => {
               };
             }}
           />
-          <div></div>
-          <div className={styles.imageContainer}><img src={imagePassport} alt={employeeName} /></div>
+          <div className={styles.imageContainer}>
+               <img src={imagePassport} alt={employeeName} />
+          </div>
+         
           <Textarea
             onChange={(e) => setAgenda(e.target.value)}
             title="State your five point agenda"
             value={agenda}
           />
+          
 
           <div className="minimizeBtn">
             <button className="mtn__btn mtn__white_blackColor" onClick={cancelHandler}>Cancel</button>
@@ -295,13 +299,22 @@ const CandidateRegister = ({ history }) => {
                   value={terms}
                 />
                 <div className="btnContainer">
-                    <button
+                  {terms == "No" ? (<button
+                    onClick={submitHandler}
+                    type="button"
+                    className="mtn__btn mtn__yellow"
+                    disabled
+                  >
+                    Proceed
+                  </button>
+                  ) : (<button
                     onClick={submitHandler}
                     type="button"
                     className="mtn__btn mtn__yellow"
                   >
                     Proceed
-                  </button>
+                  </button>)}
+                    
 
                 </div>
               </div>
