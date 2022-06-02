@@ -36,9 +36,8 @@ const CandidateRegister = ({ history }) => {
   const [constituency,setConstituency] = React.useState("");
   const [constituencies,setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [msg, setMsg] = React.useState(false);
-  const [termsMsg, setTermsMsg] = React.useState(false);
-
+  
+  const [cancelModal,setCancelModal] = React.useState(false);
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
 
@@ -83,6 +82,9 @@ const CandidateRegister = ({ history }) => {
     
       }
   };
+  const cancelButton = () => {
+    setCancelModal(true)
+  }
   const cancelHandler = () =>{
     setDisciplinary("");
     setJobLevel("");
@@ -258,7 +260,7 @@ const CandidateRegister = ({ history }) => {
           
 
           <div className="minimizeBtn">
-            <button className="mtn__btn mtn__white_blackColor" onClick={cancelHandler}>Cancel</button>
+            <button className="mtn__btn mtn__white_blackColor" onClick={cancelButton}>Cancel</button>
             <button
               className="mtn__btn mtn__yellow bg"
               onClick={approveHandler}
@@ -345,6 +347,31 @@ const CandidateRegister = ({ history }) => {
               </div>
             }
             onClose={() => setOpen(false)}
+            footer=""
+          />
+
+<Modal
+            isVisible={cancelModal}
+            title="Are you sure you want to cancel registeration process?"
+            size="md"
+            content={
+              <div className="terms">
+               
+               
+                <div className="btnContainer">
+                  <button
+                    onClick={cancelHandler}
+                    type="button"
+                    className="mtn__btn mtn__yellow"
+                  >
+                    Yes
+                  </button>
+                    
+
+                </div>
+              </div>
+            }
+            onClose={() => setCancelModal(false)}
             footer=""
           />
         </div>
