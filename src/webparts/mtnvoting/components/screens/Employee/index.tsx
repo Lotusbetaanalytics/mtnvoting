@@ -236,7 +236,7 @@ const EmployeeRegistration = ({ history }) => {
               <button
                 type="submit"
                 className={styles.btnSubmit}
-                // onClick={approveHandler}
+              // onClick={approveHandler}
               >
                 Submit
               </button>

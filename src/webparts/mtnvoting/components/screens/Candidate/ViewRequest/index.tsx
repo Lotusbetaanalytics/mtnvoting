@@ -1,10 +1,9 @@
 import * as React from "react";
-import { Text, Header, Spinner, Textarea, Modal } from "../../../containers";
+import { Text, Header, Spinner, Textarea, Modal, CandidateNavigation } from "../../../containers";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
-import CandidateNavigation from "../../../containers/candidateNavigation1";
 import styles from "../Register/styles.module.scss";
 
 const ViewRequest = ({ history }) => {
