@@ -1,34 +1,7 @@
-.header {
-  display: flex;
-  font-size: 20px;
-  color: black;
-  padding: 1rem;
-  margin-bottom: 0.5rem;
-  justify-content: space-between;
-  width: 100%;
-  align-items: center;
-}
-
-.headerText {
-  width: 360px;
-  height: 70px;
-  background: #ffc423;
-  border-radius: 0px 100px 100px 0px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-.headerImage {
-  width: 130px;
-  height: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-.headerImage img {
-  width: 110px;
-  height: 90px;
+.header{
+    display: flex;
+    font-size: 20px;
+    color: black;
+    padding: 1rem;
+    margin-bottom: .5rem;
 }

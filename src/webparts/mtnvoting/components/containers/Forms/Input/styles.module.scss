@@ -3,18 +3,12 @@
     position: relative;
     overflow: hidden;
     display: inline-block;
-    width: 100%;
 }
 
 .uploadBtn {
     border: 1px dotted #BDBDBD;
     color: gray;
     background-color: #FAFAFA;
-}
-.uploadBtn_ {
-    border: 1px dotted #BDBDBD;
-    color: black;
-    background-color: gray;
 }
 
 .uploadWrapper input[type=file] {

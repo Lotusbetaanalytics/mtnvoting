@@ -9,13 +9,13 @@ import {
   Select,
   Radio,
   ImageUpload,
+  CandidateNavigation
 } from "../../../containers";
 import styles from "./styles.module.scss";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
-import CandidateNavigation from "../../../containers/candidateNavigation1";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 
 const CandidateRegister = ({ history }) => {
