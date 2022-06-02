@@ -84,6 +84,16 @@
     background: #C4C4C430;
 
   }
+  .contentsRight__ {
+    flex-grow: 1;
+    padding: 0;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    flex: 0.87;
+    padding: .5rem 2rem;
+   
+  }
   .textContainer{
     display: flex;
     background: white;
@@ -93,6 +103,7 @@
   min-height: 80vh;
   flex-direction: column;
   }
+  
   .textContainerFlex{
     display: flex;
     flex-wrap: wrap;

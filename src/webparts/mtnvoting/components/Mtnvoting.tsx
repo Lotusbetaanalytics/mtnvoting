@@ -5,6 +5,8 @@ import { Route, Switch, HashRouter } from "react-router-dom";
 import * as jQuery from "jquery";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
+
+
 import * as pnp from "sp-pnp-js";
 import {
   AdminApproved,
@@ -27,9 +29,11 @@ import {
   CandidateViewRequest,
   AdminRegion,
   AdminLocation,
+  Voting,
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
+
 
 import {
   SPHttpClient,
@@ -59,7 +63,9 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
         <Switch>
           <Route path="/" exact component={LandingPage} />
           <Route path="/registration" exact component={EmployeeRegistration} />
-          <Route path="/vote" exact component={VotingScreen} />
+
+          <Route path="/vote" exact component={Voting} />
+
           <Route path="/admin" exact component={AdminDashboard} />
           <Route path="/admin/add" exact component={Administrator} />
           <Route path="/admin/region" exact component={AdminRegion} />
@@ -98,3 +104,4 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
     );
   }
 }
+
