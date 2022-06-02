@@ -274,7 +274,7 @@ const CandidateEdit = ({ history }) => {
                 <button
                   className="mtn__btn mtn__yellow bg"
                   onClick={approveHandler}
-                >
+                          Proceed
                   Submit
                 </button>
               </div>
