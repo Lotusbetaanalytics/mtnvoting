@@ -17,9 +17,7 @@ import { sp } from "@pnp/sp";
 import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/CandidateNavigation";
 
-
 const CandidateRegister = ({ history }) => {
-
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [dateEmployed, setDateEmployed] = React.useState("");
@@ -32,11 +30,10 @@ const CandidateRegister = ({ history }) => {
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
-  const [terms, setTerms] = React.useState("")
+  const [terms, setTerms] = React.useState("");
   const [open, setOpen] = React.useState(false);
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
-
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
@@ -48,55 +45,61 @@ const CandidateRegister = ({ history }) => {
     setOpen(true);
   };
   React.useEffect(() => {
-    sp.profiles.myProperties.get()
+    sp.profiles.myProperties
+      .get()
 
       .then((response) => {
-
-        setEmployeeName(response.DisplayName)
-        setEmployeeEmail(response.Email)
-        sp.web.lists.getByTitle(`Region`).items.get().then
-          ((resp) => {
-            setRegions(resp)
-          })
+        setEmployeeName(response.DisplayName);
+        setEmployeeEmail(response.Email);
+        sp.web.lists
+          .getByTitle(`Region`)
+          .items.get()
+          .then((resp) => {
+            setRegions(resp);
+          });
       });
-  }, [])
+  }, []);
 
   const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"))
-    sp.web.lists.getByTitle("Nominees").items.add({
-      EmployeeName: employeeName,
-      EmployeeEmail: employeeEmail,
-      DateEmployed: dateEmployed,
-      JobLevel: jobLevel,
-      Region: region,
-      Location: location,
-      ServedOnTheCouncil: service,
-      DisciplinarySanction: disciplinary,
-      PassportPhotograph: imagePassport,
-      Agenda: agenda
-    }).then((res) => {
-      setOpen(false)
-      swal("Success", "You have Successfully Registered", "success");
-      setTimeout(function () {
-        localStorage.removeItem("dp")
-        history.push(`/candidate`);
-
-      }, 2000);
-    }).catch((e) => {
-      swal("Warning!", "An Error Occured, Try Again!", "error");
-      console.error(e);
-    });
-
-  }
-
+    const imagePassport = JSON.parse(localStorage.getItem("dp"));
+    sp.web.lists
+      .getByTitle("Nominees")
+      .items.add({
+        EmployeeName: employeeName,
+        EmployeeEmail: employeeEmail,
+        DateEmployed: dateEmployed,
+        JobLevel: jobLevel,
+        Region: region,
+        Location: location,
+        ServedOnTheCouncil: service,
+        DisciplinarySanction: disciplinary,
+        PassportPhotograph: imagePassport,
+        Agenda: agenda,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "You have Successfully Registered", "success");
+        setTimeout(function () {
+          localStorage.removeItem("dp");
+          history.push(`/candidate`);
+        }, 2000);
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
 
   const regionHandler = (e) => {
-    setRegion(e.target.value)
-    sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${e.target.value}'`).get().then
-      ((res) => {
-        setLocations(res)
-      })
-  }
+    setRegion(e.target.value);
+    sp.web.lists
+      .getByTitle(`Location`)
+      .items.filter(`Region eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setLocations(res);
+      });
+  };
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
@@ -119,13 +122,11 @@ const CandidateRegister = ({ history }) => {
             readOnly={true}
           />
 
-
           <Input
             title="Date Employed"
             value={dateEmployed}
             onChange={(e) => setDateEmployed(e.target.value)}
             type="date"
-
           />
           <Select
             onChange={(e) => setJobLevel(e.target.value)}
@@ -177,11 +178,9 @@ const CandidateRegister = ({ history }) => {
               };
               reader.onerror = function (error) {
                 console.log("Error: ", error);
-              }
+              };
             }}
-
           />
-
 
           <Textarea
             onChange={(e) => setAgenda(e.target.value)}
@@ -196,6 +195,7 @@ const CandidateRegister = ({ history }) => {
                 <button className="mtn__btn mtn__white_blackColor">
                   Cancel
                 </button>
+
                 <button
                   className="mtn__btn mtn__yellow bg"
                   onClick={approveHandler}
@@ -211,22 +211,50 @@ const CandidateRegister = ({ history }) => {
                   <div className="terms">
                     <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
                     <h5>
-                      ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL ELECTION</h5>
+                      ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
+                      ELECTION
+                    </h5>
                     <p>
-                      Introduction
-                      In line with the provisions of the MTNN Employee Council Constitution, election into the MTNN Employee Council holds once in two (2) years. The last election took place in October 2018 and based on the constitution, the next election is planned to hold in October 2020.
-                      As we prepare for another Employee Council election scheduled to hold in October 30 2020, find below the proposed plan for the forthcoming elections, including general eligibility criteria for contesting elective office etc.
-                      Eligibility Criteria
-                      Candidates that will contest for available seats in each business region / location will be required to meet the following criteria:   </p>
+                      Introduction In line with the provisions of the MTNN
+                      Employee Council Constitution, election into the MTNN
+                      Employee Council holds once in two (2) years. The last
+                      election took place in October 2018 and based on the
+                      constitution, the next election is planned to hold in
+                      October 2020. As we prepare for another Employee Council
+                      election scheduled to hold in October 30 2020, find below
+                      the proposed plan for the forthcoming elections, including
+                      general eligibility criteria for contesting elective
+                      office etc. Eligibility Criteria Candidates that will
+                      contest for available seats in each business region /
+                      location will be required to meet the following criteria:{" "}
+                    </p>
                     <ul>
-                      <li>Only confirmed national staff on job levels 1 & 2 are eligible to contest for seats on the Employee Council.</li>
-                      <li>ALL permanent national employees levels (both confirmed and unconfirmed) on levels 1 & 2 are eligible to vote.</li>
-                      <li>Employees who have an active disciplinary sanction are not eligible to contest.</li>
-                      <li>Incumbent representatives who have served two consecutive terms (i.e. 4 years) are not eligible to contest.</li>
-                      <li>Incumbent representatives who have served only one term (i.e. 2 years) are eligible to contest.</li>
-                      <li>Staff can only contest for allocated seats within their region/location.</li>
+                      <li>
+                        Only confirmed national staff on job levels 1 & 2 are
+                        eligible to contest for seats on the Employee Council.
+                      </li>
+                      <li>
+                        ALL permanent national employees levels (both confirmed
+                        and unconfirmed) on levels 1 & 2 are eligible to vote.
+                      </li>
+                      <li>
+                        Employees who have an active disciplinary sanction are
+                        not eligible to contest.
+                      </li>
+                      <li>
+                        Incumbent representatives who have served two
+                        consecutive terms (i.e. 4 years) are not eligible to
+                        contest.
+                      </li>
+                      <li>
+                        Incumbent representatives who have served only one term
+                        (i.e. 2 years) are eligible to contest.
+                      </li>
+                      <li>
+                        Staff can only contest for allocated seats within their
+                        region/location.
+                      </li>
                     </ul>
-
 
                     <Radio
                       onChange={(e) => setDisciplinary(e.target.value)}
@@ -243,7 +271,6 @@ const CandidateRegister = ({ history }) => {
                         Proceed
                       </button>
                     </div>
-
                   </div>
                 }
                 onClose={() => setOpen(false)}
