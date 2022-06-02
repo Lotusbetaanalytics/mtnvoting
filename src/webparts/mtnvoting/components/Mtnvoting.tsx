@@ -20,7 +20,7 @@ import {
   ErrorScreen,
   AdminViewDeclined,
   AdminConfig,
-  VotingScreen,
+  // VotingScreen,
   LandingPage,
   EmployeeRegistration,
   CandidateDashboard,
@@ -63,9 +63,7 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
         <Switch>
           <Route path="/" exact component={LandingPage} />
           <Route path="/registration" exact component={EmployeeRegistration} />
-
           <Route path="/vote" exact component={Voting} />
-
           <Route path="/admin" exact component={AdminDashboard} />
           <Route path="/admin/add" exact component={Administrator} />
           <Route path="/admin/region" exact component={AdminRegion} />
@@ -104,4 +102,3 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
     );
   }
 }
-

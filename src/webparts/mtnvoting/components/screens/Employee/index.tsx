@@ -26,9 +26,8 @@ const EmployeeRegistration = ({ history }) => {
       .getByTitle(`Constituency`)
       .items.filter(`Region eq '${region}' and Location eq '${location}'`)
       .get()
-      .then((res) => {
-        const maxVoters = res[0].NomineeCount;
-
+      .then((item) => {
+        const maxVoters = item[0].NomineeCount;
         sp.web.lists
           .getByTitle(`Registration`)
           .items.filter(`Region eq '${region}' and Location eq '${location}'`)
@@ -48,6 +47,15 @@ const EmployeeRegistration = ({ history }) => {
                   setLoading(false);
                   swal("Success", "Registration Successful", "success");
                   history.push("/vote");
+                })
+                .catch((err) => {
+                  setLoading(false);
+                  swal(
+                    "Error",
+                    "An error occurred while registering! Try again",
+                    "error"
+                  );
+                  console.log(err);
                 });
             } else {
               setLoading(false);
@@ -72,10 +80,12 @@ const EmployeeRegistration = ({ history }) => {
     setRegion("");
     setLocation("");
     setConstituency("");
+    setOpen(false);
   };
 
   const prevHandler = () => {
     history.push("/registration");
+    setOpen(false);
   };
 
   React.useEffect(() => {
@@ -204,10 +214,15 @@ const EmployeeRegistration = ({ history }) => {
                 size="md"
                 content={
                   <div className={styles.modal__Btn}>
-                    <button className={styles.btnCancel1} onClick={prevHandler}>
+                    <button
+                      type="button"
+                      className={styles.btnCancel1}
+                      onClick={prevHandler}
+                    >
                       No
                     </button>
                     <button
+                      type="button"
                       className={styles.btnCancel2}
                       onClick={cancelHandler}
                     >

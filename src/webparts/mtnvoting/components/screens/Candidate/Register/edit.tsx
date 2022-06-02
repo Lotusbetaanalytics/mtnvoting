@@ -9,7 +9,7 @@ import {
   Select,
   Radio,
   ImageUpload,
-  CandidateNavigation
+  CandidateNavigation,
 } from "../../../containers";
 import styles from "./styles.module.scss";
 import "@pnp/sp/webs";
@@ -38,11 +38,10 @@ const CandidateEdit = ({ history }) => {
   const [passport, setPassport] = React.useState("");
   const [terms, setTerms] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
-  const [constituency,setConstituency] = React.useState("");
-  const [constituencies,setConstituencies] = React.useState([]);
+  const [constituency, setConstituency] = React.useState("");
+  const [constituencies, setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
-  
 
   React.useEffect(() => {
     setLoading(true);
@@ -57,33 +56,30 @@ const CandidateEdit = ({ history }) => {
           .then((res) => {
             setData(res[0]);
             setLoading(false);
-            setEmployeeName(res[0].EmployeeName)
-            setEmployeeEmail(res[0].EmployeeEmail)
-            setDateEmployed(res[0].DateEmployed)
-            setJobLevel(res[0].JobLevel)
-            setRegion(res[0].Region)
-            setLocation(res[0].Location)
-            setService(res[0].ServedOnTheCouncil)
-            setDisciplinary(res[0].DisciplinarySanction)
-            setPassport(res[0].PassportPhotograph)
-            setAgenda(res[0].Agenda)
-            setConstituency(res[0].Constituency)
-            setId(res[0].id)
+            setEmployeeName(res[0].EmployeeName);
+            setEmployeeEmail(res[0].EmployeeEmail);
+            setDateEmployed(res[0].DateEmployed);
+            setJobLevel(res[0].JobLevel);
+            setRegion(res[0].Region);
+            setLocation(res[0].Location);
+            setService(res[0].ServedOnTheCouncil);
+            setDisciplinary(res[0].DisciplinarySanction);
+            setPassport(res[0].PassportPhotograph);
+            setAgenda(res[0].Agenda);
+            setConstituency(res[0].Constituency);
+            setId(res[0].id);
             console.log(res[0]);
-
           });
       });
-    sp.web.lists.getByTitle(`Region`).items.get().then
-      ((resp) => {
-        setRegions(resp)
-      })
-
+    sp.web.lists
+      .getByTitle(`Region`)
+      .items.get()
+      .then((resp) => {
+        setRegions(resp);
+      });
   }, []);
 
-
-
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
-
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
@@ -94,22 +90,25 @@ const CandidateEdit = ({ history }) => {
   const approveHandler = () => {
     setOpen(true);
   };
-  
+
   const submitHandler = () => {
     const imagePassport = JSON.parse(localStorage.getItem("dp"));
-    sp.web.lists.getByTitle("Nominees").items.getById(id).update({
-      EmployeeName: employeeName,
-      EmployeeEmail: employeeEmail,
-      DateEmployed: dateEmployed,
-      JobLevel: jobLevel,
-      Region: region,
-      Location: location,
-      ServedOnTheCouncil: service,
-      DisciplinarySanction: disciplinary,
-      PassportPhotograph: imagePassport,
-      Agenda: agenda,
-      Constituency:constituency
-    })
+    sp.web.lists
+      .getByTitle("Nominees")
+      .items.getById(id)
+      .update({
+        EmployeeName: employeeName,
+        EmployeeEmail: employeeEmail,
+        DateEmployed: dateEmployed,
+        JobLevel: jobLevel,
+        Region: region,
+        Location: location,
+        ServedOnTheCouncil: service,
+        DisciplinarySanction: disciplinary,
+        PassportPhotograph: imagePassport,
+        Agenda: agenda,
+        Constituency: constituency,
+      })
       .then((res) => {
         setOpen(false);
         swal("Success", "You have Successfully Registered", "success");
@@ -125,22 +124,26 @@ const CandidateEdit = ({ history }) => {
   };
 
   const regionHandler = (e) => {
-    setRegion(e.target.value)
-    sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${e.target.value}'`).get().then
-      ((res) => {
-        setLocations(res)
-      })
-     
-      const locationHandler = (e) => {
-        setLocation(e.target.value);
-        sp.web.lists
-          .getByTitle(`Constituency`)
-          .items.filter(`Location eq '${e.target.value}'`)
-          .get()
-          .then((res) => {
-            setConstituencies(res);
-          });
-        }}
+    setRegion(e.target.value);
+    sp.web.lists
+      .getByTitle(`Location`)
+      .items.filter(`Region eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setLocations(res);
+      });
+
+    const locationHandler = (e) => {
+      setLocation(e.target.value);
+      sp.web.lists
+        .getByTitle(`Constituency`)
+        .items.filter(`Location eq '${e.target.value}'`)
+        .get()
+        .then((res) => {
+          setConstituencies(res);
+        });
+    };
+  };
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
@@ -186,8 +189,6 @@ const CandidateEdit = ({ history }) => {
             />
           </div>
 
-
-
           <div className={styles.inputContainer}>
             {/* <p>Region</p> */}
             <Select
@@ -210,16 +211,16 @@ const CandidateEdit = ({ history }) => {
               filter={true}
               filterOption="Title"
             />
-             <Select
-          value={constituency}
-          onChange={(e) => setConstituency(e.target.value)}
-          required={false}
-          title="Constituency"
-          options={constituencies}
-          filter={true}
-          filterOption="Title"
-          size={"mtn__child"}
-          />
+            <Select
+              value={constituency}
+              onChange={(e) => setConstituency(e.target.value)}
+              required={false}
+              title="Constituency"
+              options={constituencies}
+              filter={true}
+              filterOption="Title"
+              size={"mtn__child"}
+            />
           </div>
           <div className={styles.inputContainer}>
             <Radio
@@ -251,7 +252,6 @@ const CandidateEdit = ({ history }) => {
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
                 };
-
               }}
             />
           </div>
@@ -290,45 +290,47 @@ const CandidateEdit = ({ history }) => {
                       ELECTION
                     </h5>
                     <p>
-                      Introduction In line with the provisions of the MTNN Employee
-                      Council Constitution, election into the MTNN Employee Council
-                      holds once in two (2) years. The last election took place in
-                      October 2018 and based on the constitution, the next election is
-                      planned to hold in October 2020. As we prepare for another
-                      Employee Council election scheduled to hold in October 30 2020,
-                      find below the proposed plan for the forthcoming elections,
-                      including general eligibility criteria for contesting elective
-                      office etc. Eligibility Criteria Candidates that will contest
-                      for available seats in each business region / location will be
-                      required to meet the following criteria:{" "}
+                      Introduction In line with the provisions of the MTNN
+                      Employee Council Constitution, election into the MTNN
+                      Employee Council holds once in two (2) years. The last
+                      election took place in October 2018 and based on the
+                      constitution, the next election is planned to hold in
+                      October 2020. As we prepare for another Employee Council
+                      election scheduled to hold in October 30 2020, find below
+                      the proposed plan for the forthcoming elections, including
+                      general eligibility criteria for contesting elective
+                      office etc. Eligibility Criteria Candidates that will
+                      contest for available seats in each business region /
+                      location will be required to meet the following criteria:{" "}
                     </p>
                     <ul>
                       <li>
-                        Only confirmed national staff on job levels 1 & 2 are eligible
-                        to contest for seats on the Employee Council.
+                        Only confirmed national staff on job levels 1 & 2 are
+                        eligible to contest for seats on the Employee Council.
                       </li>
                       <li>
-                        ALL permanent national employees levels (both confirmed and
-                        unconfirmed) on levels 1 & 2 are eligible to vote.
+                        ALL permanent national employees levels (both confirmed
+                        and unconfirmed) on levels 1 & 2 are eligible to vote.
                       </li>
                       <li>
-                        Employees who have an active disciplinary sanction are not
-                        eligible to contest.
+                        Employees who have an active disciplinary sanction are
+                        not eligible to contest.
                       </li>
                       <li>
-                        Incumbent representatives who have served two consecutive
-                        terms (i.e. 4 years) are not eligible to contest.
+                        Incumbent representatives who have served two
+                        consecutive terms (i.e. 4 years) are not eligible to
+                        contest.
                       </li>
                       <li>
-                        Incumbent representatives who have served only one term (i.e.
-                        2 years) are eligible to contest.
+                        Incumbent representatives who have served only one term
+                        (i.e. 2 years) are eligible to contest.
                       </li>
                       <li>
                         Staff can only contest for allocated seats within their
                         region/location.
                       </li>
                     </ul>
-      
+
                     <Radio
                       onChange={(e) => setDisciplinary(e.target.value)}
                       title="I have read and agreed on the terms and conditions"
@@ -336,23 +338,23 @@ const CandidateEdit = ({ history }) => {
                       value={terms}
                     />
                     <div className="btnContainer">
-                      {terms == "No" ? (<button
-                        onClick={submitHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                        disabled
-                      >
-                        Proceed
-                      </button>
-                      ) : (<button
-                        onClick={submitHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                      >
-                        Proceed
-                      </button>)}
-                        
-    
+                      {terms == "No" ? (
+                        <button
+                          type="button"
+                          className="mtn__btn mtn__yellow"
+                          disabled
+                        >
+                          Proceed
+                        </button>
+                      ) : (
+                        <button
+                          onClick={submitHandler}
+                          type="button"
+                          className="mtn__btn mtn__yellow"
+                        >
+                          Proceed
+                        </button>
+                      )}
                     </div>
                   </div>
                 }

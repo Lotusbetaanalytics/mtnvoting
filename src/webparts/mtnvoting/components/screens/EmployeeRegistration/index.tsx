@@ -36,7 +36,7 @@ const EmployeeRegistration = ({ history }) => {
       });
     setInterval(() => {
       history.push("/user/landingpage");
-    }, 2000);
+    }, 1000);
   };
 
   // const approveHandler = () => {

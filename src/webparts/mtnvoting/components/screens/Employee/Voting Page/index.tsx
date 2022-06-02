@@ -29,9 +29,7 @@ const Voting = () => {
       .items.filter(`Status eq 'Approved'`)
       .get()
       .then((res) => {
-        console.log(res);
-        setNominees(res);
-        // setNominees(res.filter((item) => item.Region === region));
+        setNominees(res.filter((item) => item.Region === region));
         setLoading(false);
       });
   }, [region]);
@@ -107,10 +105,12 @@ const Voting = () => {
             .items.add({
               EmployeeID: String(userID),
               Nominee: String(id),
+              Title: Math.random(),
             })
             .then(() => {
               setSubmitting(false);
               swal("Success", "Voted Successfully", "success");
+              setOpen(false);
               sp.web.lists
                 .getByTitle(`Nominees`)
                 .items.get()
