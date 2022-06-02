@@ -17,3 +17,4 @@ export { default as MenuBar } from "./MenuBar";
 export { default as Helpers } from "./Helpers";
 export { default as NomineeCard } from "./NomineeCard";
 export {default as Card2} from "./Card/card2";
+

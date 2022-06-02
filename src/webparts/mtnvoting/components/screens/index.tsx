@@ -12,9 +12,10 @@ export { default as AdminRevoked } from "./Admin/Revoked";
 export { default as AdminConfig } from "./Admin/Config";
 export { default as LandingPage } from "./Home";
 export { default as EmployeeRegistration } from "./Employee";
-// export { default as VotingScreen } from "./Employee/Voting";
-export { default as CandidateDashboard } from "./Candidate/Dashboard";
-export { default as CandidateRegister } from "./Candidate/Register"
-export { default as CandidateEdit } from "./Candidate/Register"
-export { default as CandidateViewRequest } from "./Candidate/ViewRequest"
+export { default as VotingScreen } from "./Employee/Voting";
+export { default as Voting } from "./Employee/Voting Page";
+export { default as CandidateDashboard } from "./Candidate/Dashboard/";
+export { default as CandidateRegister } from "./Candidate/Register";
+export { default as CandidateEdit } from "./Candidate/Register/Edit";
+export { default as CandidateViewRequest } from "./Candidate/ViewRequest";
 export { default as ErrorScreen } from "./Error";
