@@ -18,7 +18,6 @@ import swal from "sweetalert";
 import CandidateNavigation from "../../../containers/candidateNavigation1";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 
-
 const CandidateRegister = ({ history }) => {
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -35,13 +34,11 @@ const CandidateRegister = ({ history }) => {
   const [terms, setTerms] = React.useState("");
   const [constituency,setConstituency] = React.useState("");
   const [constituencies,setConstituencies] = React.useState([]);
+
   const [open, setOpen] = React.useState(false);
   
   const [cancelModal,setCancelModal] = React.useState(false);
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
-
-
-  
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
   const termsData = [{ value: "Yes" }, { value: "No" }];
@@ -56,7 +53,6 @@ const CandidateRegister = ({ history }) => {
       .then((response) => {
         setEmployeeName(response.DisplayName);
         setEmployeeEmail(response.Email);
-
         sp.web.lists
               .getByTitle(`Region`)
               .items.get()
@@ -248,10 +244,12 @@ const CandidateRegister = ({ history }) => {
               };
             }}
           />
+
           <div className={styles.imageContainer}>
                <img src={imagePassport} alt={employeeName} />
           </div>
          
+
           <Textarea
             onChange={(e) => setAgenda(e.target.value)}
             title="State your five point agenda"
@@ -259,6 +257,11 @@ const CandidateRegister = ({ history }) => {
           />
           
 
+
+         
+          <div className={styles.inputContainer}>
+            <div className="radioContainer">
+           
           <div className="minimizeBtn">
             <button className="mtn__btn mtn__white_blackColor" onClick={cancelButton}>Cancel</button>
             <button
@@ -374,6 +377,7 @@ const CandidateRegister = ({ history }) => {
             onClose={() => setCancelModal(false)}
             footer=""
           />
+
         </div>
       </div>
     </div>

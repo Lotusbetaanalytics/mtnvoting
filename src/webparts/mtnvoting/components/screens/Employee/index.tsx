@@ -7,25 +7,33 @@ import styles from "./styles.module.scss";
 const EmployeeRegistration = ({ history }) => {
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
-  const [region, setRegion] = React.useState();
+  const [region, setRegion] = React.useState("");
   const [regions, setRegions] = React.useState([]);
   const [locations, setLocations] = React.useState([]);
+  // const [title, setTitle] = React.useState("");
+  const [constituency, setConstituency] = React.useState("");
+  const [constituencies, setConstituencies] = React.useState([]);
   const [location, setLocation] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [cancel, setCancel] = React.useState(false);
-  // const [open, setOpen] = React.useState(false);
+  // const [cancel, setCancel] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const submitHandler = (e) => {
     setLoading(true);
     e.preventDefault();
 
-    sp.web.lists.getByTitle(`Constituency`).items.filter(`Region eq '${region}' and Location eq '${location}'`).get().then
-      ((res) => {
-        const maxVoters = res[0].NomineeCount
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Region eq '${region}' and Location eq '${location}'`)
+      .get()
+      .then((res) => {
+        const maxVoters = res[0].NomineeCount;
 
-        sp.web.lists.getByTitle(`Registration`).items.filter(`Region eq '${region}' and Location eq '${location}'`).get().then
-          ((res) => {
-
+        sp.web.lists
+          .getByTitle(`Registration`)
+          .items.filter(`Region eq '${region}' and Location eq '${location}'`)
+          .get()
+          .then((res) => {
             if (res.length <= maxVoters) {
               sp.web.lists
                 .getByTitle("Registration")
@@ -34,6 +42,7 @@ const EmployeeRegistration = ({ history }) => {
                   EmployeeEmail: employeeEmail,
                   Region: region,
                   Location: location,
+                  Constituency: constituency,
                 })
                 .then((res) => {
                   setLoading(false);
@@ -44,56 +53,77 @@ const EmployeeRegistration = ({ history }) => {
               setLoading(false);
               swal("Warning!", "Max Voters Reached", "error");
             }
-
-          })
-
-      })
-
-
-
-
-
+          });
+      });
   };
 
   // const approveHandler = () => {
   //   setOpen(true);
   // };
 
-  const cancelHandler = () => {
-    setCancel(cancel);
-    history.push("/");
+  const modalHandler = () => {
+    setOpen(true);
   };
 
+  const cancelHandler = (e) => {
+    e.preventDefault();
+    setEmployeeName("");
+    setEmployeeEmail("");
+    setRegion("");
+    setLocation("");
+    setConstituency("");
+  };
+
+  const prevHandler = () => {
+    history.push("/registration");
+  };
 
   React.useEffect(() => {
-    sp.profiles.myProperties.get()
-      .then((response) => {
-        setEmployeeName(response.DisplayName)
-        setEmployeeEmail(response.Email)
-        sp.web.lists.getByTitle(`Region`).items.get().then
-          ((resp) => {
-            setRegions(resp)
-          })
-        sp.web.lists.getByTitle(`Registration`).items.filter(`EmployeeEmail eq '${response.Email}'`).get().then
-          ((res) => {
-            if (res.length > 0) {
-              history.push("/vote")
-            }
-          })
-      });
-  }, [history])
-
+    sp.profiles.myProperties.get().then((response) => {
+      setEmployeeName(response.DisplayName);
+      setEmployeeEmail(response.Email);
+      sp.web.lists
+        .getByTitle(`Region`)
+        .items.get()
+        .then((resp) => {
+          setRegions(resp);
+        });
+      sp.web.lists
+        .getByTitle(`Registration`)
+        .items.filter(`EmployeeEmail eq '${response.Email}'`)
+        .get()
+        .then((res) => {
+          if (res.length > 0) {
+            // history.push("/vote")
+          }
+        });
+    });
+  }, [history]);
 
   const regionHandler = (e) => {
-    setRegion(e.target.value)
-    sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${e.target.value}'`).get().then
-      ((res) => {
-        setLocations(res)
-      })
+    setRegion(e.target.value);
+    sp.web.lists
+      .getByTitle(`Location`)
+      .items.filter(`Region eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setLocations(res);
+      });
+  };
 
-  }
+  const locationHandler = (e) => {
+    setLocation(e.target.value);
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Location eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setConstituencies(res);
+      });
+  };
+
   return (
-    <div>
+    <div className={styles.employee__Container}>
       <div className={styles.employee__Header}>
         <div className={styles.employee__Title}>
           <h1>Pre Voting Form</h1>
@@ -126,10 +156,11 @@ const EmployeeRegistration = ({ history }) => {
                 readOnly={false}
                 size="mtn_child"
               />
+
               <Select
                 value={region}
                 onChange={regionHandler}
-                required={false}
+                required={true}
                 title="Region"
                 options={regions}
                 size="mtn_child"
@@ -139,10 +170,21 @@ const EmployeeRegistration = ({ history }) => {
 
               <Select
                 value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                required={false}
+                onChange={locationHandler}
+                required={true}
                 title="Location"
                 options={locations}
+                size="mtn_child"
+                filter={true}
+                filterOption="Title"
+              />
+
+              <Select
+                value={constituency}
+                onChange={(e) => setConstituency(e.target.value)}
+                required={true}
+                title="Constituency"
+                options={constituencies}
                 size="mtn_child"
                 filter={true}
                 filterOption="Title"
@@ -152,14 +194,34 @@ const EmployeeRegistration = ({ history }) => {
               <button
                 type="button"
                 className={styles.btnCancel}
-                onClick={cancelHandler}
+                onClick={modalHandler}
               >
                 Cancel
               </button>
+              <Modal
+                isVisible={open}
+                title="Are you sure you want to Cancel"
+                size="md"
+                content={
+                  <div className={styles.modal__Btn}>
+                    <button className={styles.btnCancel1} onClick={prevHandler}>
+                      No
+                    </button>
+                    <button
+                      className={styles.btnCancel2}
+                      onClick={cancelHandler}
+                    >
+                      Yes
+                    </button>
+                  </div>
+                }
+                onClose={() => setOpen(false)}
+                footer=""
+              />
               <button
                 type="submit"
                 className={styles.btnSubmit}
-              // onClick={approveHandler}
+                // onClick={approveHandler}
               >
                 Submit
               </button>
