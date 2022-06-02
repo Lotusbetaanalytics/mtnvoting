@@ -2,17 +2,7 @@ import * as React from 'react'
 import { AdminNavigation, Card, Header } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
-import "@pnp/sp/sites";
-import { IMtnvotingProps } from '../../../IMtnvotingProps';
-import { useHistory } from 'react-router-dom'
-
-import { SPHttpClient, SPHttpClientConfiguration, SPHttpClientResponse } from '@microsoft/sp-http';
-
-const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) => {
-
-    console.log(context)
-
-    const history = useHistory()
+const AdminRevoked = ({ history }) => {
     type IType =
         | "string"
         | "boolean"
@@ -39,25 +29,16 @@ const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) 
     const [data, setData] = React.useState([])
 
     React.useEffect(() => {
-        sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Declined'`).get().then
+        sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Revoked'`).get().then
             ((res) => {
                 setData(res)
             })
-
-        // context.spHttpClient.get(`https://lotusbetaanalytics.sharepoint.com/sites/business_solutions/_api/lists/GetByTitle('CURRENT HCM STAFF LIST-test')/items`,
-        //     SPHttpClient.configurations.v1)
-        //     .then((response: SPHttpClientResponse) => {
-        //         response.json().then((responseJSON: any) => {
-        //             console.log(responseJSON);
-        //         });
-        //     });
-
     }, [])
     return (
         <div className='appContainer'>
-            <AdminNavigation declined={`active`} />
+            <AdminNavigation revoked={`active`} />
             <div className='contentsRight'>
-                <Header title='Declined Request' />
+                <Header title='Revoked Request' />
                 <MaterialTable
                     title=""
                     columns={columns}
@@ -90,7 +71,7 @@ const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) 
                             tooltip: "View",
 
                             onClick: (event, rowData) => {
-                                history.push(`/admin/declined/${rowData.ID}`)
+                                history.push(`/admin/revoked/${rowData.ID}`)
                             },
                         },
                     ]}
@@ -110,4 +91,4 @@ const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) 
     )
 }
 
-export default AdminDeclined
+export default AdminRevoked
