@@ -19,6 +19,9 @@ const Voting = () => {
   const [region, setRegion] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
   const [isRegistered, setIsRegistered] = React.useState(false);
+  const [test, setTest] = React.useState([]);
+  const [index, setIndex] = React.useState(null);
+  const [name, setName] = React.useState("");
 
   const history = useHistory();
 
@@ -31,6 +34,7 @@ const Voting = () => {
       .get()
       .then((res) => {
         setNominees(res.filter((item) => item.Region === region));
+
         setLoading(false);
       });
   }, [region]);
@@ -68,22 +72,22 @@ const Voting = () => {
                 });
               }
             });
-          // if (JSON.parse(items[0].Voted)) {
-          //   swal({
-          //     closeOnClickOutside: false,
-          //     closeOnEsc: false,
-          //     text: "You have voted already!",
-          //   }).then(() => {
-          //     history.push("/");
-          //   });
-          // }
         });
     });
   }, []);
 
-  const votedNominee = (id) => {
+  React.useEffect(() => {
+    //create a value for each item in the list
+    for (let i = 0; i < nominees.length; i++) {
+      test.push({ [i]: "", checked: false, disabled: false });
+    }
+  }, [nominees]);
+
+  const votedNominee = (id, index, name) => {
     setId(id);
     setOpen(true);
+    setIndex(index);
+    setName(name);
   };
 
   //Find a nominee with their id
@@ -112,7 +116,7 @@ const Voting = () => {
             .items.add({
               EmployeeID: String(userID),
               Nominee: String(id),
-              Title: Math.random(),
+              // Title: Math.random(),
             })
             .then(() => {
               setSubmitting(false);
@@ -120,8 +124,15 @@ const Voting = () => {
               setOpen(false);
               sp.web.lists
                 .getByTitle(`Nominees`)
-                .items.get()
+                .items.filter(`Status eq 'Approved'`)
+                .get()
                 .then((res) => {
+                  test[index].checked = true;
+                  test
+                    .filter((item, ind) => ind !== index)
+                    .map((item) => {
+                      return (item.disabled = true);
+                    });
                   setNominees(res);
                 });
               sp.web.lists
@@ -151,7 +162,10 @@ const Voting = () => {
   const votePermissions = () => {
     return (
       <div className={styles.modalContent}>
-        <span>Are you sure you want to vote for this candidate?</span>
+        <span>
+          Are you sure you want to vote for <br />
+          <strong>{name}</strong>?
+        </span>
         <div className={styles.modalContentButton}>
           <button disabled={submitting} onClick={noHandler}>
             No
@@ -195,16 +209,21 @@ const Voting = () => {
                   pagination={false}
                   className={styles.carousel}
                 >
-                  {nominees.map((nominee) => {
+                  {nominees.map((nominee, index) => {
                     return (
                       <>
                         <NomineeCard
-                          checked={checked}
+                          checked={test[index]["checked"]}
                           image={nominee.PassportPhotograph}
                           name={nominee.EmployeeName}
                           lastName={nominee.lastName}
+                          disabled={test[index]["disabled"]}
                           onClick={() => {
-                            votedNominee(nominee.ID);
+                            votedNominee(
+                              nominee.ID,
+                              index,
+                              nominee.EmployeeName
+                            );
                           }}
                         />
                       </>

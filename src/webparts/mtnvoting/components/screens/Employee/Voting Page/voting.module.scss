@@ -58,6 +58,7 @@
   font-weight: 700;
   font-size: 12px;
   line-height: 13px;
+  text-align: center;
 }
 .modalContentButton {
   display: flex;
@@ -70,7 +71,7 @@
   gap: 20px;
 }
 .modalContentButton button {
-  width: 50px;
+  width: 150px;
   height: 31px;
   background: #c4c4c4;
   border-radius: 10px;
