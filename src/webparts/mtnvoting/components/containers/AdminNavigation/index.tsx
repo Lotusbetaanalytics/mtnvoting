@@ -2,7 +2,7 @@ import * as React from 'react'
 import styles from './styles.module.scss'
 import { Link } from 'react-router-dom'
 import { AiOutlineAppstore, AiOutlineAliwangwang, AiOutlineBook, AiOutlineUsergroupAdd, AiFillSignal, AiOutlineLogout, AiOutlineDisconnect } from 'react-icons/ai'
-const AdminNavigation = ({ dashboard = "", pending = "", approved = "", declined = "", config = "", report = "" }) => {
+const AdminNavigation = ({ dashboard = "", pending = "", approved = "", declined = "", config = "", report = "", revoked = "" }) => {
     return (
         <div className={styles.mtn__navigation}>
             <div className={styles.mtn__logo}>
@@ -15,7 +15,8 @@ const AdminNavigation = ({ dashboard = "", pending = "", approved = "", declined
                     <li className={styles[pending]}><Link to={`/admin/pending`}><AiOutlineAliwangwang />Pending</Link></li>
                     <li className={styles[approved]}><Link to={`/admin/approved`}><AiOutlineBook />Approved</Link></li>
                     <li className={styles[declined]}><Link to={`/admin/declined`}><AiOutlineDisconnect />Declined</Link></li>
-                    <li className={styles[config]}><Link to={`/admin/config`}><AiOutlineUsergroupAdd />Configuration</Link></li>
+                    <li className={styles[revoked]}><Link to={`/admin/revoked`}><AiOutlineDisconnect />Revoked</Link></li>
+                    <li className={styles[config]}><Link to={`/admin/add`}><AiOutlineUsergroupAdd />Configuration</Link></li>
                     <li className={styles[report]}><Link to={`/admin/reports`}><AiFillSignal />Reports</Link></li>
                     <li><Link to={`/`}><AiOutlineLogout />Logout</Link></li>
                 </ul>

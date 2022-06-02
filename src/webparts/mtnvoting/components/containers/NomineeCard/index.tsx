@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./nomineecard.scss";
 
-const index = ({ checked, image, name, lastName, onClick }) => {
+const NomineeCard = ({ checked, image, name, lastName, onClick }) => {
   const voteNow = () => {
     onClick();
   };
@@ -32,4 +32,4 @@ const index = ({ checked, image, name, lastName, onClick }) => {
   );
 };
 
-export default index;
+export default NomineeCard;
