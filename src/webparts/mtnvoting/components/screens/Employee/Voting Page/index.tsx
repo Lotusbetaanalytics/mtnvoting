@@ -2,32 +2,28 @@ import * as React from "react";
 import { Header, Modal, NomineeCard } from "../../../containers";
 import { sp } from "@pnp/sp";
 import styles from "./voting.module.scss";
-import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import Carousel from "react-elastic-carousel";
-import {
-  SPHttpClient,
-  SPHttpClientConfiguration,
-  SPHttpClientResponse,
-} from "@microsoft/sp-http";
-import { Context } from "../../../Mtnvoting";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 
-const index = () => {
+const Voting = () => {
   const [nominees, setNominees] = React.useState([]);
   const [checked, setChecked] = React.useState(false);
   const [indexFrom, setIndexFrom] = React.useState(0);
   const [indexTo, setIndexTo] = React.useState(4);
-  const { spHttpClient } = React.useContext(Context);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState();
   const [userEmail, setUserEmail] = React.useState();
   const [userID, setUserID] = React.useState();
+  const [loading, setLoading] = React.useState(false);
+  const [region, setRegion] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
 
   const history = useHistory();
 
   //Get all Nominees
   React.useEffect(() => {
+    setLoading(true);
     sp.web.lists
       .getByTitle(`Nominees`)
       .items.filter(`Status eq 'Approved'`)
@@ -35,8 +31,10 @@ const index = () => {
       .then((res) => {
         console.log(res);
         setNominees(res);
+        // setNominees(res.filter((item) => item.Region === region));
+        setLoading(false);
       });
-  }, []);
+  }, [region]);
 
   //find the logged in user and check if the user already voted
   React.useEffect(() => {
@@ -48,15 +46,32 @@ const index = () => {
         .get()
         .then((items) => {
           setUserID(items[0].ID);
-          if (items[0].Voted) {
-            swal({
-              closeOnClickOutside: false,
-              closeOnEsc: false,
-              text: "You have voted already!",
-            }).then(() => {
-              history.push("/");
+          setRegion(items[0].Region);
+          console.log(items[0].ID);
+          sp.web.lists
+            .getByTitle(`Votes`)
+            .items.filter(`EmployeeID eq '${items[0].ID}' `)
+            .get()
+            .then((data) => {
+              if (data.length > 0) {
+                swal({
+                  closeOnClickOutside: false,
+                  closeOnEsc: false,
+                  text: "You have voted already!",
+                }).then(() => {
+                  history.push("/");
+                });
+              }
             });
-          }
+          // if (JSON.parse(items[0].Voted)) {
+          //   swal({
+          //     closeOnClickOutside: false,
+          //     closeOnEsc: false,
+          //     text: "You have voted already!",
+          //   }).then(() => {
+          //     history.push("/");
+          //   });
+          // }
         });
     });
   }, []);
@@ -72,31 +87,53 @@ const index = () => {
   };
 
   const yesHandler = () => {
+    setSubmitting(true);
     sp.web.lists
       .getByTitle(`Votes`)
-      .items.add({
-        EmployeeID: userID,
-        Nominee: id,
-      })
-      .then(() => {
-        sp.web.lists
-          .getByTitle(`Nominees`)
-          .items.get()
-          .then((res) => {
-            setNominees(res);
+      .items.filter(`EmployeeID eq '${userID}' `)
+      .get()
+      .then((items) => {
+        if (items.length > 0) {
+          swal({
+            closeOnClickOutside: false,
+            closeOnEsc: false,
+            text: "You have voted already!",
+          }).then(() => {
+            history.push("/");
           });
-
-        sp.web.lists
-          .getByTitle(`Registration`)
-          .items.getById(userID)
-          .update({
-            Voted: true,
-          })
-          .then(() => {
-            setTimeout(() => {
-              setOpen(false);
-            }, 1000);
-          });
+        } else {
+          sp.web.lists
+            .getByTitle(`Votes`)
+            .items.add({
+              EmployeeID: String(userID),
+              Nominee: String(id),
+            })
+            .then(() => {
+              setSubmitting(false);
+              swal("Success", "Voted Successfully", "success");
+              sp.web.lists
+                .getByTitle(`Nominees`)
+                .items.get()
+                .then((res) => {
+                  setNominees(res);
+                });
+              sp.web.lists
+                .getByTitle(`Registration`)
+                .items.getById(userID)
+                .update({
+                  Voted: JSON.stringify(true),
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    setOpen(false);
+                  }, 1000);
+                });
+            })
+            .catch((err) => {
+              console.log(err);
+              setSubmitting(false);
+            });
+        }
       });
   };
 
@@ -109,8 +146,14 @@ const index = () => {
       <div className={styles.modalContent}>
         <span>Are you sure you want to vote for this candidate?</span>
         <div className={styles.modalContentButton}>
-          <button onClick={noHandler}>No</button>
-          <button onClick={yesHandler}>Yes</button>
+          <button disabled={submitting} onClick={noHandler}>
+            No
+          </button>
+          {submitting ? (
+            <button disabled>Adding...</button>
+          ) : (
+            <button onClick={yesHandler}>Yes</button>
+          )}
         </div>
       </div>
     );
@@ -132,29 +175,37 @@ const index = () => {
       <Header title="Nominees" />
 
       <div className={styles.nomineeContainerScreen}>
-        <Carousel
-          breakPoints={breakPoints}
-          isRTL={false}
-          initialActiveIndex={0}
-          pagination={false}
-          className={styles.carousel}
-        >
-          {nominees.map((nominee) => {
-            return (
-              <>
-                <NomineeCard
-                  checked={checked}
-                  image={nominee.PassportPhotograph}
-                  name={nominee.EmployeeName}
-                  lastName={nominee.lastName}
-                  onClick={() => {
-                    votedNominee(nominee.ID);
-                  }}
-                />
-              </>
-            );
-          })}
-        </Carousel>
+        {nominees.length > 0 ? (
+          loading ? (
+            <div>Loading...</div>
+          ) : (
+            <Carousel
+              breakPoints={breakPoints}
+              isRTL={false}
+              initialActiveIndex={0}
+              pagination={false}
+              className={styles.carousel}
+            >
+              {nominees.map((nominee) => {
+                return (
+                  <>
+                    <NomineeCard
+                      checked={checked}
+                      image={nominee.PassportPhotograph}
+                      name={nominee.EmployeeName}
+                      lastName={nominee.lastName}
+                      onClick={() => {
+                        votedNominee(nominee.ID);
+                      }}
+                    />
+                  </>
+                );
+              })}
+            </Carousel>
+          )
+        ) : (
+          <div>No Nominees yet!</div>
+        )}
       </div>
 
       <Modal
@@ -167,4 +218,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Voting;
