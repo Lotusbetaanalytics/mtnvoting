@@ -23,8 +23,6 @@ const CandidateEdit = ({ history }) => {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState({} as any);
 
-  console.log(data.EmployeeName);
-
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
   const [dateEmployed, setDateEmployed] = React.useState("");
@@ -54,6 +52,7 @@ const CandidateEdit = ({ history }) => {
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((res) => {
+            console.log(res)
             setData(res[0]);
             setLoading(false);
             setEmployeeName(res[0].EmployeeName);
@@ -131,66 +130,55 @@ const CandidateEdit = ({ history }) => {
       .get()
       .then((res) => {
         setLocations(res);
-      });
+      })};
 
-    const locationHandler = (e) => {
-      setLocation(e.target.value);
-      sp.web.lists
-        .getByTitle(`Constituency`)
-        .items.filter(`Location eq '${e.target.value}'`)
-        .get()
-        .then((res) => {
-          setConstituencies(res);
-        });
-    };
-  };
+      const locationHandler = (e) => {
+        setLocation(e.target.value);
+        sp.web.lists
+          .getByTitle(`Constituency`)
+          .items.filter(`Location eq '${e.target.value}'`)
+          .get()
+          .then((res) => {
+            setConstituencies(res);
+            console.log(constituencies)
+          })};
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
-      <div className="contentsRight_">
-        <Header title="Registration" />
-        <div className={styles.formContainer}>
-          <div className={styles.inputContainer}>
-            <p>Employee Name</p>
+      <div className="contentsRight__">
+        <Header title="Edit registration" />
+        <div className="mtn__InputFlex">
+       
             <Input
-              title=""
+              title="Employee Name"
               value={employeeName}
               onChange={(e) => setEmployeeName(e.target.value)}
               type="text"
               readOnly={false}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Employee Email</p>
             <Input
-              title=""
+              title="Employee Email"
               value={employeeEmail}
               onChange={(e) => setEmployeeEmail(e.target.value)}
               type="email"
               readOnly={false}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <p>Date Employed</p>
+          
             <Input
-              title=""
+              title="Date Employed"
               value={dateEmployed}
               onChange={(e) => setDateEmployed(e.target.value)}
               type="date"
               readOnly={false}
             />
-          </div>
-          <div className={styles.inputContainer}>
+  
             <Select
               onChange={(e) => setJobLevel(e.target.value)}
               value={jobLevel}
               title="Job level"
               options={jobLevelData}
             />
-          </div>
 
-          <div className={styles.inputContainer}>
-            {/* <p>Region</p> */}
             <Select
               value={region}
               onChange={regionHandler}
@@ -200,11 +188,10 @@ const CandidateEdit = ({ history }) => {
               filter={true}
               filterOption="Title"
             />
-          </div>
-          <div className={styles.inputContainer}>
+          
             <Select
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={locationHandler}
               required={false}
               title="Location"
               options={locations}
@@ -221,24 +208,7 @@ const CandidateEdit = ({ history }) => {
               filterOption="Title"
               size={"mtn__child"}
             />
-          </div>
-          <div className={styles.inputContainer}>
-            <Radio
-              onChange={(e) => setService(e.target.value)}
-              title="Have you served on the council before?"
-              options={serviceData}
-              value={service}
-            />
-          </div>
-          <div className={styles.inputContainer}>
-            <Radio
-              onChange={(e) => setDisciplinary(e.target.value)}
-              title="Do you have any disciplinary sanction?"
-              options={disciplinaryData}
-              value={disciplinary}
-            />
-          </div>
-          <div className={styles.inputContainer}>
+             <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
               value={""}
@@ -254,17 +224,34 @@ const CandidateEdit = ({ history }) => {
                 };
               }}
             />
+             <div className={styles.imageContainer}>
+            <img src={passport} alt={employeeName} />
           </div>
+          </div>
+          
+            <Radio
+              onChange={(e) => setService(e.target.value)}
+              title="Have you served on the council before?"
+              options={serviceData}
+              value={service}
+            />
+          
+            <Radio
+              onChange={(e) => setDisciplinary(e.target.value)}
+              title="Do you have any disciplinary sanction?"
+              options={disciplinaryData}
+              value={disciplinary}
+            />
+         
 
-          <div className={styles.inputContainer}>
-            <p>State your five point agenda</p>
+          
             <Textarea
               onChange={(e) => setAgenda(e.target.value)}
-              title=""
+              title="State your five point agenda"
               value={agenda}
             />
-          </div>
-          <div className={styles.inputContainer}></div>
+        
+          
           <div className={styles.inputContainer}>
             <div className="radioContainer">
               <div className="minimizeBtn">
@@ -274,7 +261,7 @@ const CandidateEdit = ({ history }) => {
                 <button
                   className="mtn__btn mtn__yellow bg"
                   onClick={approveHandler}
-                          Proceed
+                >
                   Submit
                 </button>
               </div>
@@ -365,7 +352,7 @@ const CandidateEdit = ({ history }) => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 

@@ -2,7 +2,7 @@ import * as React from "react";
 import { Header, Modal, NomineeCard } from "../../../containers";
 import { sp } from "@pnp/sp";
 import styles from "./voting.module.scss";
-import Carousel from "react-elastic-carousel";
+// import Carousel from "react-elastic-carousel";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
 
@@ -36,31 +36,31 @@ const Voting = () => {
 
   //find the logged in user and check if the user already voted
   React.useEffect(() => {
-    sp.profiles.myProperties.get().then((res) => {
-      setUserEmail(res.Email);
-      sp.web.lists
-        .getByTitle("Registration")
-        .items.filter(`EmployeeEmail eq '${res.Email}'`)
-        .get()
-        .then((items) => {
-          setUserID(items[0].ID);
-          setRegion(items[0].Region);
-          console.log(items[0].ID);
-          sp.web.lists
-            .getByTitle(`Votes`)
-            .items.filter(`EmployeeID eq '${items[0].ID}' `)
-            .get()
-            .then((data) => {
-              if (data.length > 0) {
-                swal({
-                  closeOnClickOutside: false,
-                  closeOnEsc: false,
-                  text: "You have voted already!",
-                }).then(() => {
-                  history.push("/");
-                });
-              }
-            });
+    // sp.profiles.myProperties.get().then((res) => {
+    //   setUserEmail(res.Email);
+    //   sp.web.lists
+    //     .getByTitle("Registration")
+    //     .items.filter(`EmployeeEmail eq '${res.Email}'`)
+    //     .get()
+    //     .then((items) => {
+    //       setUserID(items[0].ID);
+    //       setRegion(items[0].Region);
+    //       console.log(items[0].ID);
+    //       sp.web.lists
+    //         .getByTitle(`Votes`)
+    //         .items.filter(`EmployeeID eq '${items[0].ID}' `)
+    //         .get()
+    //         .then((data) => {
+    //           if (data.length > 0) {
+    //             swal({
+    //               closeOnClickOutside: false,
+    //               closeOnEsc: false,
+    //               text: "You have voted already!",
+    //             }).then(() => {
+    //               history.push("/");
+    //             });
+    //           }
+    //         });
           // if (JSON.parse(items[0].Voted)) {
           //   swal({
           //     closeOnClickOutside: false,
@@ -70,8 +70,8 @@ const Voting = () => {
           //     history.push("/");
           //   });
           // }
-        });
-    });
+  //       });
+  //   });
   }, []);
 
   const votedNominee = (id) => {
@@ -144,7 +144,7 @@ const Voting = () => {
   const votePermissions = () => {
     return (
       <div className={styles.modalContent}>
-        <span>Are you sure you want to vote for this candidate?</span>
+        {/* <span>Are you sure you want to vote for this candidate?</span>
         <div className={styles.modalContentButton}>
           <button disabled={submitting} onClick={noHandler}>
             No
@@ -154,7 +154,7 @@ const Voting = () => {
           ) : (
             <button onClick={yesHandler}>Yes</button>
           )}
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -175,7 +175,7 @@ const Voting = () => {
       <Header title="Nominees" />
 
       <div className={styles.nomineeContainerScreen}>
-        {nominees.length > 0 ? (
+        {/* {nominees.length > 0 ? (
           loading ? (
             <div>Loading...</div>
           ) : (
@@ -205,7 +205,7 @@ const Voting = () => {
           )
         ) : (
           <div>No Nominees yet!</div>
-        )}
+        )} */}
       </div>
 
       <Modal
