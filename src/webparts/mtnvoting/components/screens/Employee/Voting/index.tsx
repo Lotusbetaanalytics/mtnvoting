@@ -237,11 +237,11 @@ const Voting = () => {
           </div>
 
           <Modal
+            title=""
             content={votePermissions()}
             onClose={handleClose}
             isVisible={open}
             size="sm"
-            title=""
             footer=""
           />
         </div>
@@ -250,4 +250,4 @@ const Voting = () => {
   );
 };
 
-export default Voting
+export default Voting;
