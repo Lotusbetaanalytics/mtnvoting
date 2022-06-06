@@ -1,7 +1,8 @@
+import { Tooltip } from "@material-ui/core";
 import * as React from "react";
 import "./nomineecard.scss";
 
-const NomineeCard = ({ checked, image, name, lastName, onClick }) => {
+const NomineeCard = ({ checked, image, name, lastName, onClick, disabled }) => {
   const voteNow = () => {
     onClick();
   };
@@ -18,9 +19,13 @@ const NomineeCard = ({ checked, image, name, lastName, onClick }) => {
         </div>
         <div className="cardContentButton">
           {checked ? (
-            <div className="btnSelected">
-              <span>Selected</span>
-            </div>
+            <Tooltip title="You already voted">
+              <div className="btnSelected">Selected</div>
+            </Tooltip>
+          ) : disabled ? (
+            <Tooltip title="You already voted">
+              <div className="btnDisabled">Select</div>
+            </Tooltip>
           ) : (
             <div className="btnUnSelected" onClick={voteNow}>
               Select

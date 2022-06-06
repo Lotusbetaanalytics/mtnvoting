@@ -18,6 +18,10 @@ const Voting = () => {
   const [loading, setLoading] = React.useState(false);
   const [region, setRegion] = React.useState("");
   const [submitting, setSubmitting] = React.useState(false);
+  const [isRegistered, setIsRegistered] = React.useState(false);
+  const [test, setTest] = React.useState([]);
+  const [index, setIndex] = React.useState(null);
+  const [name, setName] = React.useState("");
 
   const history = useHistory();
 
@@ -30,6 +34,7 @@ const Voting = () => {
       .get()
       .then((res) => {
         setNominees(res.filter((item) => item.Region === region));
+
         setLoading(false);
       });
   }, [region]);
@@ -43,9 +48,15 @@ const Voting = () => {
         .items.filter(`EmployeeEmail eq '${res.Email}'`)
         .get()
         .then((items) => {
+          if (!items.length) {
+            swal("Error", "You are not yet registered to vote", "error");
+            history.push("/");
+            return;
+          }
+          setIsRegistered(true);
           setUserID(items[0].ID);
           setRegion(items[0].Region);
-          console.log(items[0].ID);
+
           sp.web.lists
             .getByTitle(`Votes`)
             .items.filter(`EmployeeID eq '${items[0].ID}' `)
@@ -61,22 +72,22 @@ const Voting = () => {
                 });
               }
             });
-          // if (JSON.parse(items[0].Voted)) {
-          //   swal({
-          //     closeOnClickOutside: false,
-          //     closeOnEsc: false,
-          //     text: "You have voted already!",
-          //   }).then(() => {
-          //     history.push("/");
-          //   });
-          // }
         });
     });
   }, []);
 
-  const votedNominee = (id) => {
+  React.useEffect(() => {
+    //create a value for each item in the list
+    for (let i = 0; i < nominees.length; i++) {
+      test.push({ [i]: "", checked: false, disabled: false });
+    }
+  }, [nominees]);
+
+  const votedNominee = (id, index, name) => {
     setId(id);
     setOpen(true);
+    setIndex(index);
+    setName(name);
   };
 
   //Find a nominee with their id
@@ -113,8 +124,15 @@ const Voting = () => {
               setOpen(false);
               sp.web.lists
                 .getByTitle(`Nominees`)
-                .items.get()
+                .items.filter(`Status eq 'Approved'`)
+                .get()
                 .then((res) => {
+                  test[index].checked = true;
+                  test
+                    .filter((item, ind) => ind !== index)
+                    .map((item) => {
+                      return (item.disabled = true);
+                    });
                   setNominees(res);
                 });
               sp.web.lists
@@ -144,7 +162,10 @@ const Voting = () => {
   const votePermissions = () => {
     return (
       <div className={styles.modalContent}>
-        <span>Are you sure you want to vote for this candidate?</span>
+        <span>
+          Are you sure you want to vote for <br />
+          <strong>{name}</strong>?
+        </span>
         <div className={styles.modalContentButton}>
           <button disabled={submitting} onClick={noHandler}>
             No
@@ -171,53 +192,62 @@ const Voting = () => {
   ];
 
   return (
-    <div className={styles.votingPageContainer}>
-      <Header title="Nominees" />
+    <>
+      {isRegistered && (
+        <div className={styles.votingPageContainer}>
+          <Header title="Nominees" />
 
-      <div className={styles.nomineeContainerScreen}>
-        {nominees.length > 0 ? (
-          loading ? (
-            <div>Loading...</div>
-          ) : (
-            <Carousel
-              breakPoints={breakPoints}
-              isRTL={false}
-              initialActiveIndex={0}
-              pagination={false}
-              className={styles.carousel}
-            >
-              {nominees.map((nominee) => {
-                return (
-                  <>
-                    <NomineeCard
-                      checked={checked}
-                      image={nominee.PassportPhotograph}
-                      name={nominee.EmployeeName}
-                      lastName={nominee.lastName}
-                      onClick={() => {
-                        votedNominee(nominee.ID);
-                      }}
-                    />
-                  </>
-                );
-              })}
-            </Carousel>
-          )
-        ) : (
-          <div>No Nominees yet!</div>
-        )}
-      </div>
+          <div className={styles.nomineeContainerScreen}>
+            {nominees.length > 0 ? (
+              loading ? (
+                <div>Loading...</div>
+              ) : (
+                <Carousel
+                  breakPoints={breakPoints}
+                  isRTL={false}
+                  initialActiveIndex={0}
+                  pagination={false}
+                  className={styles.carousel}
+                >
+                  {nominees.map((nominee, index) => {
+                    return (
+                      <>
+                        <NomineeCard
+                          checked={test[index]["checked"]}
+                          image={nominee.PassportPhotograph}
+                          name={nominee.EmployeeName}
+                          lastName={nominee.lastName}
+                          disabled={test[index]["disabled"]}
+                          onClick={() => {
+                            votedNominee(
+                              nominee.ID,
+                              index,
+                              nominee.EmployeeName
+                            );
+                          }}
+                        />
+                      </>
+                    );
+                  })}
+                </Carousel>
+              )
+            ) : (
+              <div>No Nominees yet!</div>
+            )}
+          </div>
 
-      <Modal
-        title=""
-        content={votePermissions()}
-        onClose={handleClose}
-        isVisible={open}
-        size="sm"
-        footer=""
-      />
-    </div>
+          <Modal
+            content={votePermissions()}
+            onClose={handleClose}
+            isVisible={open}
+            size="sm"
+            title=""
+            footer=""
+          />
+        </div>
+      )}
+    </>
   );
 };
 
-export default Voting;
+export default Voting
