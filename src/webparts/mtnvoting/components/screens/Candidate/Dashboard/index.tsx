@@ -18,7 +18,7 @@ const CandidateDashboard = () => {
                     .items.filter(`EmployeeEmail eq '${response.Email}'`)
                     .get()
                     .then((res) => {
-                        const location = (res[27].Constituency.Date[0])
+                        const location = (res[0].Constituency.Date[0])
                         console.log(location)
                     });
                 sp.web.lists
