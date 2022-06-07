@@ -41,7 +41,7 @@ const CandidateRegister = ({ history }) => {
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
-  const termsData = [{ value: "Yes" }, { value: "No" }];
+  const [agree,setAgree] = React.useState(false);
 
   const reader = new FileReader();
 
@@ -94,6 +94,11 @@ const CandidateRegister = ({ history }) => {
     setAgenda("");
     localStorage.removeItem("dp");
   };
+  const checkboxHandler = () => {
+    setAgree(!agree);
+  }
+
+  
   const submitHandler = () => {
     if (terms && terms == "No") {
       swal("Warning!", "you have to agree with terms and condition", "error");
@@ -326,33 +331,19 @@ const CandidateRegister = ({ history }) => {
                            region/location.
                          </li>
                        </ul>
-                        <Radio
-                        onChange={(e) => setDisciplinary(e.target.value)}
-                        title="I have read and agreed on the terms and conditions"
-                        options={termsData}
-                        value={terms}
-                      />
-                      </div>)}
+                       <input type="checkbox" id="agree" onChange={checkboxHandler} />
+                       <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+                      </div>
+                      )}
                       <div className="btnContainer">
-                       {terms == "No" ? (
                          <button
                            onClick={submitHandler}
                            type="button"
                            className="mtn__btn mtn__yellow"
-                           disabled
+                           disabled={!agree}
                          >
                            Proceed
                          </button>
-                       ) : (
-                         <button
-                           onClick={submitHandler}
-                           type="button"
-                           className="mtn__btn mtn__yellow"
-                         >
-                           Proceed
-                         </button>
-                        
-                       )}
                       </div>
      
                   </div>
