@@ -6,7 +6,7 @@ import * as jQuery from 'jquery';
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import * as pnp from 'sp-pnp-js';
-import { AdminApproved, AdminDashboard, AdminDeclined, AdminPending, AdminViewApproved, AdminViewPending, AdminRevoked, Administrator, ErrorScreen, AdminViewDeclined, AdminConfig, Voting, LandingPage, EmployeeRegistration, CandidateDashboard, CandidateRegister, CandidateEdit, CandidateViewRequest, AdminRegion, AdminLocation } from './screens';
+import { AdminApproved, AdminDashboard, AdminDeclined, AdminPending, AdminViewApproved, AdminViewPending, AdminRevoked, Administrator, ErrorScreen, AdminViewDeclined, AdminConfig, LandingPage, EmployeeRegistration, CandidateDashboard, CandidateRegister, CandidateEdit, CandidateViewRequest, AdminRegion, AdminLocation } from './screens';
 import "./global.scss"
 import './assets/icon.scss'
 
@@ -32,7 +32,7 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
         <Switch>
           <Route path="/" exact component={LandingPage} />
           <Route path="/registration" exact component={EmployeeRegistration} />
-          <Route path="/vote" exact component={Voting} />
+          {/* <Route path="/vote" exact component={Voting} /> */}
           <Route path="/admin" exact component={AdminDashboard} />
           <Route path="/admin/add" exact component={Administrator} />
           <Route path="/admin/region" exact component={AdminRegion} />
