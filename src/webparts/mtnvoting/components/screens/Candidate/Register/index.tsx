@@ -331,7 +331,7 @@ const CandidateRegister = ({ history }) => {
                            region/location.
                          </li>
                        </ul>
-                       <input type="checkbox" id="agree" onChange={checkboxHandler} />
+                       <div className={styles.checkBox}><input type="checkbox" id="agree" onChange={checkboxHandler} /></div>
                        <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
                       </div>
                       )}

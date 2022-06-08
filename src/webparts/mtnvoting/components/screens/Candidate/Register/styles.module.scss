@@ -1,9 +1,4 @@
-.formContainer{
-    display: grid;
-    grid-template-columns: 50% 50%;
-    
-    width: 70%;
-    }
+
 
     .space{
         width: 50%;
@@ -32,3 +27,7 @@
         display: flex;
     }
     
+    .checkBox{
+        margin:2%;
+        font-size: 16px;
+    }

@@ -40,6 +40,10 @@ const CandidateEdit = ({ history }) => {
   const [constituencies, setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
+  const [agree,setAgree] = React.useState(false);
+  const checkboxHandler = () => {
+    setAgree(!agree);
+  }
 
   React.useEffect(() => {
     setLoading(true);
@@ -52,7 +56,6 @@ const CandidateEdit = ({ history }) => {
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((res) => {
-            console.log(res)
             setData(res[0]);
             setLoading(false);
             setEmployeeName(res[0].EmployeeName);
@@ -66,8 +69,9 @@ const CandidateEdit = ({ history }) => {
             setPassport(res[0].PassportPhotograph);
             setAgenda(res[0].Agenda);
             setConstituency(res[0].Constituency);
-            setId(res[0].id);
-            console.log(res[0]);
+          
+            setId(res[0].ID);
+          
           });
       });
     sp.web.lists
@@ -82,7 +86,7 @@ const CandidateEdit = ({ history }) => {
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
-  const termsData = [{ value: "Yes" }, { value: "No" }];
+  
 
   const reader = new FileReader();
 
@@ -91,7 +95,7 @@ const CandidateEdit = ({ history }) => {
   };
 
   const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"));
+
     sp.web.lists
       .getByTitle("Nominees")
       .items.getById(id)
@@ -104,7 +108,7 @@ const CandidateEdit = ({ history }) => {
         Location: location,
         ServedOnTheCouncil: service,
         DisciplinarySanction: disciplinary,
-        PassportPhotograph: imagePassport,
+        PassportPhotograph: passport,
         Agenda: agenda,
         Constituency: constituency,
       })
@@ -140,7 +144,6 @@ const CandidateEdit = ({ history }) => {
           .get()
           .then((res) => {
             setConstituencies(res);
-            console.log(constituencies)
           })};
   return (
     <div className="appContainer">
@@ -216,8 +219,9 @@ const CandidateEdit = ({ history }) => {
                 reader.readAsDataURL(e.target.files[0]);
 
                 reader.onload = function () {
-                  console.log(reader.result); //base64encoded string
-                  localStorage.setItem("dp", JSON.stringify(reader.result));
+                  setPassport(String(reader.result))
+                   //base64encoded string
+                  
                 };
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
@@ -317,32 +321,21 @@ const CandidateEdit = ({ history }) => {
                         region/location.
                       </li>
                     </ul>
-
-                    <Radio
-                      onChange={(e) => setDisciplinary(e.target.value)}
-                      title="I have read and agreed on the terms and conditions"
-                      options={termsData}
-                      value={terms}
-                    />
-                    <div className="btnContainer">
-                      {terms == "No" ? (
-                        <button
-                          type="button"
-                          className="mtn__btn mtn__yellow"
-                          disabled
-                        >
-                          Proceed
-                        </button>
-                      ) : (
-                        <button
-                          onClick={submitHandler}
-                          type="button"
-                          className="mtn__btn mtn__yellow"
-                        >
-                          Proceed
-                        </button>
-                      )}
+                    <div className={styles.checkBox}>
+                      <input type="checkbox" id="agree" onChange={checkboxHandler} />
                     </div>
+                       <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+        
+                       <div className="btnContainer">
+                         <button
+                           onClick={submitHandler}
+                           type="button"
+                           className="mtn__btn mtn__yellow"
+                           disabled={!agree}
+                         >
+                           Proceed
+                         </button>
+                      </div>
                   </div>
                 }
                 onClose={() => setOpen(false)}
