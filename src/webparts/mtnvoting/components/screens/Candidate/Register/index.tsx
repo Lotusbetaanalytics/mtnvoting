@@ -91,8 +91,10 @@ const CandidateRegister = ({ history }) => {
     setService("");
     setLocation("");
     setDateEmployed("");
+    setConstituency("")
     setAgenda("");
     localStorage.removeItem("dp");
+    setCancelModal(false)
   };
   const checkboxHandler = () => {
     setAgree(!agree);

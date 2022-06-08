@@ -41,6 +41,26 @@ const CandidateEdit = ({ history }) => {
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
   const [agree,setAgree] = React.useState(false);
+  const [cancelModal, setCancelModal] = React.useState(false);
+
+  const cancelButton = () => {
+    setCancelModal(true);
+    
+  };
+
+  const cancelHandler = () => {
+    setDisciplinary("");
+    setJobLevel("");
+    setRegion("");
+    setDisciplinary("");
+    setService("");
+    setLocation("");
+    setDateEmployed("");
+    setAgenda("");
+    setPassport("")
+    setConstituency("")
+    setCancelModal(false)
+  };
   const checkboxHandler = () => {
     setAgree(!agree);
   }
@@ -143,6 +163,7 @@ const CandidateEdit = ({ history }) => {
           .items.filter(`Location eq '${e.target.value}'`)
           .get()
           .then((res) => {
+            console.log(res)
             setConstituencies(res);
           })};
   return (
@@ -259,9 +280,11 @@ const CandidateEdit = ({ history }) => {
           <div className={styles.inputContainer}>
             <div className="radioContainer">
               <div className="minimizeBtn">
-                <button className="mtn__btn mtn__white_blackColor">
+
+                <button onClick={cancelButton} className="mtn__btn mtn__white_blackColor" >
                   Cancel
                 </button>
+
                 <button
                   className="mtn__btn mtn__yellow bg"
                   onClick={approveHandler}
@@ -339,6 +362,26 @@ const CandidateEdit = ({ history }) => {
                   </div>
                 }
                 onClose={() => setOpen(false)}
+                footer=""
+              />
+                            <Modal
+                isVisible={cancelModal}
+                title="Are you sure you want to cancel edit proccess?"
+                size="md"
+                content={
+                  <div className="terms">
+                    <div className="btnContainer">
+                      <button
+                        onClick={cancelHandler}
+                        type="button"
+                        className="mtn__btn mtn__yellow"
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                }
+                onClose={() => setCancelModal(false)}
                 footer=""
               />
             </div>
