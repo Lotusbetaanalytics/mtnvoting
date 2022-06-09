@@ -69,6 +69,7 @@ const ViewRequest = ({ history }) => {
               />
               <Text title="Region" value={data.Region} size="small" />
               <Text title="Location" value={data.Location} size="small" />
+              <Text title="Constituency" value={data.Constituency} size="small" />
               <Text
                 title="Have you served on the council before "
                 value={data.ServedOnTheCouncil}

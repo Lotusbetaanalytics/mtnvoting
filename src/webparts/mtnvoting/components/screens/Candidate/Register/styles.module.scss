@@ -4,6 +4,11 @@
     
     width: 70%;
     }
+
+    .space{
+        width: 50%;
+        display: flex;
+    }
     .inputContainer{
         display: grid;
         width: 100%;
@@ -11,17 +16,14 @@
     .imageContainer{
         height: 200px;
         width: 200px;
-        margin-left: 4%;
         display: flex;
         border: 1px solid black;
         padding: 0;
     }
     
-    
     .imageContainer img{
         height: 100%;
         width: 100%;
-        object-fit: contain;
        
     }
     .form_container{
@@ -29,3 +31,4 @@
         width: 100%;
         display: flex;
     }
+    

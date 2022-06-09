@@ -18,12 +18,12 @@ const CandidateDashboard = () => {
                     .items.filter(`EmployeeEmail eq '${response.Email}'`)
                     .get()
                     .then((res) => {
-                        const location = (res[0].Location)
+                        const location = (res[0].Constituency.Date[0])
                         console.log(location)
                     });
                 sp.web.lists
                     .getByTitle(`Constituency`)
-                    .items.filter(`Region eq '${response.region}' and Location eq '${location}'`)
+                    .items.filter(`Date eq '${response.Date}'`)
                     .get()
                     .then((res) => {
                         console.log(res)
