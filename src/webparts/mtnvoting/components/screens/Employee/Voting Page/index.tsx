@@ -22,6 +22,11 @@ const Voting = () => {
   const [test, setTest] = React.useState([]);
   const [index, setIndex] = React.useState(null);
   const [name, setName] = React.useState("");
+  const [constituency, setConstituency] = React.useState("");
+  const [cannotVote, setCannotVote] = React.useState(true);
+  const [voteCount, setVoteCount] = React.useState(2);
+  const [selectedNominees, setSelectedNominees] = React.useState([]);
+  const [message, setMessage] = React.useState("");
 
   const history = useHistory();
 
@@ -33,8 +38,8 @@ const Voting = () => {
       .items.filter(`Status eq 'Approved'`)
       .get()
       .then((res) => {
+        // setNominees(res);
         setNominees(res.filter((item) => item.Region === region));
-
         setLoading(false);
       });
   }, [region]);
@@ -48,27 +53,32 @@ const Voting = () => {
         .items.filter(`EmployeeEmail eq '${res.Email}'`)
         .get()
         .then((items) => {
-          if (!items.length) {
-            swal("Error", "You are not yet registered to vote", "error");
-            history.push("/");
-            return;
-          }
           setIsRegistered(true);
           setUserID(items[0].ID);
           setRegion(items[0].Region);
+          setConstituency(items[0].Constituency);
 
           sp.web.lists
             .getByTitle(`Votes`)
             .items.filter(`EmployeeID eq '${items[0].ID}' `)
             .get()
             .then((data) => {
-              if (data.length > 0) {
+              if (data.length >= voteCount) {
                 swal({
+                  title: "",
+                  text: "You have reached your maximum votes quota!",
+                  icon: "error",
+                  // buttons: ["Ok"],
                   closeOnClickOutside: false,
                   closeOnEsc: false,
-                  text: "You have voted already!",
-                }).then(() => {
-                  history.push("/");
+                }).then((ok) => {
+                  if (ok) {
+                    history.push("/");
+                  }
+                });
+              } else if (data.length < voteCount) {
+                setVoteCount((prev) => {
+                  return Math.abs(prev - data.length);
                 });
               }
             });
@@ -77,82 +87,60 @@ const Voting = () => {
   }, []);
 
   React.useEffect(() => {
+    sp.web.lists
+      .getByTitle("Constituency")
+      .items.filter(`Title eq '${constituency}'`)
+      .get()
+      .then((res) => {
+        if (res.length > 0) {
+          const today = new Date(Date.now()).toLocaleDateString();
+          const votingDate = new Date(res[0].Date).toLocaleDateString();
+          today === votingDate && setCannotVote(false);
+        }
+      })
+      .catch((err) => {});
+  }, [constituency]);
+
+  React.useEffect(() => {
     //create a value for each item in the list
     for (let i = 0; i < nominees.length; i++) {
-      test.push({ [i]: "", checked: false, disabled: false });
+      test.push({ [i]: nominees[i].ID, checked: false, disabled: false });
     }
   }, [nominees]);
 
   const votedNominee = (id, index, name) => {
-    setId(id);
-    setOpen(true);
-    setIndex(index);
     setName(name);
-  };
-
-  //Find a nominee with their id
-  const addNomineeVotes = (id) => {
-    return nominees.filter((nominee) => nominee.ID === id);
+    setId(id);
   };
 
   const yesHandler = () => {
     setSubmitting(true);
-    sp.web.lists
-      .getByTitle(`Votes`)
-      .items.filter(`EmployeeID eq '${userID}' `)
-      .get()
-      .then((items) => {
-        if (items.length > 0) {
+    for (let i = 0; i < selectedNominees.length; i++) {
+      sp.web.lists
+        .getByTitle(`Votes`)
+        .items.add({
+          EmployeeID: String(userID),
+          Nominee: String(selectedNominees[i]),
+        })
+        .then((res) => {
+          setSubmitting(false);
+          setOpen(false);
           swal({
-            closeOnClickOutside: false,
-            closeOnEsc: false,
-            text: "You have voted already!",
-          }).then(() => {
-            history.push("/");
+            title: "",
+            text: "Your vote has been submitted!",
+            icon: "success",
+            // buttons: ["Ok"],
+          }).then((ok) => {
+            if (ok) {
+              history.push("/");
+            }
           });
-        } else {
-          sp.web.lists
-            .getByTitle(`Votes`)
-            .items.add({
-              EmployeeID: String(userID),
-              Nominee: String(id),
-              // Title: Math.random(),
-            })
-            .then(() => {
-              setSubmitting(false);
-              swal("Success", "Voted Successfully", "success");
-              setOpen(false);
-              sp.web.lists
-                .getByTitle(`Nominees`)
-                .items.filter(`Status eq 'Approved'`)
-                .get()
-                .then((res) => {
-                  test[index].checked = true;
-                  test
-                    .filter((item, ind) => ind !== index)
-                    .map((item) => {
-                      return (item.disabled = true);
-                    });
-                  setNominees(res);
-                });
-              sp.web.lists
-                .getByTitle(`Registration`)
-                .items.getById(userID)
-                .update({
-                  Voted: JSON.stringify(true),
-                })
-                .then(() => {
-                  setTimeout(() => {
-                    setOpen(false);
-                  }, 1000);
-                });
-            })
-            .catch((err) => {
-              console.log(err);
-              setSubmitting(false);
-            });
-        }
-      });
+        })
+        .catch((err) => {
+          console.log(err);
+          setSubmitting(false);
+        });
+    }
   };
 
   const noHandler = () => {
@@ -162,10 +150,7 @@ const Voting = () => {
   const votePermissions = () => {
     return (
       <div className={styles.modalContent}>
-        <span>
-          Are you sure you want to vote for <br />
-          <strong>{name}</strong>?
-        </span>
+        <span>Are you sure you want to vote for the selected candidates?</span>
         <div className={styles.modalContentButton}>
           <button disabled={submitting} onClick={noHandler}>
             No
@@ -187,63 +172,93 @@ const Voting = () => {
   const breakPoints = [
     { width: 1, itemsToShow: 1 },
     { width: 550, itemsToShow: 2, itemsToScroll: 2 },
-    { width: 768, itemsToShow: 3 },
+    { width: 768, itemsToShow: 4, itemsToScroll: 4 },
     { width: 1200, itemsToShow: 4 },
   ];
 
   return (
     <>
-      {isRegistered && (
-        <div className={styles.votingPageContainer}>
-          <Header title="Nominees" />
-
-          <div className={styles.nomineeContainerScreen}>
-            {nominees.length > 0 ? (
-              loading ? (
-                <div>Loading...</div>
-              ) : (
-                <Carousel
-                  breakPoints={breakPoints}
-                  isRTL={false}
-                  initialActiveIndex={0}
-                  pagination={false}
-                  className={styles.carousel}
-                >
-                  {nominees.map((nominee, index) => {
-                    return (
-                      <>
-                        <NomineeCard
-                          checked={test[index]["checked"]}
-                          image={nominee.PassportPhotograph}
-                          name={nominee.EmployeeName}
-                          lastName={nominee.lastName}
-                          disabled={test[index]["disabled"]}
-                          onClick={() => {
-                            votedNominee(
-                              nominee.ID,
-                              index,
-                              nominee.EmployeeName
-                            );
-                          }}
-                        />
-                      </>
-                    );
-                  })}
-                </Carousel>
-              )
-            ) : (
-              <div>No Nominees yet!</div>
-            )}
+      <div className={styles.votingPageContainer}>
+        <Header title="Nominees" />
+        {cannotVote && (
+          <div className={styles.votingPrompt}>
+            You cannot vote yet because the voting exercise is yet to commence
+            or has ended.
           </div>
-
-          <Modal
-            content={votePermissions()}
-            onClose={handleClose}
-            isVisible={open}
-            size="sm"
-          />
+        )}
+        <div className={styles.nomineeContainerScreen}>
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <>
+              <Carousel
+                breakPoints={breakPoints}
+                isRTL={false}
+                initialActiveIndex={0}
+                pagination={false}
+                className={styles.carousel}
+              >
+                {nominees.map((nominee, index) => {
+                  return (
+                    <>
+                      <NomineeCard
+                        checked={test.length > 0 && test[index]["checked"]}
+                        image={nominee.PassportPhotograph}
+                        name={nominee.EmployeeName}
+                        lastName={nominee.lastName}
+                        disabled={
+                          (test.length > 0 && test[index]["disabled"]) ||
+                          selectedNominees.length >= voteCount ||
+                          cannotVote
+                        }
+                        onClick={() => {
+                          votedNominee(nominee.ID, index, nominee.EmployeeName);
+                        }}
+                        setTest={setTest}
+                        test={test}
+                        index={index}
+                        voteCount={voteCount}
+                        selectedNominees={selectedNominees}
+                        setSelectedNominees={setSelectedNominees}
+                        id={nominee.ID}
+                      />
+                    </>
+                  );
+                })}
+              </Carousel>
+              {nominees.length === 0 && <div>No nominees</div>}
+            </>
+          )}
         </div>
-      )}
+        <div className={styles.backButtonContainer}>
+          <button
+            className={styles.backButton}
+            onClick={() => {
+              history.push("/");
+            }}
+          >
+            Go Back
+          </button>
+          <button
+            className={styles.backButton}
+            disabled={cannotVote || selectedNominees.length === 0}
+            onClick={() => {
+              setOpen(true);
+              console.log(selectedNominees, "here here >>>> ", voteCount);
+            }}
+          >
+            Submit
+          </button>
+        </div>
+        <Modal
+          content={votePermissions()}
+          onClose={handleClose}
+          isVisible={open}
+          size="sm"
+          footer=""
+          title=""
+        />
+      </div>
     </>
   );
 };

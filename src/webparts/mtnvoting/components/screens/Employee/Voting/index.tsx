@@ -189,7 +189,7 @@ const Voting = () => {
               {nominees.map((nominee) => {
                 return (
                   <>
-                    <NomineeCard
+                    {/* <NomineeCard
                       checked={checked}
                       image={nominee.PassportPhotograph}
                       name={nominee.EmployeeName}
@@ -197,7 +197,8 @@ const Voting = () => {
                       onClick={() => {
                         votedNominee(nominee.ID);
                       }}
-                    />
+                      disabled
+                    /> */}
                   </>
                 );
               })}
