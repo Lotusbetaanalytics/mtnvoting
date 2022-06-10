@@ -24,8 +24,9 @@ const Voting = () => {
   const [name, setName] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [cannotVote, setCannotVote] = React.useState(true);
-  const [voteCount, setVoteCount] = React.useState(2);
+  const [voteCount, setVoteCount] = React.useState(0);
   const [selectedNominees, setSelectedNominees] = React.useState([]);
+  const [numberOfTimesVoted, setNumberOfTimesVoted] = React.useState(0);
   const [message, setMessage] = React.useState("");
 
   const history = useHistory();
@@ -53,35 +54,30 @@ const Voting = () => {
         .items.filter(`EmployeeEmail eq '${res.Email}'`)
         .get()
         .then((items) => {
-          setIsRegistered(true);
-          setUserID(items[0].ID);
-          setRegion(items[0].Region);
-          setConstituency(items[0].Constituency);
-
-          sp.web.lists
-            .getByTitle(`Votes`)
-            .items.filter(`EmployeeID eq '${items[0].ID}' `)
-            .get()
-            .then((data) => {
-              if (data.length >= voteCount) {
-                swal({
-                  title: "",
-                  text: "You have reached your maximum votes quota!",
-                  icon: "error",
-                  // buttons: ["Ok"],
-                  closeOnClickOutside: false,
-                  closeOnEsc: false,
-                }).then((ok) => {
-                  if (ok) {
-                    history.push("/");
-                  }
-                });
-              } else if (data.length < voteCount) {
-                setVoteCount((prev) => {
-                  return Math.abs(prev - data.length);
-                });
+          if (items.length > 0) {
+            setUserID(items[0].ID);
+            setRegion(items[0].Region);
+            setConstituency(items[0].Constituency);
+            sp.web.lists
+              .getByTitle(`Votes`)
+              .items.filter(`EmployeeID eq '${items[0].ID}' `)
+              .get()
+              .then((data) => {
+                setNumberOfTimesVoted(data.length);
+              });
+          } else {
+            swal({
+              title: "",
+              text: "You are not registered for this voting exercise",
+              icon: "error",
+              closeOnClickOutside: false,
+              closeOnEsc: false,
+            }).then((ok) => {
+              if (ok) {
+                history.push("/");
               }
             });
+          }
         });
     });
   }, []);
@@ -93,13 +89,32 @@ const Voting = () => {
       .get()
       .then((res) => {
         if (res.length > 0) {
+          setVoteCount(res[0].NomineeCount);
+          if (numberOfTimesVoted >= res[0].NomineeCount) {
+            swal({
+              title: "",
+              text: "You have reached your maximum votes quota!",
+              icon: "error",
+              // buttons: ["Ok"],
+              closeOnClickOutside: false,
+              closeOnEsc: false,
+            }).then((ok) => {
+              if (ok) {
+                history.push("/");
+              }
+            });
+          } else if (numberOfTimesVoted < res[0].NomineeCount) {
+            setVoteCount((prev) => {
+              return Math.abs(prev - numberOfTimesVoted);
+            });
+          }
           const today = new Date(Date.now()).toLocaleDateString();
           const votingDate = new Date(res[0].Date).toLocaleDateString();
           today === votingDate && setCannotVote(false);
         }
       })
       .catch((err) => {});
-  }, [constituency]);
+  }, [constituency, numberOfTimesVoted]);
 
   React.useEffect(() => {
     //create a value for each item in the list
@@ -206,6 +221,7 @@ const Voting = () => {
                         image={nominee.PassportPhotograph}
                         name={nominee.EmployeeName}
                         lastName={nominee.lastName}
+                        EmployeeID={userID}
                         disabled={
                           (test.length > 0 && test[index]["disabled"]) ||
                           selectedNominees.length >= voteCount ||
