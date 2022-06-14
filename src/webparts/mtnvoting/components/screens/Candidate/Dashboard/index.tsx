@@ -6,7 +6,7 @@ import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 const CandidateDashboard = () => {
 
-    const [voteNumber, setVoteNumber] = React.useState("");
+    const [voteNumber, setVoteNumber] = React.useState(0);
     const [voteDate, setVoteDate] = React.useState("");
     const [location, setLocation] = React.useState("");
     React.useEffect(() => {
@@ -18,18 +18,31 @@ const CandidateDashboard = () => {
                     .items.filter(`EmployeeEmail eq '${response.Email}'`)
                     .get()
                     .then((res) => {
-                        const location = (res[0].Constituency.Date[0])
+                        setLocation((prev)=>{
+                            prev = res[0].Constituency
+                            return prev
+                        })
                         console.log(location)
+                        sp.web.lists
+                        .getByTitle(`Votes`)
+                        .items.filter(`EmployeeID eq '${response.ID}'`)
+                        .get()
+                        .then((res) => {
+                            setVoteNumber(res.length)
+                        })
                     });
-                sp.web.lists
-                    .getByTitle(`Constituency`)
-                    .items.filter(`Date eq '${response.Date}'`)
-                    .get()
-                    .then((res) => {
-                        console.log(res)
-                    })
+                 
             })
     }, [])
+
+    React.useEffect(()=>{
+        sp.web.lists.getByTitle(`Constituency`).items.filter(`Title eq '${location}'`).get().then
+        ((res) => {
+            console.log(res.length>0&&res[0].Date)
+        //    console.log(constituency)
+        })
+   
+    },[location])
 
 
 
@@ -39,7 +52,7 @@ const CandidateDashboard = () => {
             <div className='contentsRight'>
                 <Header title='Dashboard' />
                 <div className={styles.cardContainer}>
-                    <Card title="Total number of accumulated vote" count={10} color="mtn__white" url={""} />
+                    <Card title="Total number of accumulated vote" count={voteNumber} color="mtn__white" url={""} />
                     <Card2 title="Date of voting exercise" info={"22,December 2023"} color="mtn__white" />
 
                 </div>

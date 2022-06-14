@@ -18,6 +18,7 @@ import { sp } from "@pnp/sp";
 import swal from "sweetalert";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 import { values } from "lodash";
+import { Item } from "@pnp/sp/items";
 
 const CandidateEdit = ({ history }) => {
   const [loading, setLoading] = React.useState(false);
@@ -42,6 +43,7 @@ const CandidateEdit = ({ history }) => {
   const [id, setId] = React.useState(null);
   const [agree,setAgree] = React.useState(false);
   const [cancelModal, setCancelModal] = React.useState(false);
+  const [list,setList] = React.useState("");
 
   const cancelButton = () => {
     setCancelModal(true);
@@ -88,9 +90,15 @@ const CandidateEdit = ({ history }) => {
             setDisciplinary(res[0].DisciplinarySanction);
             setPassport(res[0].PassportPhotograph);
             setAgenda(res[0].Agenda);
+
             setConstituency(res[0].Constituency);
           
             setId(res[0].ID);
+            setList(agenda)
+            console.log(list, "this is it")
+           const agendaList = list.split(" ")
+            console.log(agendaList)
+               
           
           });
       });
@@ -106,6 +114,7 @@ const CandidateEdit = ({ history }) => {
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
+  
   
 
   const reader = new FileReader();
@@ -275,7 +284,9 @@ const CandidateEdit = ({ history }) => {
               title="State your five point agenda"
               value={agenda}
             />
-        
+        <div>
+    
+  </div>
           
           <div className={styles.inputContainer}>
             <div className="radioContainer">

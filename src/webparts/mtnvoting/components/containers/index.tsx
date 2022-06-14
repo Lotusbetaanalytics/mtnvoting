@@ -17,3 +17,4 @@ export { default as Radio } from "./Forms/Radio";
 export { default as MenuBar } from "./MenuBar";
 export { default as Helpers } from "./Helpers";
 export { default as NomineeCard } from "./NomineeCard";
+export {default as NewLineToBr} from "./break/break";

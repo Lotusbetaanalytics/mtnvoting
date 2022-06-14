@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Text, Header, Spinner, Textarea, Modal, CandidateNavigation } from "../../../containers";
+import { Text, Header, Spinner, Textarea, Modal, CandidateNavigation, NewLineToBr } from "../../../containers";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
@@ -9,6 +9,8 @@ import styles from "../Register/styles.module.scss";
 const ViewRequest = ({ history }) => {
   const [data, setData] = React.useState({} as any);
   const [loading, setLoading] = React.useState(false);
+  const [agenda,setAgenda] = React.useState("");
+  const [list,setList] = React.useState([]);
   React.useEffect(() => {
     setLoading(true);
     sp.profiles.myProperties
@@ -23,6 +25,11 @@ const ViewRequest = ({ history }) => {
             setData(res[0]);
             setLoading(false);
             console.log(res);
+            setAgenda(res[0].Agenda);
+            
+            console.log(res[0].Agenda, "this is it")
+           setList(res[0].Agenda.split("\n"))
+          
           });
       });
   }, []);
@@ -30,7 +37,7 @@ const ViewRequest = ({ history }) => {
   const editHandler = () => {
     history.push(`/candidate/edit`);
   };
-
+console.log(list)
   return (
     <div className="appContainer">
       <CandidateNavigation viewRequest={`active`} />
@@ -80,11 +87,29 @@ const ViewRequest = ({ history }) => {
                 value={data.DisciplinarySanction}
                 size="small"
               />
-              <Text
+             <div>
+              <ul>
+
+
+              {list.map((item,i)=>(
+                
+                  <li key={i}>
+                    {item}
+                  </li>
+                
+              ))}
+              </ul>
+             </div>
+              {/* {}<Text
                 title="State your five point agenda"
-                value={data.Agenda}
+                // value={data.Agenda}
+                
                 size="medium"
-              />
+              /> */}
+
+{/* <p>
+  <NewLineToBr> {data.agenda} </NewLineToBr>
+</p> */}
 
               <div className="minimizeBtn_">
                 <button

@@ -30,7 +30,7 @@ const CandidateRegister = ({ history }) => {
   const [service, setService] = React.useState("");
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
-  const [agenda, setAgenda] = React.useState("");
+  // const [agenda, setAgenda] = React.useState("");
   const [terms, setTerms] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [constituencies, setConstituencies] = React.useState([]);
@@ -40,10 +40,27 @@ const CandidateRegister = ({ history }) => {
   const [cancelModal, setCancelModal] = React.useState(false);
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
   const serviceData = [{ value: "Yes" }, { value: "No" }];
-  const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
+  const disciplinaryData = [{ value: "No" }, { value: "Yes" }];
   const [agree,setAgree] = React.useState(false);
 
+  const [listAgenda, setListAgenda] = React.useState("");
+  const [disciplinaryModal,setDisciplinaryModal] = React.useState(false)
+
+  const [agenda, setAgenda] = React.useState("");
   const reader = new FileReader();
+  const textInput = React.useRef();
+  // console.log(textInput);
+ 
+
+  // const removeListAgenda = (i) => {
+  //   let filtered = agenda.filter((agendas) => {
+  //     return agendas !== i;
+  //   });
+  //   setAgenda(filtered);
+  // };
+  // const addListAgenda = () => {
+  //   setAgenda([...agenda, listAgenda ]);
+  // };
 
   React.useEffect(() => {
     localStorage.removeItem("dp");
@@ -54,6 +71,20 @@ const CandidateRegister = ({ history }) => {
       .then((response) => {
         setEmployeeName(response.DisplayName);
         setEmployeeEmail(response.Email);
+
+        sp.web.lists
+       .getByTitle("Registration")
+       .items.filter(`EmployeeEmail eq '${response.Email}'`)
+       .get()
+         .then((items) => {
+              console.log(items.length )
+          // if (items.length >= 0) {
+          //   swal("Error", "You are already registered", "error");
+          //   history.push("/");
+          //   return;
+          // }
+        })
+
         sp.web.lists
           .getByTitle(`Region`)
           .items.get()
@@ -99,7 +130,15 @@ const CandidateRegister = ({ history }) => {
   const checkboxHandler = () => {
     setAgree(!agree);
   }
-
+const disciplinaryHandler =(e) =>{
+  setDisciplinary(e.target.value)
+  console.log(disciplinary)
+  if (disciplinary == "Yes") {
+    setDisciplinaryModal(true)
+    
+    console.log(e.target.value)
+  }
+}
   
   const submitHandler = () => {
     if (terms && terms == "No") {
@@ -253,7 +292,7 @@ const CandidateRegister = ({ history }) => {
             value={service}
           />
           <Radio
-            onChange={(e) => setDisciplinary(e.target.value)}
+            onChange={disciplinaryHandler}
             title="Do you have any disciplinary sanction?"
             options={disciplinaryData}
             value={disciplinary}
@@ -263,6 +302,45 @@ const CandidateRegister = ({ history }) => {
             title="State your five point agenda"
             value={agenda}
           />
+           {/* <Input
+                  title="five point agenda"
+                  type={"text"}
+                  onChange={(e) => {
+                    setListAgenda(e.target.value);
+                  }}
+                  value={listAgenda}
+              
+                /> */}
+                 {/* <div>
+                 <button
+                  className={styles.removeBtn}
+                  onClick={() => {
+                    addListAgenda();
+                   
+                  }}
+                  type="button"
+                >
+                  Add Option
+                </button>
+                 </div> */}
+               
+            </div>
+            {/* {agenda.map((item, i) => (
+              <div className="remove_option2" key={i}>
+                <ul>
+                  <ol>{item}</ol>
+                </ul>
+               
+                <button
+                  type="button"
+                  className={styles.removeBtn}
+                  onClick={() => removeListAgenda(item)}
+                >
+                  Remove Option
+                </button>
+              </div>
+            ))} */}
+
 
           <div className={styles.inputContainer}>
             <div className="radioContainer">
@@ -374,11 +452,26 @@ const CandidateRegister = ({ history }) => {
                 onClose={() => setCancelModal(false)}
                 footer=""
               />
+
+<Modal
+                isVisible={disciplinaryModal}
+                title="if yes what disciplinary have you served?"
+                size="md"
+                content={
+                  <div className="terms">
+                    <div className="btnContainer">
+                     <input type="text" value={disciplinary} onChange={(e)=>setDisciplinary(e.target.value)} />
+                    </div>
+                  </div>
+                }
+                onClose={() => setDisciplinaryModal(false)}
+                footer=""
+              />
             </div>
           </div>
         </div>
       </div>
-    </div>
+    
   );
 };
 
