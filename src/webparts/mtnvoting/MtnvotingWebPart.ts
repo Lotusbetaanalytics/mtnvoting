@@ -24,6 +24,13 @@ export default class MtnvotingWebPart extends BaseClientSideWebPart<IMtnvotingWe
     });
     return Promise.resolve(); 
   }
+  protected get isRenderAsync(): boolean {
+    return true;
+  }
+  
+  protected renderCompleted(): void {
+    super.renderCompleted();
+  }
   public render(): void {
     const element: React.ReactElement<IMtnvotingProps> = React.createElement(
       Mtnvoting,
@@ -35,7 +42,10 @@ export default class MtnvotingWebPart extends BaseClientSideWebPart<IMtnvotingWe
     );
 
     ReactDom.render(element, this.domElement);
+        // async rendering completed
+        this.renderCompleted();
   }
+  
 
   protected onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);

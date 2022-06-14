@@ -36,18 +36,18 @@ const CandidateRegister = ({ history }) => {
   const [constituencies, setConstituencies] = React.useState([]);
 
   const [open, setOpen] = React.useState(false);
-  const [loading,setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [cancelModal, setCancelModal] = React.useState(false);
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
-  const termsData = [{ value: "Yes" }, { value: "No" }];
+  const [agree, setAgree] = React.useState(false);
 
   const reader = new FileReader();
 
   React.useEffect(() => {
     localStorage.removeItem("dp");
-   
+
     sp.profiles.myProperties
       .get()
 
@@ -59,7 +59,7 @@ const CandidateRegister = ({ history }) => {
           .items.get()
           .then((resp) => {
             setRegions(resp);
-            
+
           });
       });
   }, []);
@@ -91,9 +91,16 @@ const CandidateRegister = ({ history }) => {
     setService("");
     setLocation("");
     setDateEmployed("");
+    setConstituency("")
     setAgenda("");
     localStorage.removeItem("dp");
+    setCancelModal(false)
   };
+  const checkboxHandler = () => {
+    setAgree(!agree);
+  }
+
+
   const submitHandler = () => {
     if (terms && terms == "No") {
       swal("Warning!", "you have to agree with terms and condition", "error");
@@ -148,7 +155,7 @@ const CandidateRegister = ({ history }) => {
       .get()
       .then((res) => {
         setConstituencies(res);
-        
+
       });
   };
 
@@ -216,29 +223,29 @@ const CandidateRegister = ({ history }) => {
             size={"mtn__child"}
           />
           <div className={styles.space}>
-            
+
             <ImageUpload
-            title="Upload your picture"
-            value={passport}
-            onChange={(e) => {
-              reader.readAsDataURL(e.target.files[0]);
-              reader.onload = function () {
-                console.log(reader.result); //base64encoded string
-                localStorage.setItem("dp", JSON.stringify(reader.result));
-              };
-              reader.onerror = function (error) {
-                console.log("Error: ", error);
-              };
-            }}
-          />
+              title="Upload your picture"
+              value={passport}
+              onChange={(e) => {
+                reader.readAsDataURL(e.target.files[0]);
+                reader.onload = function () {
+                  console.log(reader.result); //base64encoded string
+                  localStorage.setItem("dp", JSON.stringify(reader.result));
+                };
+                reader.onerror = function (error) {
+                  console.log("Error: ", error);
+                };
+              }}
+            />
 
-          <div className={styles.imageContainer}>
-            <img src={imagePassport} alt={employeeName} />
-          </div>
-          
+            <div className={styles.imageContainer}>
+              <img src={imagePassport} alt={employeeName} />
+            </div>
+
           </div>
 
-          
+
           <Radio
             onChange={(e) => setService(e.target.value)}
             title="Have you served on the council before?"
@@ -279,82 +286,68 @@ const CandidateRegister = ({ history }) => {
                 size="md"
                 content={
                   <div className="terms">
-                    {loading  ? (<Spinner/>) : (<div>
-                       <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
-                       <h5>
-                         ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
-                         ELECTION
-                       </h5>
-                       <p>
-                         Introduction In line with the provisions of the MTNN
-                         Employee Council Constitution, election into the MTNN
-                         Employee Council holds once in two (2) years. The last
-                         election took place in October 2018 and based on the
-                         constitution, the next election is planned to hold in
-                         October 2020. As we prepare for another Employee Council
-                         election scheduled to hold in October 30 2020, find below
-                         the proposed plan for the forthcoming elections, including
-                         general eligibility criteria for contesting elective
-                         office etc. Eligibility Criteria Candidates that will
-                         contest for available seats in each business region /
-                         location will be required to meet the following criteria:{" "}
-                       </p>
-                       <ul>
-                         <li>
-                           Only confirmed national staff on job levels 1 & 2 are
-                           eligible to contest for seats on the Employee Council.
-                         </li>
-                         <li>
-                           ALL permanent national employees levels (both confirmed
-                           and unconfirmed) on levels 1 & 2 are eligible to vote.
-                         </li>
-                         <li>
-                           Employees who have an active disciplinary sanction are
-                           not eligible to contest.
-                         </li>
-                         <li>
-                           Incumbent representatives who have served two
-                           consecutive terms (i.e. 4 years) are not eligible to
-                           contest.
-                         </li>
-                         <li>
-                           Incumbent representatives who have served only one term
-                           (i.e. 2 years) are eligible to contest.
-                         </li>
-                         <li>
-                           Staff can only contest for allocated seats within their
-                           region/location.
-                         </li>
-                       </ul>
-                        <Radio
-                        onChange={(e) => setDisciplinary(e.target.value)}
-                        title="I have read and agreed on the terms and conditions"
-                        options={termsData}
-                        value={terms}
-                      />
-                      </div>)}
-                      <div className="btnContainer">
-                       {terms == "No" ? (
-                         <button
-                           onClick={submitHandler}
-                           type="button"
-                           className="mtn__btn mtn__yellow"
-                           disabled
-                         >
-                           Proceed
-                         </button>
-                       ) : (
-                         <button
-                           onClick={submitHandler}
-                           type="button"
-                           className="mtn__btn mtn__yellow"
-                         >
-                           Proceed
-                         </button>
-                        
-                       )}
-                      </div>
-     
+                    {loading ? (<Spinner />) : (<div>
+                      <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
+                      <h5>
+                        ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
+                        ELECTION
+                      </h5>
+                      <p>
+                        Introduction In line with the provisions of the MTNN
+                        Employee Council Constitution, election into the MTNN
+                        Employee Council holds once in two (2) years. The last
+                        election took place in October 2018 and based on the
+                        constitution, the next election is planned to hold in
+                        October 2020. As we prepare for another Employee Council
+                        election scheduled to hold in October 30 2020, find below
+                        the proposed plan for the forthcoming elections, including
+                        general eligibility criteria for contesting elective
+                        office etc. Eligibility Criteria Candidates that will
+                        contest for available seats in each business region /
+                        location will be required to meet the following criteria:{" "}
+                      </p>
+                      <ul>
+                        <li>
+                          Only confirmed national staff on job levels 1 & 2 are
+                          eligible to contest for seats on the Employee Council.
+                        </li>
+                        <li>
+                          ALL permanent national employees levels (both confirmed
+                          and unconfirmed) on levels 1 & 2 are eligible to vote.
+                        </li>
+                        <li>
+                          Employees who have an active disciplinary sanction are
+                          not eligible to contest.
+                        </li>
+                        <li>
+                          Incumbent representatives who have served two
+                          consecutive terms (i.e. 4 years) are not eligible to
+                          contest.
+                        </li>
+                        <li>
+                          Incumbent representatives who have served only one term
+                          (i.e. 2 years) are eligible to contest.
+                        </li>
+                        <li>
+                          Staff can only contest for allocated seats within their
+                          region/location.
+                        </li>
+                      </ul>
+                      <div className={styles.checkBox}><input type="checkbox" id="agree" onChange={checkboxHandler} /></div>
+                      <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+                    </div>
+                    )}
+                    <div className="btnContainer">
+                      <button
+                        onClick={submitHandler}
+                        type="button"
+                        className="mtn__btn mtn__yellow"
+                        disabled={!agree}
+                      >
+                        Proceed
+                      </button>
+                    </div>
+
                   </div>
                 }
                 onClose={() => setOpen(false)}

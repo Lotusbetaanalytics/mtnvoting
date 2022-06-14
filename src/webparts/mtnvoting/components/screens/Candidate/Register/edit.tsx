@@ -40,6 +40,30 @@ const CandidateEdit = ({ history }) => {
   const [constituencies, setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
+  const [agree, setAgree] = React.useState(false);
+  const [cancelModal, setCancelModal] = React.useState(false);
+
+  const cancelButton = () => {
+    setCancelModal(true);
+
+  };
+
+  const cancelHandler = () => {
+    setDisciplinary("");
+    setJobLevel("");
+    setRegion("");
+    setDisciplinary("");
+    setService("");
+    setLocation("");
+    setDateEmployed("");
+    setAgenda("");
+    setPassport("")
+    setConstituency("")
+    setCancelModal(false)
+  };
+  const checkboxHandler = () => {
+    setAgree(!agree);
+  }
 
   React.useEffect(() => {
     setLoading(true);
@@ -52,7 +76,6 @@ const CandidateEdit = ({ history }) => {
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((res) => {
-            console.log(res)
             setData(res[0]);
             setLoading(false);
             setEmployeeName(res[0].EmployeeName);
@@ -66,8 +89,9 @@ const CandidateEdit = ({ history }) => {
             setPassport(res[0].PassportPhotograph);
             setAgenda(res[0].Agenda);
             setConstituency(res[0].Constituency);
-            setId(res[0].id);
-            console.log(res[0]);
+
+            setId(res[0].ID);
+
           });
       });
     sp.web.lists
@@ -82,7 +106,7 @@ const CandidateEdit = ({ history }) => {
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
-  const termsData = [{ value: "Yes" }, { value: "No" }];
+
 
   const reader = new FileReader();
 
@@ -91,7 +115,7 @@ const CandidateEdit = ({ history }) => {
   };
 
   const submitHandler = () => {
-    const imagePassport = JSON.parse(localStorage.getItem("dp"));
+
     sp.web.lists
       .getByTitle("Nominees")
       .items.getById(id)
@@ -104,7 +128,7 @@ const CandidateEdit = ({ history }) => {
         Location: location,
         ServedOnTheCouncil: service,
         DisciplinarySanction: disciplinary,
-        PassportPhotograph: imagePassport,
+        PassportPhotograph: passport,
         Agenda: agenda,
         Constituency: constituency,
       })
@@ -130,85 +154,87 @@ const CandidateEdit = ({ history }) => {
       .get()
       .then((res) => {
         setLocations(res);
-      })};
+      })
+  };
 
-      const locationHandler = (e) => {
-        setLocation(e.target.value);
-        sp.web.lists
-          .getByTitle(`Constituency`)
-          .items.filter(`Location eq '${e.target.value}'`)
-          .get()
-          .then((res) => {
-            setConstituencies(res);
-            console.log(constituencies)
-          })};
+  const locationHandler = (e) => {
+    setLocation(e.target.value);
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Location eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        console.log(res)
+        setConstituencies(res);
+      })
+  };
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
       <div className="contentsRight__">
         <Header title="Edit registration" />
         <div className="mtn__InputFlex">
-       
-            <Input
-              title="Employee Name"
-              value={employeeName}
-              onChange={(e) => setEmployeeName(e.target.value)}
-              type="text"
-              readOnly={false}
-            />
-            <Input
-              title="Employee Email"
-              value={employeeEmail}
-              onChange={(e) => setEmployeeEmail(e.target.value)}
-              type="email"
-              readOnly={false}
-            />
-          
-            <Input
-              title="Date Employed"
-              value={dateEmployed}
-              onChange={(e) => setDateEmployed(e.target.value)}
-              type="date"
-              readOnly={false}
-            />
-  
-            <Select
-              onChange={(e) => setJobLevel(e.target.value)}
-              value={jobLevel}
-              title="Job level"
-              options={jobLevelData}
-            />
 
-            <Select
-              value={region}
-              onChange={regionHandler}
-              required={false}
-              title="Region"
-              options={regions}
-              filter={true}
-              filterOption="Title"
-            />
-          
-            <Select
-              value={location}
-              onChange={locationHandler}
-              required={false}
-              title="Location"
-              options={locations}
-              filter={true}
-              filterOption="Title"
-            />
-            <Select
-              value={constituency}
-              onChange={(e) => setConstituency(e.target.value)}
-              required={false}
-              title="Constituency"
-              options={constituencies}
-              filter={true}
-              filterOption="Title"
-              size={"mtn__child"}
-            />
-             <div className={styles.space}>
+          <Input
+            title="Employee Name"
+            value={employeeName}
+            onChange={(e) => setEmployeeName(e.target.value)}
+            type="text"
+            readOnly={false}
+          />
+          <Input
+            title="Employee Email"
+            value={employeeEmail}
+            onChange={(e) => setEmployeeEmail(e.target.value)}
+            type="email"
+            readOnly={false}
+          />
+
+          <Input
+            title="Date Employed"
+            value={dateEmployed}
+            onChange={(e) => setDateEmployed(e.target.value)}
+            type="date"
+            readOnly={false}
+          />
+
+          <Select
+            onChange={(e) => setJobLevel(e.target.value)}
+            value={jobLevel}
+            title="Job level"
+            options={jobLevelData}
+          />
+
+          <Select
+            value={region}
+            onChange={regionHandler}
+            required={false}
+            title="Region"
+            options={regions}
+            filter={true}
+            filterOption="Title"
+          />
+
+          <Select
+            value={location}
+            onChange={locationHandler}
+            required={false}
+            title="Location"
+            options={locations}
+            filter={true}
+            filterOption="Title"
+          />
+          <Select
+            value={constituency}
+            onChange={(e) => setConstituency(e.target.value)}
+            required={false}
+            title="Constituency"
+            options={constituencies}
+            filter={true}
+            filterOption="Title"
+            size={"mtn__child"}
+          />
+          <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
               value={""}
@@ -216,48 +242,51 @@ const CandidateEdit = ({ history }) => {
                 reader.readAsDataURL(e.target.files[0]);
 
                 reader.onload = function () {
-                  console.log(reader.result); //base64encoded string
-                  localStorage.setItem("dp", JSON.stringify(reader.result));
+                  setPassport(String(reader.result))
+                  //base64encoded string
+
                 };
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
                 };
               }}
             />
-             <div className={styles.imageContainer}>
-            <img src={passport} alt={employeeName} />
+            <div className={styles.imageContainer}>
+              <img src={passport} alt={employeeName} />
+            </div>
           </div>
-          </div>
-          
-            <Radio
-              onChange={(e) => setService(e.target.value)}
-              title="Have you served on the council before?"
-              options={serviceData}
-              value={service}
-            />
-          
-            <Radio
-              onChange={(e) => setDisciplinary(e.target.value)}
-              title="Do you have any disciplinary sanction?"
-              options={disciplinaryData}
-              value={disciplinary}
-            />
-         
 
-          
-            <Textarea
-              onChange={(e) => setAgenda(e.target.value)}
-              title="State your five point agenda"
-              value={agenda}
-            />
-        
-          
+          <Radio
+            onChange={(e) => setService(e.target.value)}
+            title="Have you served on the council before?"
+            options={serviceData}
+            value={service}
+          />
+
+          <Radio
+            onChange={(e) => setDisciplinary(e.target.value)}
+            title="Do you have any disciplinary sanction?"
+            options={disciplinaryData}
+            value={disciplinary}
+          />
+
+
+
+          <Textarea
+            onChange={(e) => setAgenda(e.target.value)}
+            title="State your five point agenda"
+            value={agenda}
+          />
+
+
           <div className={styles.inputContainer}>
             <div className="radioContainer">
               <div className="minimizeBtn">
-                <button className="mtn__btn mtn__white_blackColor">
+
+                <button onClick={cancelButton} className="mtn__btn mtn__white_blackColor" >
                   Cancel
                 </button>
+
                 <button
                   className="mtn__btn mtn__yellow bg"
                   onClick={approveHandler}
@@ -317,42 +346,51 @@ const CandidateEdit = ({ history }) => {
                         region/location.
                       </li>
                     </ul>
+                    <div className={styles.checkBox}>
+                      <input type="checkbox" id="agree" onChange={checkboxHandler} />
+                    </div>
+                    <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
 
-                    <Radio
-                      onChange={(e) => setDisciplinary(e.target.value)}
-                      title="I have read and agreed on the terms and conditions"
-                      options={termsData}
-                      value={terms}
-                    />
                     <div className="btnContainer">
-                      {terms == "No" ? (
-                        <button
-                          type="button"
-                          className="mtn__btn mtn__yellow"
-                          disabled
-                        >
-                          Proceed
-                        </button>
-                      ) : (
-                        <button
-                          onClick={submitHandler}
-                          type="button"
-                          className="mtn__btn mtn__yellow"
-                        >
-                          Proceed
-                        </button>
-                      )}
+                      <button
+                        onClick={submitHandler}
+                        type="button"
+                        className="mtn__btn mtn__yellow"
+                        disabled={!agree}
+                      >
+                        Proceed
+                      </button>
                     </div>
                   </div>
                 }
                 onClose={() => setOpen(false)}
                 footer=""
               />
+              <Modal
+                isVisible={cancelModal}
+                title="Are you sure you want to cancel edit proccess?"
+                size="md"
+                content={
+                  <div className="terms">
+                    <div className="btnContainer">
+                      <button
+                        onClick={cancelHandler}
+                        type="button"
+                        className="mtn__btn mtn__yellow"
+                      >
+                        Yes
+                      </button>
+                    </div>
+                  </div>
+                }
+                onClose={() => setCancelModal(false)}
+                footer=""
+              />
             </div>
           </div>
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 

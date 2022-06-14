@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, Spinner } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 const AdminRevoked = ({ history }) => {
@@ -27,19 +27,21 @@ const AdminRevoked = ({ history }) => {
 
 
     const [data, setData] = React.useState([])
-
+    const [loading, setLoading] = React.useState(false)
     React.useEffect(() => {
+        setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Revoked'`).get().then
             ((res) => {
                 setData(res)
+                setLoading(false)
             })
     }, [])
     return (
         <div className='appContainer'>
             <AdminNavigation revoked={`active`} />
             <div className='contentsRight'>
-                <Header title='Revoked Request' />
-                <MaterialTable
+                <AdminHeader title='Revoked Request' />
+                {loading ? <Spinner /> : <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -85,7 +87,7 @@ const AdminRevoked = ({ history }) => {
                             </button>
                         ),
                     }}
-                />
+                />}
             </div>
         </div>
     )

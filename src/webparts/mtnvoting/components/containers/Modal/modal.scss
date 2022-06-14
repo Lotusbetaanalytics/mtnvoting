@@ -12,10 +12,9 @@
     background-color: rgba(0, 0, 0, 0.25);
     animation-name: appear;
     animation-duration: 300ms;
-
-}
-
-.modal-dialog {
+  }
+  
+  .modal-dialog {
     width: 100%;
     background: white;
     position: relative;
@@ -31,70 +30,72 @@
     animation-name: slide-in;
     animation-duration: 0.5s;
     border-radius: 5px;
-}
-
-.md {
+  }
+  
+  .md {
     max-width: 550px;
-}
-
-.lg {
+  }
+  .sm {
+    max-width: 25vw;
+  }
+  
+  .lg {
     max-width: 750px;
-}
-
-
-.xl {
+  }
+  
+  .xl {
     max-width: 1250px;
-}
-
-.modal-header,
-.modal-footer {
+  }
+  
+  .modal-header,
+  .modal-footer {
     display: flex;
     align-items: center;
     padding: 1rem;
-}
-
-.modal-header {
+  }
+  
+  .modal-header {
     /* border-bottom: 1px solid #dbdbdb; */
     justify-content: space-between;
     padding-left: 1rem;
-}
-
-.modal-footer {
+  }
+  
+  .modal-footer {
     /* border-top: 1px solid #dbdbdb; */
     justify-content: flex-end;
-}
-
-.modal-close {
+  }
+  
+  .modal-close {
     cursor: pointer;
     padding: 1rem;
     margin: -1rem -1rem -1rem auto;
     font-size: 2rem;
-}
-
-.modal-body {
+  }
+  
+  .modal-body {
     overflow: auto;
-}
-
-.modal-content {
+  }
+  
+  .modal-content {
     padding: 1rem;
-}
-
-@keyframes appear {
+  }
+  
+  @keyframes appear {
     from {
-        opacity: 0;
+      opacity: 0;
     }
-
+  
     to {
-        opacity: 1;
+      opacity: 1;
     }
-}
-
-@keyframes slide-in {
+  }
+  
+  @keyframes slide-in {
     from {
-        transform: translateY(-150px);
+      transform: translateY(-150px);
     }
-
+  
     to {
-        transform: translateY(0);
+      transform: translateY(0);
     }
-}
+  }
