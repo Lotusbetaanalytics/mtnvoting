@@ -94,10 +94,7 @@ const CandidateEdit = ({ history }) => {
             setConstituency(res[0].Constituency);
           
             setId(res[0].ID);
-            setList(agenda)
-            console.log(list, "this is it")
-           const agendaList = list.split(" ")
-            console.log(agendaList)
+          
                
           
           });

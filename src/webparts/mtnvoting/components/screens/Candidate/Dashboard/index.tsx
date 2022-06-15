@@ -4,7 +4,10 @@ import styles from './styles.module.scss'
 import { sp } from "@pnp/sp";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
+// import moment from 'moment';
 const CandidateDashboard = () => {
+
+    //   const moment = require('moment');
 
     const [voteNumber, setVoteNumber] = React.useState(0);
     const [voteDate, setVoteDate] = React.useState("");
@@ -38,7 +41,8 @@ const CandidateDashboard = () => {
     React.useEffect(()=>{
         sp.web.lists.getByTitle(`Constituency`).items.filter(`Title eq '${location}'`).get().then
         ((res) => {
-            console.log(res.length>0&&res[0].Date)
+            setVoteDate(res.length>0&&res[0].Date)
+           
         //    console.log(constituency)
         })
    
@@ -53,7 +57,7 @@ const CandidateDashboard = () => {
                 <Header title='Dashboard' />
                 <div className={styles.cardContainer}>
                     <Card title="Total number of accumulated vote" count={voteNumber} color="mtn__white" url={""} />
-                    <Card2 title="Date of voting exercise" info={"22,December 2023"} color="mtn__white" />
+                    <Card2 title="Date of voting exercise" info={voteDate} color="mtn__white" />
 
                 </div>
             </div>

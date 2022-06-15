@@ -4,6 +4,7 @@
     "target": "es5",
     "forceConsistentCasingInFileNames": true,
     "module": "esnext",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "jsx": "react",
     "declaration": true,

@@ -30,7 +30,7 @@ const CandidateRegister = ({ history }) => {
   const [service, setService] = React.useState("");
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
-  // const [agenda, setAgenda] = React.useState("");
+ 
   const [terms, setTerms] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [constituencies, setConstituencies] = React.useState([]);
@@ -42,25 +42,12 @@ const CandidateRegister = ({ history }) => {
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "No" }, { value: "Yes" }];
   const [agree,setAgree] = React.useState(false);
-
-  const [listAgenda, setListAgenda] = React.useState("");
   const [disciplinaryModal,setDisciplinaryModal] = React.useState(false)
 
   const [agenda, setAgenda] = React.useState("");
   const reader = new FileReader();
-  const textInput = React.useRef();
-  // console.log(textInput);
  
-
-  // const removeListAgenda = (i) => {
-  //   let filtered = agenda.filter((agendas) => {
-  //     return agendas !== i;
-  //   });
-  //   setAgenda(filtered);
-  // };
-  // const addListAgenda = () => {
-  //   setAgenda([...agenda, listAgenda ]);
-  // };
+ 
 
   React.useEffect(() => {
     localStorage.removeItem("dp");
@@ -78,18 +65,19 @@ const CandidateRegister = ({ history }) => {
        .get()
          .then((items) => {
               console.log(items.length )
-          // if (items.length >= 0) {
-          //   swal("Error", "You are already registered", "error");
-          //   history.push("/");
-          //   return;
-          // }
+          if (items.length >= 0) {
+            swal("Error", "You are already registered", "error");
+            history.push("/");
+            return;
+          }
         })
 
         sp.web.lists
-          .getByTitle(`Region`)
+          .getByTitle(`Constituency`)
           .items.get()
           .then((resp) => {
-            setRegions(resp);
+            console.log(resp)
+            setConstituencies(resp);
             
           });
       });
@@ -175,25 +163,25 @@ const disciplinaryHandler =(e) =>{
         });
     }
   };
+  const ConstituencyHandler = (e) => {
+    setConstituency(e.target.value);
+    sp.web.lists
+      .getByTitle(`Region`)
+      .items.filter(`Title eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        setRegions(res);
+      });
+  };
+
   const regionHandler = (e) => {
     setRegion(e.target.value);
     sp.web.lists
-      .getByTitle(`Location`)
+      .getByTitle(`Loaction`)
       .items.filter(`Region eq '${e.target.value}'`)
       .get()
       .then((res) => {
         setLocations(res);
-      });
-  };
-
-  const locationHandler = (e) => {
-    setLocation(e.target.value);
-    sp.web.lists
-      .getByTitle(`Constituency`)
-      .items.filter(`Location eq '${e.target.value}'`)
-      .get()
-      .then((res) => {
-        setConstituencies(res);
         
       });
   };
@@ -233,6 +221,17 @@ const disciplinaryHandler =(e) =>{
             options={jobLevelData}
           />
 
+        <Select
+            value={constituency}
+            onChange={ConstituencyHandler}
+            required={false}
+            title="Constituency"
+            options={constituencies}
+            filter={true}
+            filterOption="Title"
+            size={"mtn__child"}
+          />
+
           <Select
             onChange={regionHandler}
             value={region}
@@ -243,7 +242,7 @@ const disciplinaryHandler =(e) =>{
           />
 
           <Select
-            onChange={locationHandler}
+            onChange={(e)=>setLocation(e.target.value)}
             value={location}
             title="Location"
             options={locations}
@@ -251,16 +250,7 @@ const disciplinaryHandler =(e) =>{
             filterOption="Title"
           />
 
-          <Select
-            value={constituency}
-            onChange={(e) => setConstituency(e.target.value)}
-            required={false}
-            title="Constituency"
-            options={constituencies}
-            filter={true}
-            filterOption="Title"
-            size={"mtn__child"}
-          />
+          
           <div className={styles.space}>
             
             <ImageUpload
@@ -302,46 +292,10 @@ const disciplinaryHandler =(e) =>{
             title="State your five point agenda"
             value={agenda}
           />
-           {/* <Input
-                  title="five point agenda"
-                  type={"text"}
-                  onChange={(e) => {
-                    setListAgenda(e.target.value);
-                  }}
-                  value={listAgenda}
-              
-                /> */}
-                 {/* <div>
-                 <button
-                  className={styles.removeBtn}
-                  onClick={() => {
-                    addListAgenda();
-                   
-                  }}
-                  type="button"
-                >
-                  Add Option
-                </button>
-                 </div> */}
+           
                
             </div>
-            {/* {agenda.map((item, i) => (
-              <div className="remove_option2" key={i}>
-                <ul>
-                  <ol>{item}</ol>
-                </ul>
-               
-                <button
-                  type="button"
-                  className={styles.removeBtn}
-                  onClick={() => removeListAgenda(item)}
-                >
-                  Remove Option
-                </button>
-              </div>
-            ))} */}
-
-
+           
           <div className={styles.inputContainer}>
             <div className="radioContainer">
               <div className="minimizeBtn">

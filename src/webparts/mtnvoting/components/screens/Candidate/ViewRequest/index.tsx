@@ -1,5 +1,12 @@
 import * as React from "react";
-import { Text, Header, Spinner, Textarea, Modal, CandidateNavigation, NewLineToBr } from "../../../containers";
+import {
+  Text,
+  Header,
+  Spinner,
+  Textarea,
+  Modal,
+  CandidateNavigation,
+} from "../../../containers";
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
@@ -9,8 +16,8 @@ import styles from "../Register/styles.module.scss";
 const ViewRequest = ({ history }) => {
   const [data, setData] = React.useState({} as any);
   const [loading, setLoading] = React.useState(false);
-  const [agenda,setAgenda] = React.useState("");
-  const [list,setList] = React.useState([]);
+  const [agenda, setAgenda] = React.useState("");
+  const [list, setList] = React.useState([]);
   React.useEffect(() => {
     setLoading(true);
     sp.profiles.myProperties
@@ -26,18 +33,30 @@ const ViewRequest = ({ history }) => {
             setLoading(false);
             console.log(res);
             setAgenda(res[0].Agenda);
-            
-            console.log(res[0].Agenda, "this is it")
-           setList(res[0].Agenda.split("\n"))
-          
+
+            console.log(res[0].Agenda, "this is it");
+            setList(res[0].Agenda.split("\n"));
           });
+          sp.web.lists
+          .getByTitle("Registration")
+          .items.filter(`EmployeeEmail eq '${response.Email}'`)
+          .get()
+            .then((items) => {
+                 console.log(items.length )
+            //  if (items.length <= 0) {
+            //    swal("Error", "You are have not registered", "error");
+            //    history.push("/");
+            //    return;
+            //  }
+           })
       });
+     
   }, []);
 
   const editHandler = () => {
     history.push(`/candidate/edit`);
   };
-console.log(list)
+  console.log(list);
   return (
     <div className="appContainer">
       <CandidateNavigation viewRequest={`active`} />
@@ -76,7 +95,11 @@ console.log(list)
               />
               <Text title="Region" value={data.Region} size="small" />
               <Text title="Location" value={data.Location} size="small" />
-              <Text title="Constituency" value={data.Constituency} size="small" />
+              <Text
+                title="Constituency"
+                value={data.Constituency}
+                size="small"
+              />
               <Text
                 title="Have you served on the council before "
                 value={data.ServedOnTheCouncil}
@@ -87,29 +110,15 @@ console.log(list)
                 value={data.DisciplinarySanction}
                 size="small"
               />
-             <div>
-              <ul>
-
-
-              {list.map((item,i)=>(
-                
-                  <li key={i}>
-                    {item}
-                  </li>
-                
-              ))}
-              </ul>
-             </div>
-              {/* {}<Text
-                title="State your five point agenda"
-                // value={data.Agenda}
-                
-                size="medium"
-              /> */}
-
-{/* <p>
-  <NewLineToBr> {data.agenda} </NewLineToBr>
-</p> */}
+              <div className={styles.agenda}>
+                <p>Five point agenda</p>
+                <ul> 
+                  {list.map((item, i) => (
+                    <li key={i}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+             
 
               <div className="minimizeBtn_">
                 <button
