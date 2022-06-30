@@ -29,13 +29,18 @@ const ViewRequest = ({ history }) => {
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((res) => {
-            setData(res[0]);
+            if (res.length >= 0){
+              setData(res[0]);
             setLoading(false);
             console.log(res);
             setAgenda(res[0].Agenda);
 
             console.log(res[0].Agenda, "this is it");
             setList(res[0].Agenda.split("\n"));
+           } else {
+            "this user has not regiistered"
+           }
+            
           });
           sp.web.lists
           .getByTitle("Registration")
@@ -65,11 +70,11 @@ const ViewRequest = ({ history }) => {
         <div className="textContainer">
           <div className="viewFlex">
             <div className="photo">
-              {data.PassportPhotograph && (
+              {data.PassportPhotograph ? (
                 <div>
                   <img src={data.PassportPhotograph} alt={data.EmployeeName} />
                 </div>
-              )}
+              ) : "No image found"}
             </div>
           </div>
 

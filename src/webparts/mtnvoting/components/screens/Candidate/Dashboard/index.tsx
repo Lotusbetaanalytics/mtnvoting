@@ -21,10 +21,16 @@ const CandidateDashboard = () => {
                     .items.filter(`EmployeeEmail eq '${response.Email}'`)
                     .get()
                     .then((res) => {
-                        setLocation((prev)=>{
-                            prev = res[0].Constituency
-                            return prev
-                        })
+                        if (res.length >= 0 ) {
+                            setLocation((prev)=>{
+                                prev = res[0].Constituency
+                                return prev
+                            })
+                            
+                        } else {
+                            return "no data"
+                        }
+                       
                         console.log(location)
                         sp.web.lists
                         .getByTitle(`Votes`)
@@ -38,15 +44,14 @@ const CandidateDashboard = () => {
             })
     }, [])
 
-    React.useEffect(()=>{
-        sp.web.lists.getByTitle(`Constituency`).items.filter(`Title eq '${location}'`).get().then
-        ((res) => {
-            setVoteDate(res.length>0&&res[0].Date)
+    // React.useEffect(()=>{
+    //     sp.web.lists.getByTitle(`Constituency`).items.filter(`Title eq '${location}'`).get().then
+    //     ((res) => {
+    //         setVoteDate(res.length>0&&res[0].Date)
            
-        //    console.log(constituency)
-        })
+    //     })
    
-    },[location])
+    // },[location])
 
 
 
@@ -56,8 +61,8 @@ const CandidateDashboard = () => {
             <div className='contentsRight'>
                 <Header title='Dashboard' />
                 <div className={styles.cardContainer}>
-                    <Card title="Total number of accumulated vote" count={voteNumber} color="mtn__white" url={""} />
-                    <Card2 title="Date of voting exercise" info={voteDate} color="mtn__white" />
+                    <Card title="Total number of accumulated vote" count={"40"} color="mtn__white" url={""} />
+                    <Card2 title="Date of voting exercise" info={"22,december,1840"} color="mtn__white" />
 
                 </div>
             </div>

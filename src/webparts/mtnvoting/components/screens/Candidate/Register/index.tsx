@@ -65,7 +65,7 @@ const CandidateRegister = ({ history }) => {
        .get()
          .then((items) => {
               console.log(items.length )
-          if (items.length >= 0) {
+          if (items.length > 0) {
             swal("Error", "You are already registered", "error");
             history.push("/");
             return;
