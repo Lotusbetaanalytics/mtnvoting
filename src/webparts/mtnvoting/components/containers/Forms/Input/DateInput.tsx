@@ -13,7 +13,6 @@ const DateInput = ({ onChange, value, type, title, readOnly = false, required = 
             onFocus={(e) => (e.currentTarget.type = "date")}
             onBlur={(e) => (e.currentTarget.type = "text")}
             required={required}
-
         />
     </div>;
 };

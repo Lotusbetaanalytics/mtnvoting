@@ -50,6 +50,8 @@ const AdminViewApproved = ({ history, match }) => {
             console.error(e);
         });
     }
+    const info = data && data.Agenda ? data.Agenda : "[\"...loading\"]"
+    const resp = JSON.parse(info)
     return (
         <div className='appContainer'>
             <AdminNavigation approved={`active`} />
@@ -72,7 +74,12 @@ const AdminViewApproved = ({ history, match }) => {
                             <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
                             <Text title="If yes, state the period you served " value={data.PeriodServed} />
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                            <Text title="State your five point agenda" value={data.Agenda} size="large" />
+                            <ul>
+                                <p>State your five point agenda</p>
+                                {resp && resp.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                ))}
+                            </ul>
                             <div className='minimizeBtn'>
                                 <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Revoke</button>
                             </div>

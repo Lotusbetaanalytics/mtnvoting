@@ -15,7 +15,7 @@ import { SPHttpClient, SPHttpClientConfiguration, SPHttpClientResponse } from '@
 export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
   public render(): React.ReactElement<IMtnvotingProps> {
     jQuery("#workbenchPageContent").prop("style", "max-width: none"); jQuery(".SPCanvas-canvas").prop("style", "max-width: none"); jQuery(".CanvasZone").prop("style", "max-width: none");
-    this.props.context.spHttpClient.get(`https://lotusbetaanalytics.sharepoint.com/sites/business_solutions/_api/lists/GetByTitle('CURRENT HCM STAFF LIST-test')/items?$skiptoken=Paged=TRUE`,
+    this.props.context.spHttpClient.get(`https://mtncloud.sharepoint.com/sites/MTNNigeriaComplianceUniverse/testenv/_api/lists/GetByTitle('CURRENT HCM STAFF LIST')/items?$skiptoken=Paged=TRUE`,
       SPHttpClient.configurations.v1)
       .then((response: SPHttpClientResponse) => {
         response.json().then((responseJSON: any) => {
@@ -46,8 +46,8 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
           <Route path="/admin/revoked/:id" exact component={AdminViewRevoked} />
           <Route path="/admin/config" exact component={AdminConfig} />
           <Route path="/candidate" exact component={CandidateDashboard} />
-          <Route path="/candidate/register" exact component={CandidateRegister} />
-          <Route path="/candidate/edit" exact component={CandidateEdit} />
+          <Route path="/candidate/register" exact render={(props) => <CandidateRegister context={this.props.pageContext} />} />
+          <Route path="/candidate/edit" exact render={(props) => <CandidateEdit context={this.props.pageContext} />} />
           <Route path="/candidate/view" exact component={CandidateViewRequest} />
           <Route component={ErrorScreen} />
         </Switch>

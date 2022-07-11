@@ -3,6 +3,7 @@ import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, Dat
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
+import styles from './table.module.scss'
 
 
 const AdminResult = ({ history, match }) => {
@@ -20,12 +21,11 @@ const AdminResult = ({ history, match }) => {
     const string: IType = "string";
 
 
-    const [columns, setColumns] = React.useState([
-        { title: "Candidate", field: "EmployeeName", type: "string" as const },
-        { title: "Votes", field: "Date", type: "string" as const },
-    ]);
+
 
     const [data, setData] = React.useState([])
+    const [votes, setVotes] = React.useState([])
+    const [test, setTest] = React.useState([])
     const [locations, setLocations] = React.useState([])
     const [location, setLocation] = React.useState("")
     const [regions, setRegions] = React.useState([])
@@ -38,8 +38,14 @@ const AdminResult = ({ history, match }) => {
     const [loading, setLoading] = React.useState(false)
     const [edit, setEdit] = React.useState(false)
     const [id, setID] = React.useState(null)
-    const today = new Date().toJSON().slice(0, 10)
 
+    const today = new Date().toJSON().slice(0, 10)
+    React.useEffect(() => {
+        sp.web.lists.getByTitle(`Votes`).items.get().then
+            ((res) => {
+                setVotes(res)
+            })
+    }, [])
 
     React.useEffect(() => {
         setLoading(true)
@@ -47,9 +53,20 @@ const AdminResult = ({ history, match }) => {
             ((res) => {
                 setData(res)
                 setLoading(false)
-
             })
     }, [])
+
+    const voteCount = (id) => {
+        var count = votes.filter((x) => x.Nominee == id)
+        console.log(count)
+        return count.length
+    }
+
+
+    const [columns, setColumns] = React.useState([
+        { title: "Candidate", field: "EmployeeName", type: "string" as const },
+        { title: "Votes", field: "", render: rowData => voteCount(rowData.ID), type: "string" as const },
+    ]);
 
     return (
         <div className='appContainer'>
@@ -57,33 +74,54 @@ const AdminResult = ({ history, match }) => {
             <div className='contentsRight'>
                 <AdminHeader title='Results' />
 
-                {loading ? <Spinner /> : <MaterialTable
-                    title=""
-                    columns={columns}
-                    data={data}
-                    options={{
-                        exportButton: true,
-                        actionsCellStyle: {
-                            backgroundColor: "none",
-                            color: "#FF00dd",
-                        },
-                        actionsColumnIndex: -1,
+                {loading ? <Spinner /> :
 
-                        headerStyle: {
-                            backgroundColor: "#FFCC00",
-                            color: "black",
-                        },
+                    <table className={styles.table}>
+                        <thead className={styles.thead}>
+                            <th className={styles.th}>Candidate</th>
+                            <th className={styles.th}>Votes</th>
+                        </thead>
+                        <tbody>
 
-                    }}
-                    style={{
-                        boxShadow: "none",
-                        width: "100%",
-                        background: "none",
-                        fontSize: "13px",
-                    }}
-                // icons={{Add: () => 'Add Row'}}
+                            {data.map((item, i) => (
+                                <tr key={i} className={styles.tr}>
+                                    <td className={styles.td}>{item.EmployeeName}</td>
+                                    <td className={styles.td}>{voteCount(item.ID)}</td>
 
-                />
+                                </tr>
+                            ))}
+
+
+                        </tbody>
+                    </table>
+
+                    // <MaterialTable
+                    //     title=""
+                    //     columns={columns}
+                    //     data={data}
+                    //     options={{
+                    //         exportButton: true,
+                    //         actionsCellStyle: {
+                    //             backgroundColor: "none",
+                    //             color: "#FF00dd",
+                    //         },
+                    //         actionsColumnIndex: -1,
+
+                    //         headerStyle: {
+                    //             backgroundColor: "#FFCC00",
+                    //             color: "black",
+                    //         },
+
+                    //     }}
+                    //     style={{
+                    //         boxShadow: "none",
+                    //         width: "100%",
+                    //         background: "none",
+                    //         fontSize: "13px",
+                    //     }}
+                    // // icons={{Add: () => 'Add Row'}}
+
+                    // />
                 }
             </div>
         </div>
