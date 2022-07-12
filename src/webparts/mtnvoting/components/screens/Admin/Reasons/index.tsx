@@ -1,13 +1,11 @@
 import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput, PeoplePicker } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
-import { graph } from "@pnp/graph";
-import '@pnp/graph/users';
 
 
-const Administrator = ({ history }) => {
+const AdminReason = ({ history }) => {
 
     type IType =
         | "string"
@@ -21,21 +19,18 @@ const Administrator = ({ history }) => {
 
 
     const [columns, setColumns] = React.useState([
-        { title: "Name", field: "Title", type: "string" as const },
-        { title: "Email", field: "Email", type: "string" as const },
-
+        { title: "Reason", field: "Title", type: "string" as const },
     ]);
 
     const [data, setData] = React.useState([])
-    const [name, setName] = React.useState("")
-    const [email, setEmail] = React.useState("")
+    const [Reason, setReason] = React.useState("")
     const [open, setOpen] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
     const [edit, setEdit] = React.useState(false)
     const [id, setID] = React.useState(null)
 
     React.useEffect(() => {
-        sp.web.lists.getByTitle(`Administrator`).items.get().then
+        sp.web.lists.getByTitle(`Reason`).items.get().then
             ((res) => {
                 setData(res)
             })
@@ -44,22 +39,21 @@ const Administrator = ({ history }) => {
 
     // Menubar Items
     const menu = [
-        { name: "Approvals", url: "/admin/add", active: true, },
+        { name: "Approvals", url: "/admin/add", },
         { name: "Voting Exercise", url: "/admin/config", },
-        { name: "Region", url: "/admin/region" },
+        { name: "Region", url: "/admin/region", },
         { name: "Location", url: "/admin/location" },
-        { name: "Revoke Reasons", url: "/admin/reason" },
+        { name: "Revoke Reasons", url: "/admin/reason", active: true, },
     ];
 
     const submitHandler = (e) => {
         e.preventDefault()
-        sp.web.lists.getByTitle("Administrator").items.add({
-            Title: name,
-            Email: email
+        sp.web.lists.getByTitle("Reason").items.add({
+            Title: Reason,
         }).then((res) => {
             setOpen(false)
-            swal("Success", "Administrator added Successfully", "success");
-            sp.web.lists.getByTitle(`Administrator`).items.get().then
+            swal("Success", "Reason added Successfully", "success");
+            sp.web.lists.getByTitle(`Reason`).items.get().then
                 ((res) => {
                     setData(res)
                 })
@@ -73,13 +67,12 @@ const Administrator = ({ history }) => {
 
     const editHandler = (e) => {
         e.preventDefault()
-        sp.web.lists.getByTitle("Administrator").items.getById(id).update({
-            Title: name,
-            Email: email
+        sp.web.lists.getByTitle("Reason").items.getById(id).update({
+            Title: Reason,
         }).then((res) => {
             setOpen(false)
-            swal("Success", "Administrator Edited Successfully", "success");
-            sp.web.lists.getByTitle(`Administrator`).items.get().then
+            swal("Success", "Reason Edited Successfully", "success");
+            sp.web.lists.getByTitle(`Reason`).items.get().then
                 ((res) => {
                     setData(res)
                 })
@@ -91,9 +84,9 @@ const Administrator = ({ history }) => {
     }
     const deleteHandler = (id) => {
         if (window.confirm("Are you sure you want to delete")) {
-            sp.web.lists.getByTitle("Administrator").items.getById(id).delete().then((res) => {
-                swal("Success", "Administrator has been deleted", "success");
-                sp.web.lists.getByTitle(`Administrator`).items.get().then
+            sp.web.lists.getByTitle("Reason").items.getById(id).delete().then((res) => {
+                swal("Success", "Reason has been deleted", "success");
+                sp.web.lists.getByTitle(`Reason`).items.get().then
                     ((res) => {
                         setData(res)
                     })
@@ -103,26 +96,16 @@ const Administrator = ({ history }) => {
     const openHandler = () => {
         setOpen(true)
         setEdit(false)
-        setName("")
-        setEmail("")
-    }
-    const Handler = (e) => {
-        setName(e.target.value)
-        const staff = e.target.value
-        graph.users.top(999).get().then((res) => {
-            const filteredData = res.filter((x) => x.displayName === staff)
-            setEmail(filteredData[0].mail)
-        })
-
+        setReason("")
     }
     return (
         <div className='appContainer'>
             <AdminNavigation config={`active`} />
             <div className='contentsRight'>
-                <AdminHeader title='Administrator' />
+                <AdminHeader title='Reason' />
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Administrator</button>
+                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Reason</button>
                 </div>
                 <MaterialTable
                     title=""
@@ -156,10 +139,11 @@ const Administrator = ({ history }) => {
                             tooltip: "Edit",
 
                             onClick: (event, rowData) => {
+                                setEdit(true)
                                 setOpen(true)
                                 setID(rowData.ID)
-                                setName(rowData.Title)
-                                setEmail(rowData.Email)
+                                setReason(rowData.Title)
+
                             },
                         },
                         {
@@ -185,20 +169,23 @@ const Administrator = ({ history }) => {
                 />
                 <Modal
                     isVisible={open}
-                    title="Administrator"
+                    title="Reason"
                     size='lg'
                     content={
 
                         loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <PeoplePicker
-                                onChange={Handler} value={name} title="Name" filter="displayName" required={true} size="mtn__adult" />
-                            <Input onChange={(e) => setEmail(e.target.value)} value={email} title="Email" type="text" readOnly={true} size="mtn__adult" />
+                            <Input
+                                title="Reason"
+                                value={Reason}
+                                onChange={(e) => setReason(e.target.value)} type="text"
+                                size='mtn__adult'
+                            />
 
                             <button
                                 onClick={edit ? editHandler : submitHandler}
                                 type="button"
                                 className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Administrator" : "Add Administrator"}</button>
+                            >{edit ? "Edit Reason" : "Add Reason"}</button>
 
                         </div>
 
@@ -213,4 +200,4 @@ const Administrator = ({ history }) => {
     )
 }
 
-export default Administrator
+export default AdminReason

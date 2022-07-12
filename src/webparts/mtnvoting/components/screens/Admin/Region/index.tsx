@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
@@ -43,6 +43,7 @@ const AdminRegion = ({ history }) => {
         { name: "Voting Exercise", url: "/admin/config", },
         { name: "Region", url: "/admin/region", active: true, },
         { name: "Location", url: "/admin/location" },
+        { name: "Revoke Reasons", url: "/admin/reason" },
     ];
 
     const submitHandler = (e) => {
@@ -101,7 +102,7 @@ const AdminRegion = ({ history }) => {
         <div className='appContainer'>
             <AdminNavigation config={`active`} />
             <div className='contentsRight'>
-                <Header title='Region' />
+                <AdminHeader title='Region' />
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
                     <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Region</button>

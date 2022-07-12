@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, Spinner } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 const AdminPending = ({ history }) => {
@@ -22,25 +22,26 @@ const AdminPending = ({ history }) => {
         { title: "Region", field: "Region", type: "string" as const },
         { title: "Location", field: "Location", type: "string" as const },
         { title: "Status", field: "Status", type: "string" as const },
-
-
     ]);
 
 
     const [data, setData] = React.useState([])
+    const [loading, setLoading] = React.useState(false)
 
     React.useEffect(() => {
+        setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Pending'`).get().then
             ((res) => {
                 setData(res)
+                setLoading(false)
             })
     }, [])
     return (
         <div className='appContainer'>
             <AdminNavigation pending={`active`} />
             <div className='contentsRight'>
-                <Header title='Pending Request' />
-                <MaterialTable
+                <AdminHeader title='Pending Request' />
+                {loading ? <Spinner /> : <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -56,7 +57,6 @@ const AdminPending = ({ history }) => {
                             backgroundColor: "#FFCC00",
                             color: "black",
                         },
-
                     }}
                     style={{
                         boxShadow: "none",
@@ -86,7 +86,7 @@ const AdminPending = ({ history }) => {
                             </button>
                         ),
                     }}
-                />
+                />}
             </div>
         </div>
     )

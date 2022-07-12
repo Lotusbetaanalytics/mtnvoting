@@ -41,13 +41,12 @@ const CandidateEdit = ({ history }) => {
   const [constituencies, setConstituencies] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [id, setId] = React.useState(null);
-  const [agree,setAgree] = React.useState(false);
+  const [agree, setAgree] = React.useState(false);
   const [cancelModal, setCancelModal] = React.useState(false);
-  const [list,setList] = React.useState("");
 
   const cancelButton = () => {
     setCancelModal(true);
-    
+
   };
 
   const cancelHandler = () => {
@@ -92,11 +91,9 @@ const CandidateEdit = ({ history }) => {
             setAgenda(res[0].Agenda);
 
             setConstituency(res[0].Constituency);
-          
+
             setId(res[0].ID);
-          
-               
-          
+
           });
       });
     sp.web.lists
@@ -111,8 +108,6 @@ const CandidateEdit = ({ history }) => {
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
-  
-  
 
   const reader = new FileReader();
 
@@ -160,85 +155,87 @@ const CandidateEdit = ({ history }) => {
       .get()
       .then((res) => {
         setLocations(res);
-      })};
+      })
+  };
 
-      const locationHandler = (e) => {
-        setLocation(e.target.value);
-        sp.web.lists
-          .getByTitle(`Constituency`)
-          .items.filter(`Location eq '${e.target.value}'`)
-          .get()
-          .then((res) => {
-            console.log(res)
-            setConstituencies(res);
-          })};
+  const locationHandler = (e) => {
+    setLocation(e.target.value);
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items.filter(`Location eq '${e.target.value}'`)
+      .get()
+      .then((res) => {
+        console.log(res)
+        setConstituencies(res);
+      })
+  };
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
       <div className="contentsRight__">
         <Header title="Edit registration" />
         <div className="mtn__InputFlex">
-       
-            <Input
-              title="Employee Name"
-              value={employeeName}
-              onChange={(e) => setEmployeeName(e.target.value)}
-              type="text"
-              readOnly={false}
-            />
-            <Input
-              title="Employee Email"
-              value={employeeEmail}
-              onChange={(e) => setEmployeeEmail(e.target.value)}
-              type="email"
-              readOnly={false}
-            />
-          
-            <Input
-              title="Date Employed"
-              value={dateEmployed}
-              onChange={(e) => setDateEmployed(e.target.value)}
-              type="date"
-              readOnly={false}
-            />
-  
-            <Select
-              onChange={(e) => setJobLevel(e.target.value)}
-              value={jobLevel}
-              title="Job level"
-              options={jobLevelData}
-            />
 
-            <Select
-              value={region}
-              onChange={regionHandler}
-              required={false}
-              title="Region"
-              options={regions}
-              filter={true}
-              filterOption="Title"
-            />
-          
-            <Select
-              value={location}
-              onChange={locationHandler}
-              required={false}
-              title="Location"
-              options={locations}
-              filter={true}
-              filterOption="Title"
-            />
-            <Select
-              value={constituency}
-              onChange={(e) => setConstituency(e.target.value)}
-              required={false}
-              title="Constituency"
-              options={constituencies}
-              filter={true}
-              filterOption="Title"
-              size={"mtn__child"}
-            />
-             <div className={styles.space}>
+          <Input
+            title="Employee Name"
+            value={employeeName}
+            onChange={(e) => setEmployeeName(e.target.value)}
+            type="text"
+            readOnly={false}
+          />
+          <Input
+            title="Employee Email"
+            value={employeeEmail}
+            onChange={(e) => setEmployeeEmail(e.target.value)}
+            type="email"
+            readOnly={false}
+          />
+
+          <Input
+            title="Date Employed"
+            value={dateEmployed}
+            onChange={(e) => setDateEmployed(e.target.value)}
+            type="date"
+            readOnly={false}
+          />
+
+          <Select
+            onChange={(e) => setJobLevel(e.target.value)}
+            value={jobLevel}
+            title="Job level"
+            options={jobLevelData}
+          />
+
+          <Select
+            value={region}
+            onChange={regionHandler}
+            required={false}
+            title="Region"
+            options={regions}
+            filter={true}
+            filterOption="Title"
+          />
+
+          <Select
+            value={location}
+            onChange={locationHandler}
+            required={false}
+            title="Location"
+            options={locations}
+            filter={true}
+            filterOption="Title"
+          />
+          <Select
+            value={constituency}
+            onChange={(e) => setConstituency(e.target.value)}
+            required={false}
+            title="Constituency"
+            options={constituencies}
+            filter={true}
+            filterOption="Title"
+            size={"mtn__child"}
+          />
+          <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
               value={""}
@@ -247,44 +244,42 @@ const CandidateEdit = ({ history }) => {
 
                 reader.onload = function () {
                   setPassport(String(reader.result))
-                   //base64encoded string
-                  
+                  //base64encoded string
+
                 };
                 reader.onerror = function (error) {
                   console.log("Error: ", error);
                 };
               }}
             />
-             <div className={styles.imageContainer}>
-            <img src={passport} alt={employeeName} />
+            <div className={styles.imageContainer}>
+              <img src={passport} alt={employeeName} />
+            </div>
           </div>
-          </div>
-          
-            <Radio
-              onChange={(e) => setService(e.target.value)}
-              title="Have you served on the council before?"
-              options={serviceData}
-              value={service}
-            />
-          
-            <Radio
-              onChange={(e) => setDisciplinary(e.target.value)}
-              title="Do you have any disciplinary sanction?"
-              options={disciplinaryData}
-              value={disciplinary}
-            />
-         
 
-          
-            <Textarea
-              onChange={(e) => setAgenda(e.target.value)}
-              title="State your five point agenda"
-              value={agenda}
-            />
-        <div>
-    
-  </div>
-          
+          <Radio
+            onChange={(e) => setService(e.target.value)}
+            title="Have you served on the council before?"
+            options={serviceData}
+            value={service}
+          />
+
+          <Radio
+            onChange={(e) => setDisciplinary(e.target.value)}
+            title="Do you have any disciplinary sanction?"
+            options={disciplinaryData}
+            value={disciplinary}
+          />
+
+
+
+          <Textarea
+            onChange={(e) => setAgenda(e.target.value)}
+            title="State your five point agenda"
+            value={agenda}
+          />
+
+
           <div className={styles.inputContainer}>
             <div className="radioContainer">
               <div className="minimizeBtn">
@@ -355,6 +350,18 @@ const CandidateEdit = ({ history }) => {
                     <div className={styles.checkBox}>
                       <input type="checkbox" id="agree" onChange={checkboxHandler} />
                     </div>
+                    <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+
+                    <div className="btnContainer">
+                      <button
+                        onClick={submitHandler}
+                        type="button"
+                        className="mtn__btn mtn__yellow"
+                        disabled={!agree}
+                      >
+                        Proceed
+                      </button>
+                    </div>
                        <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
         
                        <div className="btnContainer">
@@ -372,7 +379,7 @@ const CandidateEdit = ({ history }) => {
                 onClose={() => setOpen(false)}
                 footer=""
               />
-                            <Modal
+              <Modal
                 isVisible={cancelModal}
                 title="Are you sure you want to cancel edit proccess?"
                 size="md"
@@ -396,7 +403,7 @@ const CandidateEdit = ({ history }) => {
           </div>
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 

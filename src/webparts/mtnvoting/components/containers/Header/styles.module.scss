@@ -1,7 +1,35 @@
-.header{
+.header {
     display: flex;
     font-size: 20px;
     color: black;
     padding: 1rem;
-    margin-bottom: .5rem;
-}
+    margin-bottom: 0.5rem;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+  
+  .headerTitle {
+    width: 350px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0px 20px;
+    background: #ffc423;
+    border-radius: 0px 100px 100px 0px;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 59px;
+    justify-content: center;
+  }
+  
+  .headerImg {
+    width: 140.96px;
+    height: 94.68px;
+    background: url(../../assets/logo.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+  }
