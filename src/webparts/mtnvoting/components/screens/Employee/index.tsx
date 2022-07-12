@@ -99,6 +99,13 @@ const EmployeeRegistration = ({ history }) => {
           setRegions(resp);
         });
       sp.web.lists
+        .getByTitle(`Constituency`)
+        .items
+        .get()
+        .then((res) => {
+          setConstituencies(res);
+        });
+      sp.web.lists
         .getByTitle(`Registration`)
         .items.filter(`EmployeeEmail eq '${response.Email}'`)
         .get()
@@ -123,14 +130,15 @@ const EmployeeRegistration = ({ history }) => {
 
   const locationHandler = (e) => {
     setLocation(e.target.value);
-    sp.web.lists
-      .getByTitle(`Constituency`)
-      .items.filter(`Location eq '${e.target.value}'`)
-      .get()
-      .then((res) => {
-        setConstituencies(res);
-      });
+    // sp.web.lists
+    //   .getByTitle(`Constituency`)
+    //   .items.filter(`Location eq '${e.target.value}'`)
+    //   .get()
+    //   .then((res) => {
+    //     setConstituencies(res);
+    //   });
   };
+
 
   return (
     <div className={styles.employee__Container}>
@@ -161,10 +169,20 @@ const EmployeeRegistration = ({ history }) => {
                 type="email"
                 value={employeeEmail}
                 onChange={(e) => setEmployeeEmail(e.target.value)}
-                title="Employee Name"
+                title="Employee Email"
                 required={true}
                 readOnly={false}
                 size="mtn_child"
+              />
+              <Select
+                value={constituency}
+                onChange={(e) => setConstituency(e.target.value)}
+                required={true}
+                title="Constituency"
+                options={constituencies}
+                size="mtn_child"
+                filter={true}
+                filterOption="Title"
               />
 
               <Select
@@ -189,16 +207,7 @@ const EmployeeRegistration = ({ history }) => {
                 filterOption="Title"
               />
 
-              <Select
-                value={constituency}
-                onChange={(e) => setConstituency(e.target.value)}
-                required={true}
-                title="Constituency"
-                options={constituencies}
-                size="mtn_child"
-                filter={true}
-                filterOption="Title"
-              />
+
             </div>
             <div className={styles.btnContainer}>
               <button

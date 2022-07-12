@@ -18,4 +18,8 @@ export { default as Radio } from "./Forms/Radio";
 export { default as MenuBar } from "./MenuBar";
 export { default as Helpers } from "./Helpers";
 export { default as NomineeCard } from "./NomineeCard";
+<<<<<<< HEAD
 export {default as NewLineToBr} from "./break/break";
+=======
+export { default as NewLineToBr } from "./break/break";
+>>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
