@@ -9,7 +9,7 @@ import {
   Select,
   Radio,
   ImageUpload,
-  CandidateNavigation,
+  CandidateNavigation
 } from "../../../containers";
 import styles from "./styles.module.scss";
 import "@pnp/sp/webs";
