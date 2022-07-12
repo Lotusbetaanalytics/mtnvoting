@@ -33,14 +33,10 @@ const CandidateRegister = ({ context }) => {
   const [service, setService] = React.useState("");
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
-<<<<<<< HEAD
- 
-=======
   const [startDate, setStartDate] = React.useState("");
   const [endDate, setEndDate] = React.useState("");
   const [disciplinaryCouncil, setDisciplinaryCouncil] = React.useState("");
 
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
   const [terms, setTerms] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [constituencies, setConstituencies] = React.useState([]);
@@ -58,11 +54,6 @@ const CandidateRegister = ({ context }) => {
   const [serviceModal, setServiceModal] = React.useState(false)
 
   const [agenda, setAgenda] = React.useState("");
-<<<<<<< HEAD
-  const reader = new FileReader();
- 
- 
-=======
   const [agendas, setAgendas] = React.useState([]);
 
   const agendaHandler = () => {
@@ -76,7 +67,6 @@ const CandidateRegister = ({ context }) => {
     }
     return agendas
   }
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
   React.useEffect(() => {
     sp.profiles.myProperties
@@ -84,8 +74,6 @@ const CandidateRegister = ({ context }) => {
         setEmployeeName(response.DisplayName);
         setEmployeeEmail(response.Email);
 
-<<<<<<< HEAD
-=======
         sp.web.lists
           .getByTitle("Nominees")
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
@@ -98,7 +86,6 @@ const CandidateRegister = ({ context }) => {
             }
           })
 
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
         sp.web.lists
        .getByTitle("Registration")
        .items.filter(`EmployeeEmail eq '${response.Email}'`)
@@ -205,19 +192,6 @@ const CandidateRegister = ({ context }) => {
         });
     }
   };
-<<<<<<< HEAD
-  const ConstituencyHandler = (e) => {
-    setConstituency(e.target.value);
-    sp.web.lists
-      .getByTitle(`Region`)
-      .items.filter(`Title eq '${e.target.value}'`)
-      .get()
-      .then((res) => {
-        setRegions(res);
-      });
-  };
-=======
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
   const regionHandler = (e) => {
     setRegion(e.target.value);
@@ -311,7 +285,7 @@ const CandidateRegister = ({ context }) => {
 
         <Select
             value={constituency}
-            onChange={ConstituencyHandler}
+            onChange={(e) => setConstituency(e.target.value)}
             required={false}
             title="Constituency"
             options={constituencies}
@@ -321,27 +295,6 @@ const CandidateRegister = ({ context }) => {
           />
 
           <Select
-<<<<<<< HEAD
-            onChange={regionHandler}
-            value={region}
-            title="Region"
-            options={regions}
-            filter={true}
-            filterOption="Title"
-          />
-
-          <Select
-            onChange={(e)=>setLocation(e.target.value)}
-            value={location}
-            title="Location"
-            options={locations}
-            filter={true}
-            filterOption="Title"
-          />
-
-          
-          <div className={styles.space}>
-=======
             value={constituency}
             onChange={(e) => setConstituency(e.target.value)}
             required={false}
@@ -351,7 +304,6 @@ const CandidateRegister = ({ context }) => {
             filterOption="Title"
             size={"mtn__child"}
           />
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
           <Select
             onChange={regionHandler}
@@ -402,95 +354,6 @@ const CandidateRegister = ({ context }) => {
             type="text"
             size="mtn__child"
           />
-<<<<<<< HEAD
-           
-               
-            </div>
-           
-          <div className={styles.inputContainer}>
-            <div className="radioContainer">
-              <div className="minimizeBtn">
-                <button
-                  className="mtn__btn mtn__white_blackColor"
-                  onClick={cancelButton}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="mtn__btn mtn__yellow bg"
-                  onClick={approveHandler}
-                >
-                  Submit
-                </button>
-              </div>
-              <Modal
-                isVisible={open}
-                title="Terms and Condition"
-                size="md"
-                content={
-                  <div className="terms">
-                    {loading ? (<Spinner />) : (<div>
-                      <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
-                      <h5>
-                        ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
-                        ELECTION
-                      </h5>
-                      <p>
-                        Introduction In line with the provisions of the MTNN
-                        Employee Council Constitution, election into the MTNN
-                        Employee Council holds once in two (2) years. The last
-                        election took place in October 2018 and based on the
-                        constitution, the next election is planned to hold in
-                        October 2020. As we prepare for another Employee Council
-                        election scheduled to hold in October 30 2020, find below
-                        the proposed plan for the forthcoming elections, including
-                        general eligibility criteria for contesting elective
-                        office etc. Eligibility Criteria Candidates that will
-                        contest for available seats in each business region /
-                        location will be required to meet the following criteria:{" "}
-                      </p>
-                      <ul>
-                        <li>
-                          Only confirmed national staff on job levels 1 & 2 are
-                          eligible to contest for seats on the Employee Council.
-                        </li>
-                        <li>
-                          ALL permanent national employees levels (both confirmed
-                          and unconfirmed) on levels 1 & 2 are eligible to vote.
-                        </li>
-                        <li>
-                          Employees who have an active disciplinary sanction are
-                          not eligible to contest.
-                        </li>
-                        <li>
-                          Incumbent representatives who have served two
-                          consecutive terms (i.e. 4 years) are not eligible to
-                          contest.
-                        </li>
-                        <li>
-                          Incumbent representatives who have served only one term
-                          (i.e. 2 years) are eligible to contest.
-                        </li>
-                        <li>
-                          Staff can only contest for allocated seats within their
-                          region/location.
-                        </li>
-                      </ul>
-                      <div className={styles.checkBox}><input type="checkbox" id="agree" onChange={checkboxHandler} /></div>
-                      <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
-                    </div>
-                    )}
-                    <div className="btnContainer">
-                      <button
-                        onClick={submitHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                        disabled={!agree}
-                      >
-                        Proceed
-                      </button>
-                    </div>
-=======
           <div className="mtn__InputContainer mtn__child">
             <label style={{ visibility: "hidden" }}>Add</label>
             <button
@@ -502,7 +365,6 @@ const CandidateRegister = ({ context }) => {
             </button>
           </div>
 
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
         </div>
         <div className="mtn__InputContainer mtn__adult">
@@ -513,43 +375,6 @@ const CandidateRegister = ({ context }) => {
           </ul>
         </div>
 
-<<<<<<< HEAD
-              <Modal
-                isVisible={cancelModal}
-                title="Are you sure you want to cancel registeration process?"
-                size="md"
-                content={
-                  <div className="terms">
-                    <div className="btnContainer">
-                      <button
-                        onClick={cancelHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                }
-                onClose={() => setCancelModal(false)}
-                footer=""
-              />
-
-<Modal
-                isVisible={disciplinaryModal}
-                title="if yes what disciplinary have you served?"
-                size="md"
-                content={
-                  <div className="terms">
-                    <div className="btnContainer">
-                     <input type="text" value={disciplinary} onChange={(e)=>setDisciplinary(e.target.value)} />
-                    </div>
-                  </div>
-                }
-                onClose={() => setDisciplinaryModal(false)}
-                footer=""
-              />
-=======
         <div className={styles.inputContainer}>
           <div className="radioContainer">
             <div className="minimizeBtn">
@@ -565,7 +390,6 @@ const CandidateRegister = ({ context }) => {
               >
                 Submit
               </button>
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
             </div>
             <Modal
               isVisible={open}
@@ -739,12 +563,8 @@ const CandidateRegister = ({ context }) => {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
-    
-=======
     </div>
 
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
   );
 };
 

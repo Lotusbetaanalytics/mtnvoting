@@ -38,41 +38,21 @@ const ViewRequest = ({ history }) => {
 
             console.log(res[0].Agenda, "this is it");
             setList(res[0].Agenda.split("\n"));
-<<<<<<< HEAD
-           } else {
-            "this user has not regiistered"
-           }
-            
-          });
-          sp.web.lists
-          .getByTitle("Registration")
-          .items.filter(`EmployeeEmail eq '${response.Email}'`)
-          .get()
-            .then((items) => {
-                 console.log(items.length )
-=======
-          });
+          }});
         sp.web.lists
           .getByTitle("Registration")
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((items) => {
             console.log(items.length)
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
             //  if (items.length <= 0) {
             //    swal("Error", "You are have not registered", "error");
             //    history.push("/");
             //    return;
             //  }
-<<<<<<< HEAD
-           })
-      });
-     
-=======
           })
       });
-
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
+    
   }, []);
 
   const editHandler = () => {
@@ -134,21 +114,12 @@ const ViewRequest = ({ history }) => {
               />
               <div className={styles.agenda}>
                 <p>Five point agenda</p>
-<<<<<<< HEAD
-                <ul> 
-=======
                 <ul>
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
                   {list.map((item, i) => (
                     <li key={i}>{item}</li>
                   ))}
                 </ul>
               </div>
-<<<<<<< HEAD
-             
-=======
-
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
               <div className="minimizeBtn_">
                 <button

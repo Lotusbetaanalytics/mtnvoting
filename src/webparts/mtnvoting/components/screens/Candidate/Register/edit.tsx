@@ -19,11 +19,8 @@ import swal from "sweetalert";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 import { values } from "lodash";
 import { Item } from "@pnp/sp/items";
-<<<<<<< HEAD
-=======
 import { useHistory } from 'react-router-dom'
 import { FaTrash } from "react-icons/fa";
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
 
 const CandidateEdit = ({ context }) => {
   const [loading, setLoading] = React.useState(false);
@@ -103,12 +100,7 @@ const CandidateEdit = ({ context }) => {
             setService(res[0].ServedOnTheCouncil);
             setDisciplinary(res[0].DisciplinarySanction);
             setPassport(res[0].PassportPhotograph);
-<<<<<<< HEAD
-            setAgenda(res[0].Agenda);
-
-=======
             setAgendas(JSON.parse(res[0].Agenda));
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
             setConstituency(res[0].Constituency);
             setId(res[0].ID)
             sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${res[0].Region}'`).get().then
@@ -138,11 +130,8 @@ const CandidateEdit = ({ context }) => {
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
   const reader = new FileReader();
 
   const approveHandler = () => {
@@ -340,55 +329,6 @@ const CandidateEdit = ({ context }) => {
           <div className="radioContainer">
             <div className="minimizeBtn">
 
-<<<<<<< HEAD
-                    <div className="btnContainer">
-                      <button
-                        onClick={submitHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                        disabled={!agree}
-                      >
-                        Proceed
-                      </button>
-                    </div>
-                       <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
-        
-                       <div className="btnContainer">
-                         <button
-                           onClick={submitHandler}
-                           type="button"
-                           className="mtn__btn mtn__yellow"
-                           disabled={!agree}
-                         >
-                           Proceed
-                         </button>
-                      </div>
-                  </div>
-                }
-                onClose={() => setOpen(false)}
-                footer=""
-              />
-              <Modal
-                isVisible={cancelModal}
-                title="Are you sure you want to cancel edit proccess?"
-                size="md"
-                content={
-                  <div className="terms">
-                    <div className="btnContainer">
-                      <button
-                        onClick={cancelHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                }
-                onClose={() => setCancelModal(false)}
-                footer=""
-              />
-=======
               <button onClick={cancelButton} className="mtn__btn mtn__white_blackColor" >
                 Cancel
               </button>
@@ -399,7 +339,6 @@ const CandidateEdit = ({ context }) => {
               >
                 Submit
               </button>
->>>>>>> 7d56b80bdc1298112ef51e7119eb5e1119c1f4a3
             </div>
             <Modal
               isVisible={open}
