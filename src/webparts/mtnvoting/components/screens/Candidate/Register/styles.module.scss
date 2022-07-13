@@ -1,5 +1,4 @@
 
-
     .space{
         width: 50%;
         display: flex;
@@ -31,3 +30,18 @@
         margin:2%;
         font-size: 16px;
     }
+   
+   .agenda{
+    padding: .4rem 1rem;
+    font-size: 14px;
+    display: flex;
+    justify-content: flex-start;
+    width:70%;
+    flex-direction: column;
+   }
+  
+   .agenda ul {
+    margin: 3px 7px ;
+    padding: 10px;
+    font-weight: bold;
+   }

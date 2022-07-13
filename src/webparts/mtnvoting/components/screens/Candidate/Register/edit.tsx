@@ -18,10 +18,14 @@ import { sp } from "@pnp/sp";
 import swal from "sweetalert";
 import FileUpload from "../../../containers/Forms/Input/FileUpload";
 import { values } from "lodash";
+import { Item } from "@pnp/sp/items";
+import { useHistory } from 'react-router-dom'
+import { FaTrash } from "react-icons/fa";
 
-const CandidateEdit = ({ history }) => {
+const CandidateEdit = ({ context }) => {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState({} as any);
+  const history = useHistory()
 
   const [employeeName, setEmployeeName] = React.useState("");
   const [employeeEmail, setEmployeeEmail] = React.useState("");
@@ -42,6 +46,15 @@ const CandidateEdit = ({ history }) => {
   const [id, setId] = React.useState(null);
   const [agree, setAgree] = React.useState(false);
   const [cancelModal, setCancelModal] = React.useState(false);
+  const [list, setList] = React.useState("");
+  const [photoUrl, setPhotoUrl] = React.useState(null)
+  const [upload, setUpload] = React.useState(false)
+  const [serviceModal, setServiceModal] = React.useState(false)
+  const [agendas, setAgendas] = React.useState([]);
+
+  const agendaHandler = () => {
+    setAgendas([...agendas, agenda])
+  }
 
   const cancelButton = () => {
     setCancelModal(true);
@@ -87,10 +100,13 @@ const CandidateEdit = ({ history }) => {
             setService(res[0].ServedOnTheCouncil);
             setDisciplinary(res[0].DisciplinarySanction);
             setPassport(res[0].PassportPhotograph);
-            setAgenda(res[0].Agenda);
+            setAgendas(JSON.parse(res[0].Agenda));
             setConstituency(res[0].Constituency);
-
-            setId(res[0].ID);
+            setId(res[0].ID)
+            sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${res[0].Region}'`).get().then
+              ((res) => {
+                setLocations(res)
+              })
 
           });
       });
@@ -100,12 +116,20 @@ const CandidateEdit = ({ history }) => {
       .then((resp) => {
         setRegions(resp);
       });
+    sp.web.lists
+      .getByTitle(`Constituency`)
+      .items
+      .get()
+      .then((res) => {
+        setConstituencies(res);
+      });
   }, []);
 
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
   const disciplinaryData = [{ value: "Yes" }, { value: "No" }];
+
 
 
   const reader = new FileReader();
@@ -128,8 +152,8 @@ const CandidateEdit = ({ history }) => {
         Location: location,
         ServedOnTheCouncil: service,
         DisciplinarySanction: disciplinary,
-        PassportPhotograph: passport,
-        Agenda: agenda,
+        // PassportPhotograph: passport,
+        // Agenda: agenda,
         Constituency: constituency,
       })
       .then((res) => {
@@ -157,17 +181,29 @@ const CandidateEdit = ({ history }) => {
       })
   };
 
-  const locationHandler = (e) => {
-    setLocation(e.target.value);
-    sp.web.lists
-      .getByTitle(`Constituency`)
-      .items.filter(`Location eq '${e.target.value}'`)
-      .get()
-      .then((res) => {
-        console.log(res)
-        setConstituencies(res);
-      })
-  };
+  const removeHandler = (i) => {
+    const index = agendas.indexOf(i);
+    if (index > -1) {
+      agendas.splice(index, 1);
+    }
+    return agendas
+  }
+
+  const photoHandler = (e) => {
+    const pix = e.target.files[0]
+    setUpload(true)
+    sp.web.getFolderByServerRelativeUrl("NomineePhoto").files.add(pix.name, pix, true).then((result) => {
+      result.file.listItemAllFields.get().then((listItemAllFields) => {
+        setPhotoUrl(`${context._web.absoluteUrl}/NomineePhoto/${pix.name}`)
+        setUpload(false)
+      });
+    }).catch((e) => {
+      setUpload(false)
+      swal("Warning!", "File Upload Failed", "error");
+      console.log(e.response);
+    })
+
+  }
   return (
     <div className="appContainer">
       <CandidateNavigation register={`active`} />
@@ -206,25 +242,6 @@ const CandidateEdit = ({ history }) => {
           />
 
           <Select
-            value={region}
-            onChange={regionHandler}
-            required={false}
-            title="Region"
-            options={regions}
-            filter={true}
-            filterOption="Title"
-          />
-
-          <Select
-            value={location}
-            onChange={locationHandler}
-            required={false}
-            title="Location"
-            options={locations}
-            filter={true}
-            filterOption="Title"
-          />
-          <Select
             value={constituency}
             onChange={(e) => setConstituency(e.target.value)}
             required={false}
@@ -234,27 +251,35 @@ const CandidateEdit = ({ history }) => {
             filterOption="Title"
             size={"mtn__child"}
           />
-          <div className={styles.space}>
+
+          <Select
+            onChange={regionHandler}
+            value={region}
+            title="Region"
+            options={regions}
+            filter={true}
+            filterOption="Title"
+          />
+
+          <Select
+            onChange={(e) => setLocation(e.target.value)}
+            value={location}
+            title="Location"
+            options={locations}
+            filter={true}
+            filterOption="Title"
+          />
+          {/*  <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
-              value={""}
-              onChange={(e) => {
-                reader.readAsDataURL(e.target.files[0]);
-
-                reader.onload = function () {
-                  setPassport(String(reader.result))
-                  //base64encoded string
-
-                };
-                reader.onerror = function (error) {
-                  console.log("Error: ", error);
-                };
-              }}
+              value={passport}
+              onChange={photoHandler}
+              loading={upload}
             />
-            <div className={styles.imageContainer}>
-              <img src={passport} alt={employeeName} />
-            </div>
-          </div>
+            {photoUrl && <div className={styles.imageContainer}>
+              <img src={photoUrl} alt={employeeName} />
+            </div>}
+          </div> */}
 
           <Radio
             onChange={(e) => setService(e.target.value)}
@@ -271,126 +296,146 @@ const CandidateEdit = ({ history }) => {
           />
 
 
-
-          <Textarea
-            onChange={(e) => setAgenda(e.target.value)}
+          {/* <Input
             title="State your five point agenda"
             value={agenda}
+            onChange={(e) => setAgenda(e.target.value)}
+            type="text"
+            size="mtn__child"
           />
+          <div className="mtn__InputContainer mtn__child">
+            <label style={{ visibility: "hidden" }}>Add</label>
+            <button
+              className="mtn__btn mtn__yellow"
+              onClick={agendaHandler}
+              disabled={agendas.length === 5}
+            >
+              Add
+            </button>
+          </div> */}
 
 
-          <div className={styles.inputContainer}>
-            <div className="radioContainer">
-              <div className="minimizeBtn">
+        </div>
+        {/* <div className="mtn__InputContainer mtn__adult">
+          <ul>
+            {agendas.map((item, i) => (
+              <li key={i} className="plane">{item} <div className="remove"><FaTrash onClick={() => removeHandler(item)} /></div></li>
+            ))}
+          </ul> 
+      </div>*/}
 
-                <button onClick={cancelButton} className="mtn__btn mtn__white_blackColor" >
-                  Cancel
-                </button>
 
-                <button
-                  className="mtn__btn mtn__yellow bg"
-                  onClick={approveHandler}
-                >
-                  Submit
-                </button>
-              </div>
-              <Modal
-                isVisible={open}
-                title="Terms and Condition"
-                size="md"
-                content={
-                  <div className="terms">
-                    <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
-                    <h5>
-                      ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
-                      ELECTION
-                    </h5>
-                    <p>
-                      Introduction In line with the provisions of the MTNN
-                      Employee Council Constitution, election into the MTNN
-                      Employee Council holds once in two (2) years. The last
-                      election took place in October 2018 and based on the
-                      constitution, the next election is planned to hold in
-                      October 2020. As we prepare for another Employee Council
-                      election scheduled to hold in October 30 2020, find below
-                      the proposed plan for the forthcoming elections, including
-                      general eligibility criteria for contesting elective
-                      office etc. Eligibility Criteria Candidates that will
-                      contest for available seats in each business region /
-                      location will be required to meet the following criteria:{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        Only confirmed national staff on job levels 1 & 2 are
-                        eligible to contest for seats on the Employee Council.
-                      </li>
-                      <li>
-                        ALL permanent national employees levels (both confirmed
-                        and unconfirmed) on levels 1 & 2 are eligible to vote.
-                      </li>
-                      <li>
-                        Employees who have an active disciplinary sanction are
-                        not eligible to contest.
-                      </li>
-                      <li>
-                        Incumbent representatives who have served two
-                        consecutive terms (i.e. 4 years) are not eligible to
-                        contest.
-                      </li>
-                      <li>
-                        Incumbent representatives who have served only one term
-                        (i.e. 2 years) are eligible to contest.
-                      </li>
-                      <li>
-                        Staff can only contest for allocated seats within their
-                        region/location.
-                      </li>
-                    </ul>
-                    <div className={styles.checkBox}>
-                      <input type="checkbox" id="agree" onChange={checkboxHandler} />
-                    </div>
-                    <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+        <div className={styles.inputContainer}>
+          <div className="radioContainer">
+            <div className="minimizeBtn">
 
-                    <div className="btnContainer">
-                      <button
-                        onClick={submitHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                        disabled={!agree}
-                      >
-                        Proceed
-                      </button>
-                    </div>
-                  </div>
-                }
-                onClose={() => setOpen(false)}
-                footer=""
-              />
-              <Modal
-                isVisible={cancelModal}
-                title="Are you sure you want to cancel edit proccess?"
-                size="md"
-                content={
-                  <div className="terms">
-                    <div className="btnContainer">
-                      <button
-                        onClick={cancelHandler}
-                        type="button"
-                        className="mtn__btn mtn__yellow"
-                      >
-                        Yes
-                      </button>
-                    </div>
-                  </div>
-                }
-                onClose={() => setCancelModal(false)}
-                footer=""
-              />
+              <button onClick={cancelButton} className="mtn__btn mtn__white_blackColor" >
+                Cancel
+              </button>
+
+              <button
+                className="mtn__btn mtn__yellow bg"
+                onClick={approveHandler}
+              >
+                Submit
+              </button>
             </div>
+            <Modal
+              isVisible={open}
+              title="Terms and Condition"
+              size="md"
+              content={
+                <div className="terms">
+                  <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
+                  <h5>
+                    ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
+                    ELECTION
+                  </h5>
+                  <p>
+                    Introduction In line with the provisions of the MTNN
+                    Employee Council Constitution, election into the MTNN
+                    Employee Council holds once in two (2) years. The last
+                    election took place in October 2018 and based on the
+                    constitution, the next election is planned to hold in
+                    October 2020. As we prepare for another Employee Council
+                    election scheduled to hold in October 30 2020, find below
+                    the proposed plan for the forthcoming elections, including
+                    general eligibility criteria for contesting elective
+                    office etc. Eligibility Criteria Candidates that will
+                    contest for available seats in each business region /
+                    location will be required to meet the following criteria:{" "}
+                  </p>
+                  <ul>
+                    <li>
+                      Only confirmed national staff on job levels 1 & 2 are
+                      eligible to contest for seats on the Employee Council.
+                    </li>
+                    <li>
+                      ALL permanent national employees levels (both confirmed
+                      and unconfirmed) on levels 1 & 2 are eligible to vote.
+                    </li>
+                    <li>
+                      Employees who have an active disciplinary sanction are
+                      not eligible to contest.
+                    </li>
+                    <li>
+                      Incumbent representatives who have served two
+                      consecutive terms (i.e. 4 years) are not eligible to
+                      contest.
+                    </li>
+                    <li>
+                      Incumbent representatives who have served only one term
+                      (i.e. 2 years) are eligible to contest.
+                    </li>
+                    <li>
+                      Staff can only contest for allocated seats within their
+                      region/location.
+                    </li>
+                  </ul>
+                  <div className={styles.checkBox}>
+                    <input type="checkbox" id="agree" onChange={checkboxHandler} />
+                  </div>
+                  <label htmlFor="agree"> I agree to <b>terms and conditions</b></label>
+
+                  <div className="btnContainer">
+                    <button
+                      onClick={submitHandler}
+                      type="button"
+                      className="mtn__btn mtn__yellow"
+                      disabled={!agree}
+                    >
+                      Proceed
+                    </button>
+                  </div>
+                </div>
+              }
+              onClose={() => setOpen(false)}
+              footer=""
+            />
+            <Modal
+              isVisible={cancelModal}
+              title="Are you sure you want to cancel edit proccess?"
+              size="md"
+              content={
+                <div className="terms">
+                  <div className="btnContainer">
+                    <button
+                      onClick={cancelHandler}
+                      type="button"
+                      className="mtn__btn mtn__yellow"
+                    >
+                      Yes
+                    </button>
+                  </div>
+                </div>
+              }
+              onClose={() => setCancelModal(false)}
+              footer=""
+            />
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

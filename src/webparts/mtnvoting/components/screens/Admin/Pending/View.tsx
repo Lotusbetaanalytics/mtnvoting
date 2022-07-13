@@ -28,6 +28,9 @@ const AdminViewPending = ({ history, match }) => {
 
     }, [])
 
+    const info = data && data.Agenda ? data.Agenda : "[\"...loading\"]"
+    const resp = JSON.parse(info)
+
     //     var instance = axios.create({
     //         baseURL: 'https://some-domain.com/api/',
     //         headers: {"X-Requested-With": "XMLHttpRequest"}
@@ -109,7 +112,13 @@ const AdminViewPending = ({ history, match }) => {
                             <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
                             <Text title="If yes, state the period you served " value={data.PeriodServed} />
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                            <Text title="State your five point agenda" value={data.Agenda} size="large" />
+
+                            <ul>
+                                <p>State your five point agenda</p>
+                                {resp && resp.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                ))}
+                            </ul>
                             <div className='minimizeBtn'>
                                 <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Approve</button>
                                 <button className='mtn__btn mtn__black' onClick={() => setOpen(true)}>Decline</button>
@@ -120,7 +129,7 @@ const AdminViewPending = ({ history, match }) => {
                     {/* Modal */}
                     <Modal
                         isVisible={open}
-                        title="Revoke Nominee"
+                        title="Decline Nominee"
                         size="md"
                         content={
                             <form onSubmit={revokeHandler}>
