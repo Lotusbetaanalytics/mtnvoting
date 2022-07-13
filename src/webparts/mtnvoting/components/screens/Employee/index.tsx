@@ -39,9 +39,9 @@ const EmployeeRegistration = ({ history }) => {
                 .items.add({
                   EmployeeName: employeeName,
                   EmployeeEmail: employeeEmail,
-                  Constituency: constituency,
-                  Location: location,
                   Region: region,
+                  Location: location,
+                  Constituency: constituency,
                 })
                 .then((res) => {
                   setLoading(false);
@@ -93,10 +93,16 @@ const EmployeeRegistration = ({ history }) => {
       setEmployeeName(response.DisplayName);
       setEmployeeEmail(response.Email);
       sp.web.lists
-        .getByTitle(`Constituency`)
+        .getByTitle(`Region`)
         .items.get()
         .then((resp) => {
-          setConstituencies(resp);
+          setRegions(resp);
+        });
+      sp.web.lists
+        .getByTitle(`Constituency`)
+        .items.get()
+        .then((res) => {
+          setConstituencies(res);
         });
       sp.web.lists
         .getByTitle(`Registration`)
@@ -110,26 +116,26 @@ const EmployeeRegistration = ({ history }) => {
     });
   }, [history]);
 
-  const constituencyHandler = (e) => {
-    setConstituency(e.target.value);
+  const regionHandler = (e) => {
+    setRegion(e.target.value);
     sp.web.lists
-      .getByTitle(`Region`)
-      .items.filter(`Constituency eq '${e.target.value}'`)
+      .getByTitle(`Location`)
+      .items.filter(`Region eq '${e.target.value}'`)
       .get()
       .then((res) => {
-        setRegions(res);
+        setLocations(res);
       });
   };
 
   const locationHandler = (e) => {
     setLocation(e.target.value);
-    sp.web.lists
-      .getByTitle(`Constituency`)
-      .items.filter(`Location eq '${e.target.value}'`)
-      .get()
-      .then((res) => {
-        setConstituencies(res);
-      });
+    // sp.web.lists
+    //   .getByTitle(`Constituency`)
+    //   .items.filter(`Location eq '${e.target.value}'`)
+    //   .get()
+    //   .then((res) => {
+    //     setConstituencies(res);
+    //   });
   };
 
   return (
@@ -169,7 +175,7 @@ const EmployeeRegistration = ({ history }) => {
 
               <Select
                 value={constituency}
-                onChange={constituencyHandler}
+                onChange={(e) => setConstituency(e.target.value)}
                 required={true}
                 title="Constituency"
                 options={constituencies}
@@ -179,7 +185,7 @@ const EmployeeRegistration = ({ history }) => {
               />
 
               <Select
-                onChange={(e) => setRegion(e.target.value)}
+                onChange={regionHandler}
                 value={region}
                 required={true}
                 title="Region"
