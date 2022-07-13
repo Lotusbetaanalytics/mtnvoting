@@ -6,11 +6,7 @@ import * as jQuery from 'jquery';
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import * as pnp from 'sp-pnp-js';
-<<<<<<< HEAD
-import { AdminApproved, AdminDashboard, AdminDeclined, AdminPending, AdminViewApproved, AdminViewPending, AdminRevoked, Administrator, ErrorScreen, AdminViewDeclined, AdminConfig, LandingPage, EmployeeRegistration, CandidateDashboard, CandidateRegister, CandidateEdit, CandidateViewRequest, AdminRegion, AdminLocation } from './screens';
-=======
 import { AdminApproved, AdminDashboard, AdminDeclined, AdminPending, AdminViewApproved, AdminViewPending, AdminRevoked, Administrator, ErrorScreen, AdminViewDeclined, AdminConfig, Voting, LandingPage, EmployeeRegistration, CandidateDashboard, CandidateRegister, CandidateEdit, CandidateViewRequest, AdminRegion, AdminLocation, AdminReason, AdminReport, AdminViewRevoked, AdminResult } from './screens';
->>>>>>> 547879d45f18a3e46ae95db9bbee5e6f841a0ef3
 import "./global.scss"
 import './assets/icon.scss'
 
