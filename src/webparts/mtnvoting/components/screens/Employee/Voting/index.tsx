@@ -114,7 +114,7 @@ const Voting = () => {
           // today === votingDate && setCannotVote(false);
         }
       })
-      .catch((err) => { });
+      .catch((err) => {});
   }, [constituency]);
 
   React.useEffect(() => {
@@ -210,7 +210,7 @@ const Voting = () => {
             <div>Loading...</div>
           ) : (
             <>
-              <Carousel
+              {/* <Carousel
                 breakPoints={breakPoints}
                 isRTL={false}
                 initialActiveIndex={0}
@@ -245,7 +245,7 @@ const Voting = () => {
                     </>
                   );
                 })}
-              </Carousel>
+              </Carousel> */}
               {nominees.length === 0 && <div>No nominees</div>}
             </>
           )}
