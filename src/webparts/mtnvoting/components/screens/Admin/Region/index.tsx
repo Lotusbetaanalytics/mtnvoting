@@ -1,113 +1,142 @@
-import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
+import * as React from "react";
+import {
+  AdminNavigation,
+  Card,
+  AdminHeader,
+  MenuBar,
+  Input,
+  Modal,
+  Spinner,
+  DateInput,
+} from "../../../containers";
 import MaterialTable from "material-table";
-import { sp, } from "@pnp/sp"
-import swal from 'sweetalert';
-
+import { sp } from "@pnp/sp";
+import swal from "sweetalert";
 
 const AdminRegion = ({ history }) => {
+  type IType =
+    | "string"
+    | "boolean"
+    | "numeric"
+    | "date"
+    | "datetime"
+    | "time"
+    | "currency";
+  const string: IType = "string";
 
-    type IType =
-        | "string"
-        | "boolean"
-        | "numeric"
-        | "date"
-        | "datetime"
-        | "time"
-        | "currency";
-    const string: IType = "string";
+  const [columns, setColumns] = React.useState([
+    { title: "Region", field: "Title", type: "string" as const },
+  ]);
 
+  const [data, setData] = React.useState([]);
+  const [Region, setRegion] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [id, setID] = React.useState(null);
 
-    const [columns, setColumns] = React.useState([
-        { title: "Region", field: "Title", type: "string" as const },
-    ]);
+  React.useEffect(() => {
+    sp.web.lists
+      .getByTitle(`Region`)
+      .items.get()
+      .then((res) => {
+        setData(res);
+      });
+  }, []);
 
-    const [data, setData] = React.useState([])
-    const [Region, setRegion] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [loading, setLoading] = React.useState(false)
-    const [edit, setEdit] = React.useState(false)
-    const [id, setID] = React.useState(null)
+  // Menubar Items
+  const menu = [
+    { name: "Approvals", url: "/admin/add" },
+    { name: "Voting Exercise", url: "/admin/config" },
+    { name: "Region", url: "/admin/region", active: true },
+    { name: "Location", url: "/admin/location" },
+    { name: "Revoke Reasons", url: "/admin/reason" },
+  ];
 
-    React.useEffect(() => {
-        sp.web.lists.getByTitle(`Region`).items.get().then
-            ((res) => {
-                setData(res)
-            })
+  const submitHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Region")
+      .items.add({
+        Title: Region,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Region added Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Region`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
 
-    }, [])
-
-    // Menubar Items
-    const menu = [
-        { name: "Approvals", url: "/admin/add", },
-        { name: "Voting Exercise", url: "/admin/config", },
-        { name: "Region", url: "/admin/region", active: true, },
-        { name: "Location", url: "/admin/location" },
-        { name: "Revoke Reasons", url: "/admin/reason" },
-    ];
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Region").items.add({
-            Title: Region,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Region added Successfully", "success");
-            sp.web.lists.getByTitle(`Region`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-
-    const editHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Region").items.getById(id).update({
-            Title: Region,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Region Edited Successfully", "success");
-            sp.web.lists.getByTitle(`Region`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-    const deleteHandler = (id) => {
-        if (window.confirm("Are you sure you want to delete")) {
-            sp.web.lists.getByTitle("Region").items.getById(id).delete().then((res) => {
-                swal("Success", "Region has been deleted", "success");
-                sp.web.lists.getByTitle(`Region`).items.get().then
-                    ((res) => {
-                        setData(res)
-                    })
+  const editHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Region")
+      .items.getById(id)
+      .update({
+        Title: Region,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Region Edited Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Region`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete")) {
+      sp.web.lists
+        .getByTitle("Region")
+        .items.getById(id)
+        .delete()
+        .then((res) => {
+          swal("Success", "Region has been deleted", "success");
+          sp.web.lists
+            .getByTitle(`Region`)
+            .items.get()
+            .then((res) => {
+              setData(res);
             });
-        }
+        });
     }
-    const openHandler = () => {
-        setOpen(true)
-        setEdit(false)
-        setRegion("")
-    }
-    return (
-        <div className='appContainer'>
-            <AdminNavigation config={`active`} />
-            <div className='contentsRight'>
-                <AdminHeader title='Region' />
-                <MenuBar menu={menu} />
-                <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Region</button>
-                </div>
-                <MaterialTable
+  };
+  const openHandler = () => {
+    setOpen(true);
+    setEdit(false);
+    setRegion("");
+  };
+  return (
+    <div className="appContainer">
+      <AdminNavigation config={`active`} />
+      <div className="contentsRight">
+        <AdminHeader title="Region" />
+        <MenuBar menu={menu} />
+        <div className="btnContainer right">
+          <button
+            onClick={openHandler}
+            className="mtn__btn mtn__yellow"
+            type="button"
+          >
+            Add Region
+          </button>
+        </div>
+        {/* <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -166,38 +195,40 @@ const AdminRegion = ({ history }) => {
                             </button>
                         ),
                     }}
+                /> */}
+        <Modal
+          isVisible={open}
+          title="Region"
+          size="lg"
+          content={
+            loading ? (
+              <Spinner />
+            ) : (
+              <div className="mtn__InputFlex">
+                <Input
+                  title="Region"
+                  value={Region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  type="text"
+                  size="mtn__adult"
                 />
-                <Modal
-                    isVisible={open}
-                    title="Region"
-                    size='lg'
-                    content={
 
-                        loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <Input
-                                title="Region"
-                                value={Region}
-                                onChange={(e) => setRegion(e.target.value)} type="text"
-                                size='mtn__adult'
-                            />
+                <button
+                  onClick={edit ? editHandler : submitHandler}
+                  type="button"
+                  className="mtn__btn mtn__yellow"
+                >
+                  {edit ? "Edit Region" : "Add Region"}
+                </button>
+              </div>
+            )
+          }
+          onClose={() => setOpen(false)}
+          footer=""
+        />
+      </div>
+    </div>
+  );
+};
 
-                            <button
-                                onClick={edit ? editHandler : submitHandler}
-                                type="button"
-                                className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Region" : "Add Region"}</button>
-
-                        </div>
-
-                    }
-                    onClose={() => setOpen(false)}
-
-                    footer=""
-
-                />
-            </div>
-        </div>
-    )
-}
-
-export default AdminRegion
+export default AdminRegion;

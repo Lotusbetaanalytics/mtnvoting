@@ -1,47 +1,53 @@
-import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, Spinner } from '../../../containers'
+import * as React from "react";
+import {
+  AdminNavigation,
+  Card,
+  AdminHeader,
+  Spinner,
+} from "../../../containers";
 import MaterialTable from "material-table";
-import { sp, } from "@pnp/sp"
+import { sp } from "@pnp/sp";
 const AdminPending = ({ history }) => {
-    type IType =
-        | "string"
-        | "boolean"
-        | "numeric"
-        | "date"
-        | "datetime"
-        | "time"
-        | "currency";
-    const string: IType = "string";
+  type IType =
+    | "string"
+    | "boolean"
+    | "numeric"
+    | "date"
+    | "datetime"
+    | "time"
+    | "currency";
+  const string: IType = "string";
 
+  const [columns, setColumns] = React.useState([
+    { title: "Employee Name", field: "EmployeeName", type: "string" as const },
+    { title: "Email", field: "EmployeeEmail", type: "string" as const },
+    { title: "Date Employed", field: "DateEmployed", type: "string" as const },
+    { title: "Job Level", field: "JobLevel", type: "string" as const },
+    { title: "Region", field: "Region", type: "string" as const },
+    { title: "Location", field: "Location", type: "string" as const },
+    { title: "Status", field: "Status", type: "string" as const },
+  ]);
 
-    const [columns, setColumns] = React.useState([
-        { title: "Employee Name", field: "EmployeeName", type: "string" as const },
-        { title: "Email", field: "EmployeeEmail", type: "string" as const },
-        { title: "Date Employed", field: "DateEmployed", type: "string" as const },
-        { title: "Job Level", field: "JobLevel", type: "string" as const },
-        { title: "Region", field: "Region", type: "string" as const },
-        { title: "Location", field: "Location", type: "string" as const },
-        { title: "Status", field: "Status", type: "string" as const },
-    ]);
+  const [data, setData] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
-
-    const [data, setData] = React.useState([])
-    const [loading, setLoading] = React.useState(false)
-
-    React.useEffect(() => {
-        setLoading(true)
-        sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Pending'`).get().then
-            ((res) => {
-                setData(res)
-                setLoading(false)
-            })
-    }, [])
-    return (
-        <div className='appContainer'>
-            <AdminNavigation pending={`active`} />
-            <div className='contentsRight'>
-                <AdminHeader title='Pending Request' />
-                {loading ? <Spinner /> : <MaterialTable
+  React.useEffect(() => {
+    setLoading(true);
+    sp.web.lists
+      .getByTitle(`Nominees`)
+      .items.filter(`Status eq 'Pending'`)
+      .get()
+      .then((res) => {
+        setData(res);
+        setLoading(false);
+      });
+  }, []);
+  return (
+    <div className="appContainer">
+      <AdminNavigation pending={`active`} />
+      <div className="contentsRight">
+        <AdminHeader title="Pending Request" />
+        {/* {loading ? <Spinner /> : <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -86,10 +92,10 @@ const AdminPending = ({ history }) => {
                             </button>
                         ),
                     }}
-                />}
-            </div>
-        </div>
-    )
-}
+                />} */}
+      </div>
+    </div>
+  );
+};
 
-export default AdminPending
+export default AdminPending;

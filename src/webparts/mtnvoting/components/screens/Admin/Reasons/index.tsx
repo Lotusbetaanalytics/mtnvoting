@@ -1,113 +1,142 @@
-import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
+import * as React from "react";
+import {
+  AdminNavigation,
+  Card,
+  AdminHeader,
+  MenuBar,
+  Input,
+  Modal,
+  Spinner,
+  DateInput,
+} from "../../../containers";
 import MaterialTable from "material-table";
-import { sp, } from "@pnp/sp"
-import swal from 'sweetalert';
-
+import { sp } from "@pnp/sp";
+import swal from "sweetalert";
 
 const AdminReason = ({ history }) => {
+  type IType =
+    | "string"
+    | "boolean"
+    | "numeric"
+    | "date"
+    | "datetime"
+    | "time"
+    | "currency";
+  const string: IType = "string";
 
-    type IType =
-        | "string"
-        | "boolean"
-        | "numeric"
-        | "date"
-        | "datetime"
-        | "time"
-        | "currency";
-    const string: IType = "string";
+  const [columns, setColumns] = React.useState([
+    { title: "Reason", field: "Title", type: "string" as const },
+  ]);
 
+  const [data, setData] = React.useState([]);
+  const [Reason, setReason] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [id, setID] = React.useState(null);
 
-    const [columns, setColumns] = React.useState([
-        { title: "Reason", field: "Title", type: "string" as const },
-    ]);
+  React.useEffect(() => {
+    sp.web.lists
+      .getByTitle(`Reason`)
+      .items.get()
+      .then((res) => {
+        setData(res);
+      });
+  }, []);
 
-    const [data, setData] = React.useState([])
-    const [Reason, setReason] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [loading, setLoading] = React.useState(false)
-    const [edit, setEdit] = React.useState(false)
-    const [id, setID] = React.useState(null)
+  // Menubar Items
+  const menu = [
+    { name: "Approvals", url: "/admin/add" },
+    { name: "Voting Exercise", url: "/admin/config" },
+    { name: "Region", url: "/admin/region" },
+    { name: "Location", url: "/admin/location" },
+    { name: "Revoke Reasons", url: "/admin/reason", active: true },
+  ];
 
-    React.useEffect(() => {
-        sp.web.lists.getByTitle(`Reason`).items.get().then
-            ((res) => {
-                setData(res)
-            })
+  const submitHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Reason")
+      .items.add({
+        Title: Reason,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Reason added Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Reason`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
 
-    }, [])
-
-    // Menubar Items
-    const menu = [
-        { name: "Approvals", url: "/admin/add", },
-        { name: "Voting Exercise", url: "/admin/config", },
-        { name: "Region", url: "/admin/region", },
-        { name: "Location", url: "/admin/location" },
-        { name: "Revoke Reasons", url: "/admin/reason", active: true, },
-    ];
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Reason").items.add({
-            Title: Reason,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Reason added Successfully", "success");
-            sp.web.lists.getByTitle(`Reason`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-
-    const editHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Reason").items.getById(id).update({
-            Title: Reason,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Reason Edited Successfully", "success");
-            sp.web.lists.getByTitle(`Reason`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-    const deleteHandler = (id) => {
-        if (window.confirm("Are you sure you want to delete")) {
-            sp.web.lists.getByTitle("Reason").items.getById(id).delete().then((res) => {
-                swal("Success", "Reason has been deleted", "success");
-                sp.web.lists.getByTitle(`Reason`).items.get().then
-                    ((res) => {
-                        setData(res)
-                    })
+  const editHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Reason")
+      .items.getById(id)
+      .update({
+        Title: Reason,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Reason Edited Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Reason`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete")) {
+      sp.web.lists
+        .getByTitle("Reason")
+        .items.getById(id)
+        .delete()
+        .then((res) => {
+          swal("Success", "Reason has been deleted", "success");
+          sp.web.lists
+            .getByTitle(`Reason`)
+            .items.get()
+            .then((res) => {
+              setData(res);
             });
-        }
+        });
     }
-    const openHandler = () => {
-        setOpen(true)
-        setEdit(false)
-        setReason("")
-    }
-    return (
-        <div className='appContainer'>
-            <AdminNavigation config={`active`} />
-            <div className='contentsRight'>
-                <AdminHeader title='Reason' />
-                <MenuBar menu={menu} />
-                <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Reason</button>
-                </div>
-                <MaterialTable
+  };
+  const openHandler = () => {
+    setOpen(true);
+    setEdit(false);
+    setReason("");
+  };
+  return (
+    <div className="appContainer">
+      <AdminNavigation config={`active`} />
+      <div className="contentsRight">
+        <AdminHeader title="Reason" />
+        <MenuBar menu={menu} />
+        <div className="btnContainer right">
+          <button
+            onClick={openHandler}
+            className="mtn__btn mtn__yellow"
+            type="button"
+          >
+            Add Reason
+          </button>
+        </div>
+        {/* <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -166,38 +195,40 @@ const AdminReason = ({ history }) => {
                             </button>
                         ),
                     }}
+                /> */}
+        <Modal
+          isVisible={open}
+          title="Reason"
+          size="lg"
+          content={
+            loading ? (
+              <Spinner />
+            ) : (
+              <div className="mtn__InputFlex">
+                <Input
+                  title="Reason"
+                  value={Reason}
+                  onChange={(e) => setReason(e.target.value)}
+                  type="text"
+                  size="mtn__adult"
                 />
-                <Modal
-                    isVisible={open}
-                    title="Reason"
-                    size='lg'
-                    content={
 
-                        loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <Input
-                                title="Reason"
-                                value={Reason}
-                                onChange={(e) => setReason(e.target.value)} type="text"
-                                size='mtn__adult'
-                            />
+                <button
+                  onClick={edit ? editHandler : submitHandler}
+                  type="button"
+                  className="mtn__btn mtn__yellow"
+                >
+                  {edit ? "Edit Reason" : "Add Reason"}
+                </button>
+              </div>
+            )
+          }
+          onClose={() => setOpen(false)}
+          footer=""
+        />
+      </div>
+    </div>
+  );
+};
 
-                            <button
-                                onClick={edit ? editHandler : submitHandler}
-                                type="button"
-                                className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Reason" : "Add Reason"}</button>
-
-                        </div>
-
-                    }
-                    onClose={() => setOpen(false)}
-
-                    footer=""
-
-                />
-            </div>
-        </div>
-    )
-}
-
-export default AdminReason
+export default AdminReason;

@@ -39,9 +39,9 @@ const EmployeeRegistration = ({ history }) => {
                 .items.add({
                   EmployeeName: employeeName,
                   EmployeeEmail: employeeEmail,
-                  Region: region,
-                  Location: location,
                   Constituency: constituency,
+                  Location: location,
+                  Region: region,
                 })
                 .then((res) => {
                   setLoading(false);
@@ -93,10 +93,10 @@ const EmployeeRegistration = ({ history }) => {
       setEmployeeName(response.DisplayName);
       setEmployeeEmail(response.Email);
       sp.web.lists
-        .getByTitle(`Region`)
+        .getByTitle(`Constituency`)
         .items.get()
         .then((resp) => {
-          setRegions(resp);
+          setConstituencies(resp);
         });
       sp.web.lists
         .getByTitle(`Registration`)
@@ -110,14 +110,14 @@ const EmployeeRegistration = ({ history }) => {
     });
   }, [history]);
 
-  const regionHandler = (e) => {
-    setRegion(e.target.value);
+  const constituencyHandler = (e) => {
+    setConstituency(e.target.value);
     sp.web.lists
-      .getByTitle(`Location`)
-      .items.filter(`Region eq '${e.target.value}'`)
+      .getByTitle(`Region`)
+      .items.filter(`Constituency eq '${e.target.value}'`)
       .get()
       .then((res) => {
-        setLocations(res);
+        setRegions(res);
       });
   };
 
@@ -161,15 +161,26 @@ const EmployeeRegistration = ({ history }) => {
                 type="email"
                 value={employeeEmail}
                 onChange={(e) => setEmployeeEmail(e.target.value)}
-                title="Employee Name"
+                title="Employee Email"
                 required={true}
                 readOnly={false}
                 size="mtn_child"
               />
 
               <Select
+                value={constituency}
+                onChange={constituencyHandler}
+                required={true}
+                title="Constituency"
+                options={constituencies}
+                size="mtn_child"
+                filter={true}
+                filterOption="Title"
+              />
+
+              <Select
+                onChange={(e) => setRegion(e.target.value)}
                 value={region}
-                onChange={regionHandler}
                 required={true}
                 title="Region"
                 options={regions}
@@ -177,24 +188,12 @@ const EmployeeRegistration = ({ history }) => {
                 filter={true}
                 filterOption="Title"
               />
-
               <Select
                 value={location}
                 onChange={locationHandler}
                 required={true}
                 title="Location"
                 options={locations}
-                size="mtn_child"
-                filter={true}
-                filterOption="Title"
-              />
-
-              <Select
-                value={constituency}
-                onChange={(e) => setConstituency(e.target.value)}
-                required={true}
-                title="Constituency"
-                options={constituencies}
                 size="mtn_child"
                 filter={true}
                 filterOption="Title"
@@ -236,7 +235,7 @@ const EmployeeRegistration = ({ history }) => {
               <button
                 type="submit"
                 className={styles.btnSubmit}
-              // onClick={approveHandler}
+                // onClick={approveHandler}
               >
                 Submit
               </button>

@@ -1,122 +1,153 @@
-import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, Select } from '../../../containers'
+import * as React from "react";
+import {
+  AdminNavigation,
+  Card,
+  AdminHeader,
+  MenuBar,
+  Input,
+  Modal,
+  Spinner,
+  Select,
+} from "../../../containers";
 import MaterialTable from "material-table";
-import { sp, } from "@pnp/sp"
-import swal from 'sweetalert';
-
+import { sp } from "@pnp/sp";
+import swal from "sweetalert";
 
 const AdminLocation = ({ history }) => {
+  type IType =
+    | "string"
+    | "boolean"
+    | "numeric"
+    | "date"
+    | "datetime"
+    | "time"
+    | "currency";
+  const string: IType = "string";
 
-    type IType =
-        | "string"
-        | "boolean"
-        | "numeric"
-        | "date"
-        | "datetime"
-        | "time"
-        | "currency";
-    const string: IType = "string";
+  const [columns, setColumns] = React.useState([
+    { title: "Location", field: "Title", type: "string" as const },
+    { title: "Region", field: "Region", type: "string" as const },
+  ]);
 
+  const [data, setData] = React.useState([]);
+  const [Location, setLocation] = React.useState("");
+  const [regions, setRegions] = React.useState([]);
+  const [Region, setRegion] = React.useState("");
+  const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [id, setID] = React.useState(null);
 
-    const [columns, setColumns] = React.useState([
-        { title: "Location", field: "Title", type: "string" as const },
-        { title: "Region", field: "Region", type: "string" as const },
-    ]);
+  React.useEffect(() => {
+    sp.web.lists
+      .getByTitle(`Location`)
+      .items.get()
+      .then((res) => {
+        setData(res);
+      });
+    sp.web.lists
+      .getByTitle(`Region`)
+      .items.get()
+      .then((resp) => {
+        setRegions(resp);
+      });
+  }, []);
 
-    const [data, setData] = React.useState([])
-    const [Location, setLocation] = React.useState("")
-    const [regions, setRegions] = React.useState([])
-    const [Region, setRegion] = React.useState("")
-    const [open, setOpen] = React.useState(false)
-    const [loading, setLoading] = React.useState(false)
-    const [edit, setEdit] = React.useState(false)
-    const [id, setID] = React.useState(null)
+  // Menubar Items
+  const menu = [
+    { name: "Approvals", url: "/admin/add" },
+    { name: "Voting Exercise", url: "/admin/config" },
+    { name: "Region", url: "/admin/region" },
+    { name: "Location", url: "/admin/location", active: true },
+    { name: "Revoke Reasons", url: "/admin/reason" },
+  ];
 
-    React.useEffect(() => {
-        sp.web.lists.getByTitle(`Location`).items.get().then
-            ((res) => {
-                setData(res)
-            })
-        sp.web.lists.getByTitle(`Region`).items.get().then
-            ((resp) => {
-                setRegions(resp)
-            })
+  const submitHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Location")
+      .items.add({
+        Title: Location,
+        Region: Region,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Location added Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Location`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
 
-    }, [])
-
-    // Menubar Items
-    const menu = [
-        { name: "Approvals", url: "/admin/add", },
-        { name: "Voting Exercise", url: "/admin/config", },
-        { name: "Region", url: "/admin/region", },
-        { name: "Location", url: "/admin/location", active: true, },
-        { name: "Revoke Reasons", url: "/admin/reason" },
-    ];
-
-    const submitHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Location").items.add({
-            Title: Location,
-            Region: Region,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Location added Successfully", "success");
-            sp.web.lists.getByTitle(`Location`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-
-    const editHandler = (e) => {
-        e.preventDefault()
-        sp.web.lists.getByTitle("Location").items.getById(id).update({
-            Title: Location,
-            Region: Region,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Location Edited Successfully", "success");
-            sp.web.lists.getByTitle(`Location`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
-
-    }
-    const deleteHandler = (id) => {
-        if (window.confirm("Are you sure you want to delete")) {
-            sp.web.lists.getByTitle("Location").items.getById(id).delete().then((res) => {
-                swal("Success", "Location has been deleted", "success");
-                sp.web.lists.getByTitle(`Location`).items.get().then
-                    ((res) => {
-                        setData(res)
-                    })
+  const editHandler = (e) => {
+    e.preventDefault();
+    sp.web.lists
+      .getByTitle("Location")
+      .items.getById(id)
+      .update({
+        Title: Location,
+        Region: Region,
+      })
+      .then((res) => {
+        setOpen(false);
+        swal("Success", "Location Edited Successfully", "success");
+        sp.web.lists
+          .getByTitle(`Location`)
+          .items.get()
+          .then((res) => {
+            setData(res);
+          });
+      })
+      .catch((e) => {
+        swal("Warning!", "An Error Occured, Try Again!", "error");
+        console.error(e);
+      });
+  };
+  const deleteHandler = (id) => {
+    if (window.confirm("Are you sure you want to delete")) {
+      sp.web.lists
+        .getByTitle("Location")
+        .items.getById(id)
+        .delete()
+        .then((res) => {
+          swal("Success", "Location has been deleted", "success");
+          sp.web.lists
+            .getByTitle(`Location`)
+            .items.get()
+            .then((res) => {
+              setData(res);
             });
-        }
+        });
     }
-    const openHandler = () => {
-        setOpen(true)
-        setEdit(false)
-        setRegion("")
-    }
-    return (
-        <div className='appContainer'>
-            <AdminNavigation config={`active`} />
-            <div className='contentsRight'>
-                <AdminHeader title='Location' />
-                <MenuBar menu={menu} />
-                <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Location</button>
-                </div>
-                <MaterialTable
+  };
+  const openHandler = () => {
+    setOpen(true);
+    setEdit(false);
+    setRegion("");
+  };
+  return (
+    <div className="appContainer">
+      <AdminNavigation config={`active`} />
+      <div className="contentsRight">
+        <AdminHeader title="Location" />
+        <MenuBar menu={menu} />
+        <div className="btnContainer right">
+          <button
+            onClick={openHandler}
+            className="mtn__btn mtn__yellow"
+            type="button"
+          >
+            Add Location
+          </button>
+        </div>
+        {/* <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -175,48 +206,50 @@ const AdminLocation = ({ history }) => {
                             </button>
                         ),
                     }}
+                /> */}
+        <Modal
+          isVisible={open}
+          title="Region"
+          size="lg"
+          content={
+            loading ? (
+              <Spinner />
+            ) : (
+              <div className="mtn__InputFlex">
+                <Select
+                  value={Region}
+                  onChange={(e) => setRegion(e.target.value)}
+                  required={false}
+                  title="Region"
+                  options={regions}
+                  size="mtn__adult"
+                  filter={true}
+                  filterOption="Title"
                 />
-                <Modal
-                    isVisible={open}
-                    title="Region"
-                    size='lg'
-                    content={
-
-                        loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <Select
-                                value={Region}
-                                onChange={(e) => setRegion(e.target.value)}
-                                required={false}
-                                title="Region"
-                                options={regions}
-                                size="mtn__adult"
-                                filter={true}
-                                filterOption='Title'
-                            />
-                            <Input
-                                title="Location"
-                                value={Location}
-                                onChange={(e) => setLocation(e.target.value)} type="text"
-                                size='mtn__adult'
-                            />
-
-                            <button
-                                onClick={edit ? editHandler : submitHandler}
-                                type="button"
-                                className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Location" : "Add Location"}</button>
-
-                        </div>
-
-                    }
-                    onClose={() => setOpen(false)}
-
-                    footer=""
-
+                <Input
+                  title="Location"
+                  value={Location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  type="text"
+                  size="mtn__adult"
                 />
-            </div>
-        </div>
-    )
-}
 
-export default AdminLocation
+                <button
+                  onClick={edit ? editHandler : submitHandler}
+                  type="button"
+                  className="mtn__btn mtn__yellow"
+                >
+                  {edit ? "Edit Location" : "Add Location"}
+                </button>
+              </div>
+            )
+          }
+          onClose={() => setOpen(false)}
+          footer=""
+        />
+      </div>
+    </div>
+  );
+};
+
+export default AdminLocation;
