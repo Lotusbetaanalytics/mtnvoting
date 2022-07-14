@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, Spinner } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import "@pnp/sp/sites";
@@ -10,7 +10,6 @@ import { SPHttpClient, SPHttpClientConfiguration, SPHttpClientResponse } from '@
 
 const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) => {
 
-    console.log(context)
 
     const history = useHistory()
     type IType =
@@ -37,11 +36,14 @@ const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) 
 
 
     const [data, setData] = React.useState([])
+    const [loading, setLoading] = React.useState(false)
 
     React.useEffect(() => {
+        setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Declined'`).get().then
             ((res) => {
                 setData(res)
+                setLoading(false)
             })
 
         // context.spHttpClient.get(`https://lotusbetaanalytics.sharepoint.com/sites/business_solutions/_api/lists/GetByTitle('CURRENT HCM STAFF LIST-test')/items`,
@@ -57,7 +59,7 @@ const AdminDeclined: React.FC<IMtnvotingProps> = ({ context }: IMtnvotingProps) 
         <div className='appContainer'>
             <AdminNavigation declined={`active`} />
             <div className='contentsRight'>
-                <Header title='Declined Request' />
+                <AdminHeader title='Declined Request' />
                 <MaterialTable
                     title=""
                     columns={columns}

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, Spinner } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 
@@ -33,11 +33,14 @@ const AdminApproved = ({ history }) => {
 
 
     const [data, setData] = React.useState([])
+    const [loading, setLoading] = React.useState(false)
 
     React.useEffect(() => {
+        setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`Status eq 'Approved'`).get().then
             ((res) => {
                 setData(res)
+                setLoading(false)
             })
 
     }, [])
@@ -45,8 +48,8 @@ const AdminApproved = ({ history }) => {
         <div className='appContainer'>
             <AdminNavigation approved={`active`} />
             <div className='contentsRight'>
-                <Header title='Approved Request' />
-                <MaterialTable
+                <AdminHeader title='Approved Request' />
+                {loading ? <Spinner /> : <MaterialTable
                     title=""
                     columns={columns}
                     data={data}
@@ -92,7 +95,7 @@ const AdminApproved = ({ history }) => {
                             </button>
                         ),
                     }}
-                />
+                />}
             </div>
         </div>
     )

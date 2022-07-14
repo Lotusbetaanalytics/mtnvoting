@@ -23,6 +23,14 @@ import {
   EmployeeRegistration,
   AdminRegion,
   AdminLocation,
+  AdminReport,
+  AdminResult,
+  AdminReason,
+  AdminViewRevoked,
+  CandidateRegister,
+  CandidateDashboard,
+  CandidateViewRequest,
+  CandidateEdit,
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
@@ -34,47 +42,21 @@ import {
 } from "@microsoft/sp-http";
 import { sp } from "@pnp/sp";
 
-export default class Mtnvoting extends React.Component<
-  IMtnvotingProps,
-  {
-    checkStatus: Boolean;
-    finding: Boolean;
-  }
-> {
-  constructor(props: IMtnvotingProps) {
-    super(props);
-    this.state = {
-      checkStatus: false,
-      finding: false,
-    };
-  }
-
-  componentDidMount(): void {
-    sp.profiles.myProperties.get().then(({ Email }) => {
-      this.props.context.spHttpClient
-        .get(
-          `https://lotusbetaanalytics.sharepoint.com/sites/business_solutions/_api/lists/GetByTitle('CURRENT HCM STAFF LIST-test')/items?$filter=field_8 eq '${Email}'`,
-          SPHttpClient.configurations.v1
-        )
-        .then((response: SPHttpClientResponse) => {
-          response.json().then((responseJSON: any) => {
-            console.log(responseJSON);
-            if (!responseJSON.length) {
-              console.log("found");
-              this.setState({
-                checkStatus: true,
-                finding: true,
-              });
-            }
-          });
-        });
-    });
-  }
-
+export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
   public render(): React.ReactElement<IMtnvotingProps> {
     jQuery("#workbenchPageContent").prop("style", "max-width: none");
     jQuery(".SPCanvas-canvas").prop("style", "max-width: none");
     jQuery(".CanvasZone").prop("style", "max-width: none");
+    this.props.context.spHttpClient
+      .get(
+        `https://mtncloud.sharepoint.com/sites/MTNNigeriaComplianceUniverse/testenv/_api/lists/GetByTitle('CURRENT HCM STAFF LIST')/items?$skiptoken=Paged=TRUE`,
+        SPHttpClient.configurations.v1
+      )
+      .then((response: SPHttpClientResponse) => {
+        response.json().then((responseJSON: any) => {
+          console.log(responseJSON);
+        });
+      });
 
     return (
       <Context.Provider
@@ -93,6 +75,9 @@ export default class Mtnvoting extends React.Component<
             <Route path="/vote" exact component={Voting} />
             <Route path="/admin" exact component={AdminDashboard} />
             <Route path="/admin/add" exact component={Administrator} />
+            <Route path="/admin/reports" exact component={AdminReport} />
+            <Route path="/admin/reports/:title" exact component={AdminResult} />
+            <Route path="/admin/reason" exact component={AdminReason} />
             <Route path="/admin/region" exact component={AdminRegion} />
             <Route path="/admin/location" exact component={AdminLocation} />
             <Route path="/admin/pending" exact component={AdminPending} />
@@ -114,8 +99,32 @@ export default class Mtnvoting extends React.Component<
               component={AdminViewDeclined}
             />
             <Route path="/admin/revoked" exact component={AdminRevoked} />
+            <Route
+              path="/admin/revoked/:id"
+              exact
+              component={AdminViewRevoked}
+            />
             <Route path="/admin/config" exact component={AdminConfig} />
-
+            <Route path="/candidate" exact component={CandidateDashboard} />
+            <Route
+              path="/candidate/register"
+              exact
+              render={(props) => (
+                <CandidateRegister context={this.props.pageContext} />
+              )}
+            />
+            <Route
+              path="/candidate/edit"
+              exact
+              render={(props) => (
+                <CandidateEdit context={this.props.pageContext} />
+              )}
+            />
+            <Route
+              path="/candidate/view"
+              exact
+              component={CandidateViewRequest}
+            />
             <Route component={ErrorScreen} />
           </Switch>
         </HashRouter>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Card, Header, MenuBar, Input, Modal, Spinner, DateInput, Select, Helpers } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput, Select, Helpers } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
@@ -20,9 +20,9 @@ const AdminConfig = ({ history }) => {
 
     const [columns, setColumns] = React.useState([
         { title: "Constituency", field: "Title", type: "string" as const },
-        { title: "Number of Applicable Nominees", field: "NomineeCount", type: "string" as const },
+        { title: "Number of Applicable Candidate", field: "NomineeCount", type: "string" as const },
         { title: "Date of Voting Exercise", field: "Date", type: "string" as const },
-        { title: "Country", field: "Country", type: "string" as const },
+        // { title: "Country", field: "Country", type: "string" as const },
         { title: "Region", field: "Region", type: "string" as const },
         { title: "Location", field: "Location", type: "string" as const },
 
@@ -34,7 +34,7 @@ const AdminConfig = ({ history }) => {
     const [regions, setRegions] = React.useState([])
     const [region, setRegion] = React.useState("")
     const [Title, setTitle] = React.useState("")
-    const [country, setCountry] = React.useState("")
+    // const [country, setCountry] = React.useState("")
     const [NomineeCount, setNomineeCount] = React.useState(null)
     const [Date, setDate] = React.useState("")
     const [open, setOpen] = React.useState(false)
@@ -60,6 +60,7 @@ const AdminConfig = ({ history }) => {
         { name: "Voting Exercise", url: "/admin/config", active: true, },
         { name: "Region", url: "/admin/region" },
         { name: "Location", url: "/admin/location" },
+        { name: "Revoke Reasons", url: "/admin/reason" },
     ];
 
     const submitHandler = (e) => {
@@ -70,7 +71,7 @@ const AdminConfig = ({ history }) => {
             Date: Date,
             Region: region,
             Location: location,
-            Country: country,
+            // Country: country,
             Status: "Open"
         }).then((res) => {
             setOpen(false)
@@ -95,7 +96,7 @@ const AdminConfig = ({ history }) => {
             Date: Date,
             Region: region,
             Location: location,
-            Country: country
+            // Country: country
         }).then((res) => {
             setOpen(false)
             swal("Success", "Voting Exercise Edited Successfully", "success");
@@ -173,7 +174,7 @@ const AdminConfig = ({ history }) => {
         <div className='appContainer'>
             <AdminNavigation config={`active`} />
             <div className='contentsRight'>
-                <Header title='Approved Request' />
+                <AdminHeader title='Voting Exercise' />
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
                     <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Start Voting Exercise</button>
@@ -216,6 +217,13 @@ const AdminConfig = ({ history }) => {
                                 setTitle(rowData.Title)
                                 setNomineeCount(rowData.NomineeCount)
                                 setDate(rowData.Date)
+                                setRegion(rowData.Region)
+                                sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${rowData.Region}'`).get().then
+                                    ((res) => {
+                                        setLocations(res)
+                                        setLocation(rowData.Location)
+                                    })
+
                             },
                         },
                         {
@@ -303,7 +311,7 @@ const AdminConfig = ({ history }) => {
                                 filterOption="Title"
                                 size='mtn__adult'
                             />
-                            <Select
+                            {/* <Select
                                 value={country}
                                 onChange={(e) => setCountry(e.target.value)}
                                 required={false}
@@ -311,7 +319,7 @@ const AdminConfig = ({ history }) => {
                                 options={Helpers.countries}
                                 size='mtn__adult'
 
-                            />
+                            /> */}
                             <div className='btnContainer'>
                                 <button
                                     onClick={edit ? editHandler : submitHandler}
