@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Text, Header, Spinner, Textarea, Modal } from '../../../containers'
+import { AdminNavigation, Text, AdminHeader, Spinner, Textarea, Modal, Select } from '../../../containers'
 
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
@@ -11,6 +11,8 @@ const AdminViewApproved = ({ history, match }) => {
     const [loading, setLoading] = React.useState(false)
     const [open, setOpen] = React.useState(false)
     const [comments, setComments] = React.useState("")
+    const [datas, setDatas] = React.useState([])
+    const [reason, setReason] = React.useState("")
     React.useEffect(() => {
         setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
@@ -18,6 +20,11 @@ const AdminViewApproved = ({ history, match }) => {
                 setData(res[0])
                 setLoading(false)
             })
+        sp.web.lists.getByTitle(`Reason`).items.get().then
+            ((resp) => {
+                setDatas(resp)
+            })
+
     }, [])
 
 
@@ -28,7 +35,8 @@ const AdminViewApproved = ({ history, match }) => {
     const revokeHandler = () => {
         sp.web.lists.getByTitle("Nominees").items.getById(id).update({
             Status: "Revoked",
-            Comments: comments
+            Comments: comments,
+            Reason: reason,
         }).then((res) => {
             setOpen(false)
             swal("Success", "Nominee Revoked Successfully", "success");
@@ -42,11 +50,13 @@ const AdminViewApproved = ({ history, match }) => {
             console.error(e);
         });
     }
+    const info = data && data.Agenda ? data.Agenda : "[\"...loading\"]"
+    const resp = JSON.parse(info)
     return (
         <div className='appContainer'>
             <AdminNavigation approved={`active`} />
             <div className='contentsRight'>
-                <Header title='Approved Request' />
+                <AdminHeader title='Approved Request' />
                 <div className='textContainer'>
                     <div className='viewFlex'>
                         <div className='photo'>
@@ -64,7 +74,12 @@ const AdminViewApproved = ({ history, match }) => {
                             <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
                             <Text title="If yes, state the period you served " value={data.PeriodServed} />
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                            <Text title="State your five point agenda" value={data.Agenda} size="large" />
+                            <ul>
+                                <p>State your five point agenda</p>
+                                {resp && resp.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                ))}
+                            </ul>
                             <div className='minimizeBtn'>
                                 <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Revoke</button>
                             </div>
@@ -77,23 +92,34 @@ const AdminViewApproved = ({ history, match }) => {
                         title="Revoke Nominee"
                         size="md"
                         content={
-                            <div className="mtn__InputFlex">
+                            <form onSubmit={revokeHandler}>
+                                <div className="mtn__InputFlex">
+                                    <Select
+                                        value={reason}
+                                        onChange={(e) => setReason(e.target.value)}
+                                        required={true}
+                                        title="Reason"
+                                        options={datas}
+                                        filter={true}
+                                        filterOption="Title"
+                                        size='mtn__adult'
+                                    />
+                                    <Textarea
+                                        title="Comments"
+                                        value={comments}
+                                        onChange={(e) => setComments(e.target.value)}
+                                        required={true}
 
-                                <Textarea
-                                    title="Reason"
-                                    value={comments}
-                                    onChange={(e) => setComments(e.target.value)}
-                                    required={true}
+                                    />
+                                    <button
 
-                                />
+                                        type="submit"
+                                        className='mtn__btn mtn__yellow'
+                                    >Revoke</button>
 
-                                <button
-                                    onClick={revokeHandler}
-                                    type="button"
-                                    className='mtn__btn mtn__yellow'
-                                >Update</button>
+                                </div>
+                            </form>
 
-                            </div>
                         }
                         onClose={() => setOpen(false)}
 

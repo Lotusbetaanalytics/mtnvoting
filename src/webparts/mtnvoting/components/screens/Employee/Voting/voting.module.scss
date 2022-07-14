@@ -4,7 +4,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  background: rgba(196, 196, 196, 0.19);
+  box-sizing: border-box;
+  padding: 30px 0;
 }
 
 .nomineeContainerScreen {
@@ -13,7 +16,7 @@
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  padding: 40px 80px;
+  padding: 20px 80px;
   margin: auto auto;
   align-items: center;
   justify-content: center;
@@ -53,7 +56,7 @@
   justify-content: center;
 }
 .modalContent span {
-  font-family: "Century Gothic";
+  // font-family: "Century Gothic";
   font-style: normal;
   font-weight: 700;
   font-size: 12px;
@@ -120,4 +123,48 @@
 }
 .carousel button:disabled:hover {
   background: #c4c4c4 !important;
+}
+
+.backButtonContainer {
+  // margin-left: auto;
+  width: 500px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  // justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 5px;
+}
+.backButton {
+  // margin-left: auto;
+  width: 150px;
+  height: 50px;
+  background: #ffc423;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: "Century Gothic";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 17px;
+  outline: none;
+  border: none;
+}
+
+.votingPrompt {
+  height: 50px;
+  margin-right: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 30px;
+  color: #fff;
+  background: red;
 }

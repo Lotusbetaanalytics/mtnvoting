@@ -18,7 +18,6 @@ import {
   ErrorScreen,
   AdminViewDeclined,
   AdminConfig,
-  Voting,
   LandingPage,
   EmployeeRegistration,
   CandidateDashboard,
@@ -27,6 +26,10 @@ import {
   CandidateViewRequest,
   AdminRegion,
   AdminLocation,
+  AdminReason,
+  AdminReport,
+  AdminViewRevoked,
+  AdminResult,
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
@@ -42,10 +45,9 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
     jQuery("#workbenchPageContent").prop("style", "max-width: none");
     jQuery(".SPCanvas-canvas").prop("style", "max-width: none");
     jQuery(".CanvasZone").prop("style", "max-width: none");
-
     this.props.context.spHttpClient
       .get(
-        `https://lotusbetaanalytics.sharepoint.com/sites/business_solutions/_api/lists/GetByTitle('CURRENT HCM STAFF LIST-test')/items?$skiptoken=Paged=TRUE`,
+        `https://mtncloud.sharepoint.com/sites/MTNNigeriaComplianceUniverse/testenv/_api/lists/GetByTitle('CURRENT HCM STAFF LIST')/items?$skiptoken=Paged=TRUE`,
         SPHttpClient.configurations.v1
       )
       .then((response: SPHttpClientResponse) => {
@@ -59,9 +61,12 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
         <Switch>
           <Route path="/" exact component={LandingPage} />
           <Route path="/registration" exact component={EmployeeRegistration} />
-          <Route path="/vote" exact component={Voting} />
+          {/* <Route path="/vote" exact component={Voting} /> */}
           <Route path="/admin" exact component={AdminDashboard} />
           <Route path="/admin/add" exact component={Administrator} />
+          <Route path="/admin/reports" exact component={AdminReport} />
+          <Route path="/admin/reports/:title" exact component={AdminResult} />
+          <Route path="/admin/reason" exact component={AdminReason} />
           <Route path="/admin/region" exact component={AdminRegion} />
           <Route path="/admin/location" exact component={AdminLocation} />
           <Route path="/admin/pending" exact component={AdminPending} />
@@ -79,14 +84,23 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
             component={AdminViewDeclined}
           />
           <Route path="/admin/revoked" exact component={AdminRevoked} />
+          <Route path="/admin/revoked/:id" exact component={AdminViewRevoked} />
           <Route path="/admin/config" exact component={AdminConfig} />
           <Route path="/candidate" exact component={CandidateDashboard} />
           <Route
             path="/candidate/register"
             exact
-            component={CandidateRegister}
+            render={(props) => (
+              <CandidateRegister context={this.props.pageContext} />
+            )}
           />
-          <Route path="/candidate/edit" exact component={CandidateEdit} />
+          <Route
+            path="/candidate/edit"
+            exact
+            render={(props) => (
+              <CandidateEdit context={this.props.pageContext} />
+            )}
+          />
           <Route
             path="/candidate/view"
             exact

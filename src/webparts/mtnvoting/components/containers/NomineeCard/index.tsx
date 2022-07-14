@@ -37,41 +37,19 @@ const NomineeCard = ({
         return prev;
       });
     } else {
-      sp.web.lists
-        .getByTitle("Votes")
-        .items.filter(`Nominee eq '${id}' and EmployeeID eq '${EmployeeID}'`)
-        .get()
-        .then((res) => {
-          if (res.length > 0) {
-            swal({
-              title: "",
-              text: "You have already voted for this nominee!",
-              icon: "error",
-              closeOnClickOutside: false,
-              closeOnEsc: false,
-            }).then((ok) => {
-              if (ok) {
-                setChange((prev) => {
-                  return !prev;
-                });
-              }
-            });
-          } else {
-            selectedNominees.push(id);
-            setTest((prev) => {
-              prev[index].checked = true;
-              return prev;
-            });
-          }
-        });
+      selectedNominees.push(id);
+      setTest((prev) => {
+        prev[index].checked = true;
+        return prev;
+      });
     }
   };
 
   React.useEffect(() => {
-    if (selectedNominees.length >= voteCount) {
+    if (voteCount && selectedNominees.length === voteCount) {
       swal("", `You can only select ${voteCount} Nominees`, "error");
     }
-  }, [selectedNominees.length]);
+  }, [selectedNominees.length, voteCount]);
 
   return (
     <div className="nomineeCardContainer">
@@ -90,6 +68,10 @@ const NomineeCard = ({
               <BsCheck />
             </div>
           ) : disabled ? (
+            <div className="btnDisabled">Select</div>
+          ) : !voteCount ? (
+            <div className="btnDisabled">Select</div>
+          ) : voteCount === selectedNominees.length ? (
             <div className="btnDisabled">Select</div>
           ) : (
             <div className="btnUnSelected" onClick={voteNow}>

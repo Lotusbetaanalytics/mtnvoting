@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AdminNavigation, Text, Header, Spinner, Modal, Textarea } from '../../../containers'
+import { AdminNavigation, Text, AdminHeader, Spinner, Modal, Textarea, Select } from '../../../containers'
 
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert'
@@ -8,10 +8,12 @@ import axios from 'axios'
 const AdminViewPending = ({ history, match }) => {
     const id = match.params.id
 
+    const [datas, setDatas] = React.useState([])
     const [data, setData] = React.useState({} as any)
     const [loading, setLoading] = React.useState(false)
     const [open, setOpen] = React.useState(false)
     const [comments, setComments] = React.useState("")
+    const [reason, setReason] = React.useState("")
     React.useEffect(() => {
         setLoading(true)
         sp.web.lists.getByTitle(`Nominees`).items.filter(`ID eq '${id}'`).get().then
@@ -19,7 +21,15 @@ const AdminViewPending = ({ history, match }) => {
                 setData(res[0])
                 setLoading(false)
             })
+        sp.web.lists.getByTitle(`Reason`).items.get().then
+            ((resp) => {
+                setDatas(resp)
+            })
+
     }, [])
+
+    const info = data && data.Agenda ? data.Agenda : "[\"...loading\"]"
+    const resp = JSON.parse(info)
 
     //     var instance = axios.create({
     //         baseURL: 'https://some-domain.com/api/',
@@ -57,7 +67,6 @@ const AdminViewPending = ({ history, match }) => {
             swal("Success", "Nominee Approved Successfully", "success");
             setTimeout(function () {
                 history.push("/admin/pending")
-
             }, 2000);
         }).catch((e) => {
             swal("Warning!", "An Error Occured, Try Again!", "error");
@@ -68,14 +77,13 @@ const AdminViewPending = ({ history, match }) => {
         e.preventDefault()
         sp.web.lists.getByTitle("Nominees").items.getById(id).update({
             Status: "Declined",
-            Comments: comments
+            Comments: comments,
+            Reason: reason,
         }).then((res) => {
             setOpen(false)
             swal("Success", "Nominee Declined Successfully", "success");
             setTimeout(function () {
-
                 history.push("/admin/pending")
-
             }, 2000);
         }).catch((e) => {
             swal("Warning!", "An Error Occured, Try Again!", "error");
@@ -86,7 +94,7 @@ const AdminViewPending = ({ history, match }) => {
         <div className='appContainer'>
             <AdminNavigation pending={`active`} />
             <div className='contentsRight'>
-                <Header title='Pending Request' />
+                <AdminHeader title='Pending Request' />
                 <div className='textContainer'>
                     <div className='viewFlex'>
                         <div className='photo'>
@@ -104,7 +112,13 @@ const AdminViewPending = ({ history, match }) => {
                             <Text title="Have you served on the council before " value={data.ServedOnTheCouncil} />
                             <Text title="If yes, state the period you served " value={data.PeriodServed} />
                             <Text title="Do you have any disciplinary sanction" value={data.DisciplinarySanction} />
-                            <Text title="State your five point agenda" value={data.Agenda} size="large" />
+
+                            <ul>
+                                <p>State your five point agenda</p>
+                                {resp && resp.map((item, i) => (
+                                    <li key={i}>{item}</li>
+                                ))}
+                            </ul>
                             <div className='minimizeBtn'>
                                 <button className='mtn__btn mtn__yellow' onClick={approveHandler}>Approve</button>
                                 <button className='mtn__btn mtn__black' onClick={() => setOpen(true)}>Decline</button>
@@ -115,11 +129,21 @@ const AdminViewPending = ({ history, match }) => {
                     {/* Modal */}
                     <Modal
                         isVisible={open}
-                        title="Revoke Nominee"
+                        title="Decline Nominee"
                         size="md"
                         content={
                             <form onSubmit={revokeHandler}>
                                 <div className="mtn__InputFlex">
+                                    <Select
+                                        value={reason}
+                                        onChange={(e) => setReason(e.target.value)}
+                                        required={true}
+                                        title="Reason"
+                                        options={datas}
+                                        filter={true}
+                                        filterOption="Title"
+                                        size='mtn__adult'
+                                    />
 
                                     <Textarea
                                         title="Reason"
@@ -132,7 +156,7 @@ const AdminViewPending = ({ history, match }) => {
                                         <button
                                             type="submit"
                                             className='mtn__btn mtn__yellow'
-                                        >Update</button>
+                                        >Decline</button>
 
                                     </div>
                                 </div>

@@ -2,8 +2,8 @@
 
 @font-face {
   font-family: "MTNBrighterSans-Medium";
-  src: url("https://mtnonline.com/smartanalytics/assets/assets/fonts/MTNBrighterSans-Medium.eot");
-  src: url("https://mtnonline.com/smartanalytics/assets/assets/fonts/MTNBrighterSans-Medium.woff") format("woff");
+  src: url("./assets/MTNBrighterSans-Medium.eot");
+  src: url("./assets/MTNBrighterSans-Medium.woff") format("woff");
   }
 
 * {
@@ -241,4 +241,16 @@
     flex: 0.87;
     padding: .5rem 2rem;
    
+  }
+
+  .plane{
+    width: 100%;
+    display: flex;
+    padding: 1rem 2rem;
+    list-style: none;
+    justify-content: space-between;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: .5rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
   }
