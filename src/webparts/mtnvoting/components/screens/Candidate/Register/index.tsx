@@ -58,14 +58,19 @@ const CandidateRegister = ({ context }) => {
 
   const agendaHandler = () => {
     setAgendas([...agendas, agenda])
+    setAgenda("")
   }
 
   const removeHandler = (i) => {
-    const index = agendas.indexOf(i);
-    if (index > -1) {
-      agendas.splice(index, 1);
-    }
-    return agendas
+    // const index = agendas.indexOf(i);
+    // if (index > -1) {
+    //   agendas.splice(index, 1);
+    // }
+    // return agendas
+    let filtered = agendas.filter((agendalist) => {
+      return agendalist !== i;
+    });
+    setAgendas(filtered);
   }
 
   React.useEffect(() => {
