@@ -28,9 +28,9 @@ import {
   AdminReason,
   AdminViewRevoked,
   CandidateRegister,
-  CandidateDashboard,
+  // CandidateDashboard,
   CandidateViewRequest,
-  CandidateEdit,
+  // CandidateEdit,
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
@@ -105,7 +105,7 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
               component={AdminViewRevoked}
             />
             <Route path="/admin/config" exact component={AdminConfig} />
-            <Route path="/candidate" exact component={CandidateDashboard} />
+            {/* <Route path="/candidate" exact component={CandidateDashboard} /> */}
             <Route
               path="/candidate/register"
               exact
@@ -113,13 +113,13 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
                 <CandidateRegister context={this.props.pageContext} />
               )}
             />
-            <Route
+            {/* <Route
               path="/candidate/edit"
               exact
               render={(props) => (
                 <CandidateEdit context={this.props.pageContext} />
               )}
-            />
+            /> */}
             <Route
               path="/candidate/view"
               exact
