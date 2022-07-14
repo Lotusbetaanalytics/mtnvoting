@@ -30,6 +30,7 @@ import {
   AdminReport,
   AdminViewRevoked,
   AdminResult,
+  Voting,
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
@@ -57,58 +58,80 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
       });
 
     return (
-      <HashRouter>
-        <Switch>
-          <Route path="/" exact component={LandingPage} />
-          <Route path="/registration" exact component={EmployeeRegistration} />
-          {/* <Route path="/vote" exact component={Voting} /> */}
-          <Route path="/admin" exact component={AdminDashboard} />
-          <Route path="/admin/add" exact component={Administrator} />
-          <Route path="/admin/reports" exact component={AdminReport} />
-          <Route path="/admin/reports/:title" exact component={AdminResult} />
-          <Route path="/admin/reason" exact component={AdminReason} />
-          <Route path="/admin/region" exact component={AdminRegion} />
-          <Route path="/admin/location" exact component={AdminLocation} />
-          <Route path="/admin/pending" exact component={AdminPending} />
-          <Route path="/admin/pending/:id" exact component={AdminViewPending} />
-          <Route path="/admin/approved" exact component={AdminApproved} />
-          <Route
-            path="/admin/approved/:id"
-            exact
-            component={AdminViewApproved}
-          />
-          <Route path="/admin/declined" exact component={AdminDeclined} />
-          <Route
-            path="/admin/declined/:id"
-            exact
-            component={AdminViewDeclined}
-          />
-          <Route path="/admin/revoked" exact component={AdminRevoked} />
-          <Route path="/admin/revoked/:id" exact component={AdminViewRevoked} />
-          <Route path="/admin/config" exact component={AdminConfig} />
-          <Route path="/candidate" exact component={CandidateDashboard} />
-          <Route
-            path="/candidate/register"
-            exact
-            render={(props) => (
-              <CandidateRegister context={this.props.pageContext} />
-            )}
-          />
-          <Route
-            path="/candidate/edit"
-            exact
-            render={(props) => (
-              <CandidateEdit context={this.props.pageContext} />
-            )}
-          />
-          <Route
-            path="/candidate/view"
-            exact
-            component={CandidateViewRequest}
-          />
-          <Route component={ErrorScreen} />
-        </Switch>
-      </HashRouter>
+      <Context.Provider
+        value={{
+          spHttpClient: this.props.context.spHttpClient,
+        }}
+      >
+        <HashRouter>
+          <Switch>
+            <Route path="/" exact component={LandingPage} />
+            <Route
+              path="/registration"
+              exact
+              component={EmployeeRegistration}
+            />
+            <Route path="/vote" exact component={Voting} />
+            <Route path="/admin" exact component={AdminDashboard} />
+            <Route path="/admin/add" exact component={Administrator} />
+            <Route path="/admin/reports" exact component={AdminReport} />
+            <Route path="/admin/reports/:title" exact component={AdminResult} />
+            <Route path="/admin/reason" exact component={AdminReason} />
+            <Route path="/admin/region" exact component={AdminRegion} />
+            <Route path="/admin/location" exact component={AdminLocation} />
+            <Route path="/admin/pending" exact component={AdminPending} />
+            <Route
+              path="/admin/pending/:id"
+              exact
+              component={AdminViewPending}
+            />
+            <Route path="/admin/approved" exact component={AdminApproved} />
+            <Route
+              path="/admin/approved/:id"
+              exact
+              component={AdminViewApproved}
+            />
+            <Route path="/admin/declined" exact component={AdminDeclined} />
+            <Route
+              path="/admin/declined/:id"
+              exact
+              component={AdminViewDeclined}
+            />
+            <Route path="/admin/revoked" exact component={AdminRevoked} />
+            <Route
+              path="/admin/revoked/:id"
+              exact
+              component={AdminViewRevoked}
+            />
+            <Route path="/admin/config" exact component={AdminConfig} />
+            <Route path="/candidate" exact component={CandidateDashboard} />
+            <Route
+              path="/candidate/register"
+              exact
+              render={(props) => (
+                <CandidateRegister context={this.props.pageContext} />
+              )}
+            />
+            <Route
+              path="/candidate/edit"
+              exact
+              render={(props) => (
+                <CandidateEdit context={this.props.pageContext} />
+              )}
+            />
+            <Route
+              path="/candidate/view"
+              exact
+              component={CandidateViewRequest}
+            />
+            <Route component={ErrorScreen} />
+          </Switch>
+        </HashRouter>
+      </Context.Provider>
     );
   }
 }
+
+export const Context = React.createContext({
+  spHttpClient: null,
+});

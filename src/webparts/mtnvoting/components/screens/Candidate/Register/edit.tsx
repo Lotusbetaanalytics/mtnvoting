@@ -50,6 +50,8 @@ const CandidateEdit = ({ context }) => {
   const [upload, setUpload] = React.useState(false);
   const [serviceModal, setServiceModal] = React.useState(false);
   const [agendas, setAgendas] = React.useState([]);
+  const [constituency, setConstituency] = React.useState("");
+  const [constituencies, setConstituencies] = React.useState([]);
 
   const agendaHandler = () => {
     setAgendas([...agendas, agenda]);

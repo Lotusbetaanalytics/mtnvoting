@@ -45,8 +45,15 @@ const EmployeeRegistration = ({ history }) => {
                 })
                 .then((res) => {
                   setLoading(false);
-                  swal("Success", "Registration Successful", "success");
-                  history.push("/vote");
+                  swal({
+                    title: "Success",
+                    text: "You have successfully registered!",
+                    icon: "success",
+                  }).then((ok) => {
+                    if (ok) {
+                      history.push("/vote");
+                    }
+                  });
                 })
                 .catch((err) => {
                   setLoading(false);
@@ -60,6 +67,7 @@ const EmployeeRegistration = ({ history }) => {
             } else {
               setLoading(false);
               swal("Warning!", "Max Voters Reached", "error");
+              return;
             }
           });
       });
@@ -100,8 +108,7 @@ const EmployeeRegistration = ({ history }) => {
         });
       sp.web.lists
         .getByTitle(`Constituency`)
-        .items
-        .get()
+        .items.get()
         .then((res) => {
           setConstituencies(res);
         });
@@ -139,7 +146,6 @@ const EmployeeRegistration = ({ history }) => {
     //   });
   };
 
-
   return (
     <div className={styles.employee__Container}>
       <div className={styles.employee__Header}>
@@ -174,6 +180,7 @@ const EmployeeRegistration = ({ history }) => {
                 readOnly={false}
                 size="mtn_child"
               />
+
               <Select
                 value={constituency}
                 onChange={(e) => setConstituency(e.target.value)}
@@ -186,8 +193,8 @@ const EmployeeRegistration = ({ history }) => {
               />
 
               <Select
-                value={region}
                 onChange={regionHandler}
+                value={region}
                 required={true}
                 title="Region"
                 options={regions}
@@ -195,7 +202,6 @@ const EmployeeRegistration = ({ history }) => {
                 filter={true}
                 filterOption="Title"
               />
-
               <Select
                 value={location}
                 onChange={locationHandler}
@@ -206,8 +212,6 @@ const EmployeeRegistration = ({ history }) => {
                 filter={true}
                 filterOption="Title"
               />
-
-
             </div>
             <div className={styles.btnContainer}>
               <button
@@ -245,7 +249,7 @@ const EmployeeRegistration = ({ history }) => {
               <button
                 type="submit"
                 className={styles.btnSubmit}
-              // onClick={approveHandler}
+                // onClick={approveHandler}
               >
                 Submit
               </button>

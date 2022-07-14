@@ -5,6 +5,13 @@ import styles from "./voting.module.scss";
 import Carousel from "react-elastic-carousel";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
+import { Context } from "../../../Mtnvoting";
+import { BASE_URL } from "../../../config";
+import {
+  SPHttpClient,
+  SPHttpClientConfiguration,
+  SPHttpClientResponse,
+} from "@microsoft/sp-http";
 
 const Voting = () => {
   const [nominees, setNominees] = React.useState([]);
@@ -24,10 +31,12 @@ const Voting = () => {
   const [name, setName] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [cannotVote, setCannotVote] = React.useState(true);
+  const [checking, setChecking] = React.useState(false);
   const [voteCount, setVoteCount] = React.useState(0);
   const [selectedNominees, setSelectedNominees] = React.useState([]);
   const [numberOfTimesVoted, setNumberOfTimesVoted] = React.useState(0);
   const [message, setMessage] = React.useState("");
+  const { spHttpClient } = React.useContext(Context);
 
   const history = useHistory();
 
@@ -63,7 +72,19 @@ const Voting = () => {
               .items.filter(`EmployeeID eq '${items[0].ID}' `)
               .get()
               .then((data) => {
-                setNumberOfTimesVoted(data.length);
+                if (data.length > 0) {
+                  swal({
+                    title: "Error",
+                    text: "You already voted!",
+                    icon: "error",
+                    closeOnClickOutside: false,
+                    closeOnEsc: false,
+                  }).then((ok) => {
+                    if (ok) {
+                      history.push("/");
+                    }
+                  });
+                }
               });
           } else {
             swal({
@@ -90,31 +111,19 @@ const Voting = () => {
       .then((res) => {
         if (res.length > 0) {
           setVoteCount(res[0].NomineeCount);
-          if (numberOfTimesVoted >= res[0].NomineeCount) {
-            swal({
-              title: "",
-              text: "You have reached your maximum votes quota!",
-              icon: "error",
-              // buttons: ["Ok"],
-              closeOnClickOutside: false,
-              closeOnEsc: false,
-            }).then((ok) => {
-              if (ok) {
-                history.push("/");
-              }
-            });
-          } else if (numberOfTimesVoted < res[0].NomineeCount) {
-            setVoteCount((prev) => {
-              return Math.abs(prev - numberOfTimesVoted);
-            });
-          }
           const today = new Date(Date.now()).toLocaleDateString();
           const votingDate = new Date(res[0].Date).toLocaleDateString();
-          today === votingDate && setCannotVote(false);
+
+          if (today === votingDate) {
+            setChecking(false);
+            setCannotVote(false);
+          }
+
+          // today === votingDate && setCannotVote(false);
         }
       })
       .catch((err) => {});
-  }, [constituency, numberOfTimesVoted]);
+  }, [constituency]);
 
   React.useEffect(() => {
     //create a value for each item in the list
@@ -131,26 +140,59 @@ const Voting = () => {
   const yesHandler = () => {
     setSubmitting(true);
     for (let i = 0; i < selectedNominees.length; i++) {
-      sp.web.lists
-        .getByTitle(`Votes`)
-        .items.add({
-          EmployeeID: String(userID),
-          Nominee: String(selectedNominees[i]),
-        })
-        .then((res) => {
-          setSubmitting(false);
-          setOpen(false);
-          swal({
-            title: "",
-            text: "Your vote has been submitted!",
-            icon: "success",
-            // buttons: ["Ok"],
-          }).then((ok) => {
-            if (ok) {
-              history.push("/");
-            }
+      spHttpClient
+        .post(
+          `${BASE_URL}/_api/web/lists/getbytitle('Votes')/items'`,
+          SPHttpClient.configurations.v1,
+          {
+            headers: {
+              Accept: "application/json;odata=nometadata",
+              "Content-type": "application/json;odata=nometadata",
+              "odata-version": "",
+            },
+            body: JSON.stringify({
+              EmployeeID: String(userID),
+              Nominee: String(selectedNominees[i]),
+            }),
+          }
+        )
+        .then((response: SPHttpClientResponse) => {
+          response.json().then((responseJSON: any) => {
+            console.log(responseJSON);
+            setSubmitting(false);
+            setOpen(false);
+            swal({
+              title: "",
+              text: "Your vote has been submitted!",
+              icon: "success",
+              // buttons: ["Ok"],
+            }).then((ok) => {
+              if (ok) {
+                history.push("/");
+              }
+            });
           });
         })
+        // sp.web.lists
+        //   .getByTitle(`Votes`)
+        //   .items.add({
+        //     EmployeeID: String(userID),
+        //     Nominee: String(selectedNominees[i]),
+        //   })
+        //   .then((res) => {
+        //     setSubmitting(false);
+        //     setOpen(false);
+        //     swal({
+        //       title: "",
+        //       text: "Your vote has been submitted!",
+        //       icon: "success",
+        //       // buttons: ["Ok"],
+        //     }).then((ok) => {
+        //       if (ok) {
+        //         history.push("/");
+        //       }
+        //     });
+        //   })
         .catch((err) => {
           console.log(err);
           setSubmitting(false);
@@ -195,12 +237,15 @@ const Voting = () => {
     <>
       <div className={styles.votingPageContainer}>
         <Header title="Nominees" />
-        {cannotVote && (
-          <div className={styles.votingPrompt}>
-            You cannot vote yet because the voting exercise is yet to commence
-            or has ended.
-          </div>
-        )}
+        {cannotVote &&
+          (checking ? (
+            <div className={styles.votingPrompt}>
+              You cannot vote yet because the voting exercise is yet to commence
+              or has ended.
+            </div>
+          ) : (
+            <div></div>
+          ))}
         <div className={styles.nomineeContainerScreen}>
           {loading ? (
             <div>Loading...</div>
@@ -242,7 +287,19 @@ const Voting = () => {
                   );
                 })}
               </Carousel>
-              {nominees.length === 0 && <div>No nominees</div>}
+              {nominees.length === 0 && (
+                <div
+                  style={{
+                    margin: "auto",
+                    position: "absolute",
+                    transform: "translate(-50%,-50%)",
+                    top: "50%",
+                    left: "50%",
+                  }}
+                >
+                  No nominees
+                </div>
+              )}
             </>
           )}
         </div>
@@ -257,10 +314,14 @@ const Voting = () => {
           </button>
           <button
             className={styles.backButton}
-            disabled={cannotVote || selectedNominees.length === 0}
+            disabled={
+              cannotVote ||
+              selectedNominees.length === 0 ||
+              !voteCount ||
+              selectedNominees.length > voteCount
+            }
             onClick={() => {
               setOpen(true);
-              console.log(selectedNominees, "here here >>>> ", voteCount);
             }}
           >
             Submit

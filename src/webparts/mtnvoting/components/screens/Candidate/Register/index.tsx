@@ -11,7 +11,7 @@ import {
   ImageUpload,
   CandidateNavigation
 } from "../../../containers";
-import styles from "./styles.module.scss";
+import styles from "./styles.module.scss"
 import "@pnp/sp/webs";
 import "@pnp/sp/site-users/web";
 import { sp } from "@pnp/sp";
