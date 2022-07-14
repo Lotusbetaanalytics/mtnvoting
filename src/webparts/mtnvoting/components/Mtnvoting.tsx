@@ -77,51 +77,53 @@ export default class Mtnvoting extends React.Component<
     jQuery(".CanvasZone").prop("style", "max-width: none");
 
     return (
-      <>
-        {this.state.checkStatus ? (
-          <HashRouter>
-            <Switch>
-              <Route path="/" exact component={LandingPage} />
-              <Route
-                path="/registration"
-                exact
-                component={EmployeeRegistration}
-              />
-              <Route path="/vote" exact component={Voting} />
-              <Route path="/admin" exact component={AdminDashboard} />
-              <Route path="/admin/add" exact component={Administrator} />
-              <Route path="/admin/region" exact component={AdminRegion} />
-              <Route path="/admin/location" exact component={AdminLocation} />
-              <Route path="/admin/pending" exact component={AdminPending} />
-              <Route
-                path="/admin/pending/:id"
-                exact
-                component={AdminViewPending}
-              />
-              <Route path="/admin/approved" exact component={AdminApproved} />
-              <Route
-                path="/admin/approved/:id"
-                exact
-                component={AdminViewApproved}
-              />
-              <Route path="/admin/declined" exact component={AdminDeclined} />
-              <Route
-                path="/admin/declined/:id"
-                exact
-                component={AdminViewDeclined}
-              />
-              <Route path="/admin/revoked" exact component={AdminRevoked} />
-              <Route path="/admin/config" exact component={AdminConfig} />
+      <Context.Provider
+        value={{
+          spHttpClient: this.props.context.spHttpClient,
+        }}
+      >
+        <HashRouter>
+          <Switch>
+            <Route path="/" exact component={LandingPage} />
+            <Route
+              path="/registration"
+              exact
+              component={EmployeeRegistration}
+            />
+            <Route path="/vote" exact component={Voting} />
+            <Route path="/admin" exact component={AdminDashboard} />
+            <Route path="/admin/add" exact component={Administrator} />
+            <Route path="/admin/region" exact component={AdminRegion} />
+            <Route path="/admin/location" exact component={AdminLocation} />
+            <Route path="/admin/pending" exact component={AdminPending} />
+            <Route
+              path="/admin/pending/:id"
+              exact
+              component={AdminViewPending}
+            />
+            <Route path="/admin/approved" exact component={AdminApproved} />
+            <Route
+              path="/admin/approved/:id"
+              exact
+              component={AdminViewApproved}
+            />
+            <Route path="/admin/declined" exact component={AdminDeclined} />
+            <Route
+              path="/admin/declined/:id"
+              exact
+              component={AdminViewDeclined}
+            />
+            <Route path="/admin/revoked" exact component={AdminRevoked} />
+            <Route path="/admin/config" exact component={AdminConfig} />
 
-              <Route component={ErrorScreen} />
-            </Switch>
-          </HashRouter>
-        ) : (
-          <div>
-            {this.state.finding && "You don't have access to this application."}
-          </div>
-        )}
-      </>
+            <Route component={ErrorScreen} />
+          </Switch>
+        </HashRouter>
+      </Context.Provider>
     );
   }
 }
+
+export const Context = React.createContext({
+  spHttpClient: null,
+});

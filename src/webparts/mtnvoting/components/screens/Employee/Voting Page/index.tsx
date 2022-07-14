@@ -5,6 +5,13 @@ import styles from "./voting.module.scss";
 import Carousel from "react-elastic-carousel";
 import swal from "sweetalert";
 import { useHistory } from "react-router-dom";
+import { Context } from "../../../Mtnvoting";
+import { BASE_URL } from "../../../config";
+import {
+  SPHttpClient,
+  SPHttpClientConfiguration,
+  SPHttpClientResponse,
+} from "@microsoft/sp-http";
 
 const Voting = () => {
   const [nominees, setNominees] = React.useState([]);
@@ -29,6 +36,7 @@ const Voting = () => {
   const [selectedNominees, setSelectedNominees] = React.useState([]);
   const [numberOfTimesVoted, setNumberOfTimesVoted] = React.useState(0);
   const [message, setMessage] = React.useState("");
+  const { spHttpClient } = React.useContext(Context);
 
   const history = useHistory();
 
@@ -132,26 +140,59 @@ const Voting = () => {
   const yesHandler = () => {
     setSubmitting(true);
     for (let i = 0; i < selectedNominees.length; i++) {
-      sp.web.lists
-        .getByTitle(`Votes`)
-        .items.add({
-          EmployeeID: String(userID),
-          Nominee: String(selectedNominees[i]),
-        })
-        .then((res) => {
-          setSubmitting(false);
-          setOpen(false);
-          swal({
-            title: "",
-            text: "Your vote has been submitted!",
-            icon: "success",
-            // buttons: ["Ok"],
-          }).then((ok) => {
-            if (ok) {
-              history.push("/");
-            }
+      spHttpClient
+        .post(
+          `${BASE_URL}/_api/web/lists/getbytitle('Votes')/items'`,
+          SPHttpClient.configurations.v1,
+          {
+            headers: {
+              Accept: "application/json;odata=nometadata",
+              "Content-type": "application/json;odata=nometadata",
+              "odata-version": "",
+            },
+            body: JSON.stringify({
+              EmployeeID: String(userID),
+              Nominee: String(selectedNominees[i]),
+            }),
+          }
+        )
+        .then((response: SPHttpClientResponse) => {
+          response.json().then((responseJSON: any) => {
+            console.log(responseJSON);
+            setSubmitting(false);
+            setOpen(false);
+            swal({
+              title: "",
+              text: "Your vote has been submitted!",
+              icon: "success",
+              // buttons: ["Ok"],
+            }).then((ok) => {
+              if (ok) {
+                history.push("/");
+              }
+            });
           });
         })
+        // sp.web.lists
+        //   .getByTitle(`Votes`)
+        //   .items.add({
+        //     EmployeeID: String(userID),
+        //     Nominee: String(selectedNominees[i]),
+        //   })
+        //   .then((res) => {
+        //     setSubmitting(false);
+        //     setOpen(false);
+        //     swal({
+        //       title: "",
+        //       text: "Your vote has been submitted!",
+        //       icon: "success",
+        //       // buttons: ["Ok"],
+        //     }).then((ok) => {
+        //       if (ok) {
+        //         history.push("/");
+        //       }
+        //     });
+        //   })
         .catch((err) => {
           console.log(err);
           setSubmitting(false);
@@ -246,7 +287,9 @@ const Voting = () => {
                   );
                 })}
               </Carousel>
-              {nominees.length === 0 && <div>No nominees</div>}
+              {nominees.length === 0 && (
+                <div style={{ margin: "auto" }}>No nominees</div>
+              )}
             </>
           )}
         </div>
