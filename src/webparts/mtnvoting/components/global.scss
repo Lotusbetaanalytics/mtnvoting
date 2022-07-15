@@ -90,7 +90,7 @@
     border-radius: 10px; 
     box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px;
   padding: 1rem 2rem;
-  min-height: 80vh;
+  // min-height: 80vh;
   flex-direction: column;
   }
   .textContainerFlex{
@@ -253,4 +253,9 @@
     border-radius: 10px;
     margin-bottom: .5rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+  }
+
+  .marginLeftRight{
+    width: 100%;
+    margin: 1rem 2rem;
   }

@@ -20,7 +20,7 @@ import FileUpload from "../../../containers/Forms/Input/FileUpload";
 import { values } from "lodash";
 import { Item } from "@pnp/sp/items";
 import { useHistory } from "react-router-dom";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash,FaEdit } from "react-icons/fa";
 
 const CandidateEdit = ({ context }) => {
   const [loading, setLoading] = React.useState(false);
@@ -34,10 +34,13 @@ const CandidateEdit = ({ context }) => {
   const [dateEmployed, setDateEmployed] = React.useState("");
   const [jobLevel, setJobLevel] = React.useState("");
   const [region, setRegion] = React.useState("");
+  const [disciplinaryModal, setDisciplinaryModal] = React.useState(false)
   const [regions, setRegions] = React.useState([]);
   const [location, setLocation] = React.useState("");
   const [locations, setLocations] = React.useState([]);
   const [service, setService] = React.useState("");
+  const [startDate,setStartDate] = React.useState("");
+  const [endDate,setEndDate] = React.useState("")
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
   const [agenda, setAgenda] = React.useState("");
@@ -50,12 +53,27 @@ const CandidateEdit = ({ context }) => {
   const [upload, setUpload] = React.useState(false);
   const [serviceModal, setServiceModal] = React.useState(false);
   const [agendas, setAgendas] = React.useState([]);
+  const [DisciplinaryCouncil,setDisciplinaryCouncil]= React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [constituencies, setConstituencies] = React.useState([]);
 
   const agendaHandler = () => {
-    setAgendas([...agendas, agenda]);
-  };
+    setAgendas([...agendas, agenda])
+    console.log("working")
+    setAgenda("")
+  }
+
+  const removeHandler = (i) => {
+    // const index = agendas.indexOf(i);
+    // if (index > -1) {
+    //   agendas.splice(index, 1);
+    // }
+    // return agendas
+    let filtered = agendas.filter((agendalist) => {
+      return agendalist !== i;
+    });
+    setAgendas(filtered);
+  }
 
   const cancelButton = () => {
     setCancelModal(true);
@@ -90,18 +108,23 @@ const CandidateEdit = ({ context }) => {
           .get()
           .then((res) => {
             setData(res[0]);
+            console.log(res[0])
             setLoading(false);
             setEmployeeName(res[0].EmployeeName);
             setEmployeeEmail(res[0].EmployeeEmail);
             setDateEmployed(res[0].DateEmployed);
             setJobLevel(res[0].JobLevel);
+            setStartDate(res[0].StartDate)
+            setEndDate(res[0].EndDate)
             setRegion(res[0].Region);
             setLocation(res[0].Location);
             setService(res[0].ServedOnTheCouncil);
             setDisciplinary(res[0].DisciplinarySanction);
+            setDisciplinaryCouncil(res[0].DisciplinaryCouncil)
             setPassport(res[0].PassportPhotograph);
             setAgendas(JSON.parse(res[0].Agenda));
             setConstituency(res[0].Constituency);
+
             setId(res[0].ID);
             sp.web.lists
               .getByTitle(`Location`)
@@ -126,6 +149,8 @@ const CandidateEdit = ({ context }) => {
       });
   }, []);
 
+  console.log(service)
+
   const jobLevelData = [{ value: "level 1" }, { value: "level 2" }];
 
   const serviceData = [{ value: "Yes" }, { value: "No" }];
@@ -149,8 +174,11 @@ const CandidateEdit = ({ context }) => {
         Location: location,
         ServedOnTheCouncil: service,
         DisciplinarySanction: disciplinary,
+        StartDate : startDate,
+        EndDate : endDate,
+        DisciplinaryCouncil: DisciplinaryCouncil,
         // PassportPhotograph: passport,
-        // Agenda: agenda,
+        Agenda: agenda,
         Constituency: constituency,
       })
       .then((res) => {
@@ -167,6 +195,7 @@ const CandidateEdit = ({ context }) => {
       });
   };
 
+  
   const regionHandler = (e) => {
     setRegion(e.target.value);
     sp.web.lists
@@ -178,13 +207,36 @@ const CandidateEdit = ({ context }) => {
       });
   };
 
-  const removeHandler = (i) => {
-    const index = agendas.indexOf(i);
-    if (index > -1) {
-      agendas.splice(index, 1);
-    }
-    return agendas;
-  };
+  // const removeHandler = (i) => {
+  //   const index = agendas.indexOf(i);
+  //   if (index > -1) {
+  //     agendas.splice(index, 1);
+  //   }
+  //   return agendas;
+  // };
+  const serviceHandler = (e) => {
+    // const serv = e.target.value
+    // setService(e.target.value)
+    // if (serv === "Yes") {
+    //   setServiceModal(true)
+    // }
+    setServiceModal(true)
+  }
+
+  const disciplinaryHandler = (e) => {
+    // setDisciplinary(e.target.value)
+    // const dist = e.target.value
+    // if (dist === "Yes") {
+    //   setDisciplinaryModal(true)
+    // }
+    setDisciplinaryModal(true)
+  }
+
+  const saveHandler = (e) => {
+    e.preventDefault()
+    setServiceModal(false)
+    setDisciplinaryModal(false)
+  }
 
   const photoHandler = (e) => {
     const pix = e.target.files[0];
@@ -268,7 +320,7 @@ const CandidateEdit = ({ context }) => {
             filter={true}
             filterOption="Title"
           />
-          {/*  <div className={styles.space}>
+          {/* <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
               value={passport}
@@ -286,15 +338,15 @@ const CandidateEdit = ({ context }) => {
             options={serviceData}
             value={service}
           />
-
+          {service === "Yes" ? <div style={{margin:"2rem"}}> Council Start Date: {startDate} -- Council End Date : {endDate} <button style={{marginLeft:"2rem"}} onClick={serviceHandler}><FaEdit/></button> </div> : null }
           <Radio
             onChange={(e) => setDisciplinary(e.target.value)}
             title="Do you have any disciplinary sanction?"
             options={disciplinaryData}
             value={disciplinary}
           />
-
-          {/* <Input
+          {disciplinary === "Yes" ? <div style={{margin:"2rem"}}> {DisciplinaryCouncil}  <button style={{marginLeft:"2rem", font:"20px"}} onClick={disciplinaryHandler}><FaEdit/></button> </div> : null }
+           <Input
             title="State your five point agenda"
             value={agenda}
             onChange={(e) => setAgenda(e.target.value)}
@@ -306,19 +358,19 @@ const CandidateEdit = ({ context }) => {
             <button
               className="mtn__btn mtn__yellow"
               onClick={agendaHandler}
-              disabled={agendas.length === 5}
+              disabled={agendas && agendas.length === 5}
             >
               Add
             </button>
-          </div> */}
+          </div> 
         </div>
-        {/* <div className="mtn__InputContainer mtn__adult">
+        <div className="mtn__InputContainer mtn__adult">
           <ul>
-            {agendas.map((item, i) => (
+            {agendas && agendas.map((item, i) => (
               <li key={i} className="plane">{item} <div className="remove"><FaTrash onClick={() => removeHandler(item)} /></div></li>
             ))}
           </ul>
-      </div>*/}
+      </div>
 
         <div className={styles.inputContainer}>
           <div className="radioContainer">
@@ -433,6 +485,73 @@ const CandidateEdit = ({ context }) => {
                 </div>
               }
               onClose={() => setCancelModal(false)}
+              footer=""
+            />
+
+<Modal
+              isVisible={disciplinaryModal}
+              title="if yes what disciplinary have you served?"
+              size="md"
+              content={
+                <form onSubmit={saveHandler}>
+                  <div className="mtn__InputFlex">
+
+                    <Textarea
+                      title="Disciplinary"
+                      value={DisciplinaryCouncil}
+                      onChange={(e) => setDisciplinaryCouncil(e.target.value)}
+                      required={true}
+                    />
+                    <button
+
+                      type="submit"
+                      className="mtn__btn mtn__yellow"
+                    >
+                      Save
+                    </button>
+
+                  </div>
+                </form>
+
+              }
+              onClose={() => setDisciplinaryModal(false)}
+              footer=""
+            />
+
+            <Modal
+              isVisible={serviceModal}
+              title="if yes what time did have you serve"
+              size="md"
+              content={
+                <form onSubmit={saveHandler}>
+                  <div className="mtn__InputFlex">
+                    <Input
+                      title="Start Date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      type="date"
+                      required={true}
+                      size="mtn__adult"
+                    />
+                    <Input
+                      title="End Date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      type="date"
+                      required={true}
+                      size="mtn__adult"
+                    />
+                    <button
+
+                      type="submit"
+                      className="mtn__btn mtn__yellow"
+                    >
+                      Save
+                    </button>
+                  </div>
+                </form>
+              }
+              onClose={() => setServiceModal(false)}
               footer=""
             />
           </div>
