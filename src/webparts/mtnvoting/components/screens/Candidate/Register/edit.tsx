@@ -102,6 +102,7 @@ const CandidateEdit = ({ context }) => {
       .get()
 
       .then((response) => {
+        
         sp.web.lists
           .getByTitle(`Nominees`)
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
@@ -121,7 +122,7 @@ const CandidateEdit = ({ context }) => {
             setService(res[0].ServedOnTheCouncil);
             setDisciplinary(res[0].DisciplinarySanction);
             setDisciplinaryCouncil(res[0].DisciplinaryCouncil)
-            setPassport(res[0].PassportPhotograph);
+            setPhotoUrl(res[0].PassportPhotograph);
             setAgendas(JSON.parse(res[0].Agenda));
             setConstituency(res[0].Constituency);
 
@@ -162,6 +163,7 @@ const CandidateEdit = ({ context }) => {
     setOpen(true);
   };
   const submitHandler = () => {
+    setLoading(true)
     sp.web.lists
       .getByTitle("Nominees")
       .items.getById(id)
@@ -177,8 +179,8 @@ const CandidateEdit = ({ context }) => {
         StartDate : startDate,
         EndDate : endDate,
         DisciplinaryCouncil: DisciplinaryCouncil,
-        // PassportPhotograph: passport,
-        Agenda: agenda,
+        PassportPhotograph: photoUrl,
+        Agenda: JSON.stringify(agendas),
         Constituency: constituency,
       })
       .then((res) => {
@@ -320,7 +322,7 @@ const CandidateEdit = ({ context }) => {
             filter={true}
             filterOption="Title"
           />
-          {/* <div className={styles.space}>
+          <div className={styles.space}>
             <ImageUpload
               title="Upload your picture"
               value={passport}
@@ -330,7 +332,7 @@ const CandidateEdit = ({ context }) => {
             {photoUrl && <div className={styles.imageContainer}>
               <img src={photoUrl} alt={employeeName} />
             </div>}
-          </div> */}
+          </div>
 
           <Radio
             onChange={(e) => setService(e.target.value)}
@@ -395,6 +397,7 @@ const CandidateEdit = ({ context }) => {
               size="md"
               content={
                 <div className="terms">
+                   {loading ? (<Spinner />) : (<div>
                   <h5>MTN NIGERIA COMMUNICATIONS PLC</h5>
                   <h5>
                     ELECTION GUIDELINES FOR THE 2020 BIENNIAL EMPLOYEE COUNCIL
@@ -462,6 +465,9 @@ const CandidateEdit = ({ context }) => {
                       Proceed
                     </button>
                   </div>
+                  </div>
+                )}
+                  
                 </div>
               }
               onClose={() => setOpen(false)}
