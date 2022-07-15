@@ -32,18 +32,18 @@ const ViewRequest = ({ history }) => {
           .then((res) => {
             setData(res[0]);
             setLoading(false);
-            console.log(res);
-            setAgenda(res[0].Agenda);
+            // console.log(res);
+            // setAgenda(res[0].Agenda);
 
-            console.log(res[0].Agenda, "this is it");
-            setList(res[0].Agenda.split("\n"));
+            // console.log(res[0].Agenda, "this is it");
+            // setList(res[0].Agenda.split("\n"));
           });
         sp.web.lists
           .getByTitle("Registration")
           .items.filter(`EmployeeEmail eq '${response.Email}'`)
           .get()
           .then((items) => {
-            console.log(items.length)
+            // console.log(items.length)
             //  if (items.length <= 0) {
             //    swal("Error", "You are have not registered", "error");
             //    history.push("/");
@@ -53,6 +53,8 @@ const ViewRequest = ({ history }) => {
       });
 
   }, []);
+  const info = data && data.Agenda ? data.Agenda : '["...loading"]';
+  const resp = JSON.parse(info);
 
   const editHandler = () => {
     history.push(`/candidate/edit`);
@@ -101,24 +103,30 @@ const ViewRequest = ({ history }) => {
                 value={data.Constituency}
                 size="small"
               />
-              <Text
-                title="Have you served on the council before "
-                value={data.ServedOnTheCouncil}
-                size="small"
-              />
-              <Text
-                title="Do you have any disciplinary sanction"
-                value={data.DisciplinarySanction}
-                size="small"
-              />
-              <div className={styles.agenda}>
-                <p>Five point agenda</p>
-                <ul>
-                  {list.map((item, i) => (
-                    <li key={i}>{item}</li>
-                  ))}
+              
+               <Text
+                  title="Have you served on the council before "
+                  value={data.ServedOnTheCouncil}
+                />
+                {data?.ServedOnTheCouncil === "Yes" && (
+                  <>
+                    <Text
+                      title="Duration"
+                      value={`${data?.StartDate} - ${data?.EndDate}`}
+                    />
+                  </>
+                )}
+               
+                <Text
+                  title="Do you have any disciplinary sanction"
+                  value={data.DisciplinarySanction}
+                />
+               
+
+                <ul className="marginLeftRight">
+                  <p>State your five point agenda</p>
+                  {resp && resp.map((item, i) => <li key={i}>{item}</li>)}
                 </ul>
-              </div>
 
 
               <div className="minimizeBtn_">
