@@ -2,6 +2,7 @@ import * as React from "react";
 import { Input, Select, Modal, Spinner } from "../../containers";
 import { sp } from "@pnp/sp";
 import swal from "sweetalert";
+import { RiArrowGoBackFill } from "react-icons/ri";
 import styles from "./styles.module.scss";
 
 const EmployeeRegistration = ({ history }) => {
@@ -27,13 +28,13 @@ const EmployeeRegistration = ({ history }) => {
       .items.filter(`Region eq '${region}' and Location eq '${location}'`)
       .get()
       .then((item) => {
-        const maxVoters = item[0].NomineeCount;
+        // const maxVoters = item[0].NomineeCount;
         sp.web.lists
           .getByTitle(`Registration`)
           .items.filter(`Region eq '${region}' and Location eq '${location}'`)
           .get()
           .then((res) => {
-            if (res.length <= maxVoters) {
+            // if (res.length <= maxVoters) {
               sp.web.lists
                 .getByTitle("Registration")
                 .items.add({
@@ -64,11 +65,11 @@ const EmployeeRegistration = ({ history }) => {
                   );
                   console.log(err);
                 });
-            } else {
-              setLoading(false);
-              swal("Warning!", "Max Voters Reached", "error");
-              return;
-            }
+            // } else {
+            //   setLoading(false);
+            //   swal("Warning!", "Max Voters Reached", "error");
+            //   return;
+            // }
           });
       });
   };
@@ -92,7 +93,7 @@ const EmployeeRegistration = ({ history }) => {
   };
 
   const prevHandler = () => {
-    history.push("/registration");
+    history.push("/");
     setOpen(false);
   };
 
@@ -152,9 +153,12 @@ const EmployeeRegistration = ({ history }) => {
         <div className={styles.employee__Title}>
           <h1>Pre Voting Form</h1>
         </div>
-        <div className={styles.employee__image}>
-          <img src={require("../../assets/logo.png")} alt="logo" />
+        <div className={styles.employee__Title}>
+          <h3 onClick={prevHandler}>Go Back</h3>
         </div>
+        {/* <div className={styles.employee__image}>
+          <img src={require("../../assets/logo.png")} alt="logo" />
+        </div> */}
       </div>
       {loading ? (
         <Spinner />
@@ -230,14 +234,15 @@ const EmployeeRegistration = ({ history }) => {
                     <button
                       type="button"
                       className={styles.btnCancel1}
-                      onClick={prevHandler}
+                      onClick={cancelHandler}
+                    
                     >
                       No
                     </button>
                     <button
                       type="button"
                       className={styles.btnCancel2}
-                      onClick={cancelHandler}
+                      onClick={prevHandler}
                     >
                       Yes
                     </button>
