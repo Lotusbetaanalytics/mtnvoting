@@ -37,6 +37,8 @@ const Voting = () => {
   const [numberOfTimesVoted, setNumberOfTimesVoted] = React.useState(0);
   const [message, setMessage] = React.useState("");
   const { spHttpClient } = React.useContext(Context);
+  const todayDate = new Date(Date.now()).toLocaleDateString();
+  
 
   const history = useHistory();
 
@@ -246,6 +248,7 @@ const Voting = () => {
           ) : (
             <div></div>
           ))}
+          <div> Date :{todayDate}</div>
         <div className={styles.nomineeContainerScreen}>
           {loading ? (
             <div>Loading...</div>
