@@ -52,7 +52,7 @@ const EmployeeRegistration = ({ history }) => {
                     icon: "success",
                   }).then((ok) => {
                     if (ok) {
-                      history.push("/vote");
+                      history.push("/employee/vote");
                     }
                   });
                 })
