@@ -12,7 +12,8 @@ const CandidateDashboard = () => {
     const [voteNumber, setVoteNumber] = React.useState(0);
     const [voteDate, setVoteDate] = React.useState("");
     const [location, setLocation] = React.useState("");
-
+   
+ 
     React.useEffect(() => {
         sp.profiles.myProperties
             .get()
@@ -45,6 +46,7 @@ const CandidateDashboard = () => {
             <CandidateNavigation dashboard={`active`} />
             <div className='contentsRight'>
                 <Header title='Dashboard' />
+                
                 <div className={styles.cardContainer}>
                     <Card title="Total number of accumulated vote" count={voteNumber} color="mtn__white" url={""} />
                     <Card2 title="Date of voting exercise" info={voteDate} color="mtn__white" />

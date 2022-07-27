@@ -31,6 +31,7 @@ import {
   AdminViewRevoked,
   AdminResult,
   Voting,
+  
 } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
