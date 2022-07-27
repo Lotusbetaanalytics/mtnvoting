@@ -209,8 +209,8 @@ const Voting = () => {
           {loading ? (
             <div>Loading...</div>
           ) : (
-            <>
-              {/* <Carousel
+            <div>
+              <Carousel
                 breakPoints={breakPoints}
                 isRTL={false}
                 initialActiveIndex={0}
@@ -242,12 +242,12 @@ const Voting = () => {
                         setSelectedNominees={setSelectedNominees}
                         id={nominee.ID}
                       />
-                    </>
+                    </div>
                   );
                 })}
-              </Carousel> */}
+              </Carousel>
               {nominees.length === 0 && <div>No nominees</div>}
-            </>
+            </div>
           )}
         </div>
         <div className={styles.backButtonContainer}>
