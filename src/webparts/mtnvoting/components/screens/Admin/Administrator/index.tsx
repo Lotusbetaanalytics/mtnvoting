@@ -1,13 +1,14 @@
 import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput, PeoplePicker } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
 import { graph } from "@pnp/graph";
 import '@pnp/graph/users';
+import { PeoplePicker, PrincipalType } from "@pnp/spfx-controls-react/lib/PeoplePicker";
 
 
-const Administrator = ({ history }) => {
+const Administrator = ({context}) => {
 
     type IType =
         | "string"
@@ -106,6 +107,7 @@ const Administrator = ({ history }) => {
         setName("")
         setEmail("")
     }
+
     const Handler = (e) => {
         setName(e.target.value)
         const staff = e.target.value
@@ -114,6 +116,10 @@ const Administrator = ({ history }) => {
             setEmail(filteredData[0].mail)
         })
 
+    }
+    function getPeoplePickerItems(items: any[]) {
+        setName(items[0].text)
+        setEmail(items[0].secondaryText)
     }
     return (
         <div className='appContainer'>
@@ -153,18 +159,6 @@ const Administrator = ({ history }) => {
                         {
                             icon: "visibility",
                             iconProps: { style: { fontSize: "20px", color: "gold" } },
-                            tooltip: "Edit",
-
-                            onClick: (event, rowData) => {
-                                setOpen(true)
-                                setID(rowData.ID)
-                                setName(rowData.Title)
-                                setEmail(rowData.Email)
-                            },
-                        },
-                        {
-                            icon: "visibility",
-                            iconProps: { style: { fontSize: "20px", color: "gold" } },
                             tooltip: "Delete",
 
                             onClick: (event, rowData) => {
@@ -190,10 +184,22 @@ const Administrator = ({ history }) => {
                     content={
 
                         loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <PeoplePicker
-                                onChange={Handler} value={name} title="Name" filter="displayName" required={true} size="mtn__adult" />
-                            <Input onChange={(e) => setEmail(e.target.value)} value={email} title="Email" type="text" readOnly={true} size="mtn__adult" />
+                                                 <div className={`mtn__InputContainer mtn__adult`}>
+                                <PeoplePicker
+                                    context={context}
+                                    titleText="Name"
+                                    personSelectionLimit={1}
+                                    groupName="" // Leave this blank in case you want to filter from all users
+                                    showtooltip={true}
+                                    required={true}
+                                    disabled={false}
+                                    onChange={getPeoplePickerItems}
+                                    showHiddenInUI={false}
+                                    principalTypes={[PrincipalType.User]}
+                                    resolveDelay={1000}
 
+                                />
+                            </div>
                             <button
                                 onClick={edit ? editHandler : submitHandler}
                                 type="button"

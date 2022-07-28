@@ -4,6 +4,7 @@ import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
 import styles from './table.module.scss'
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 
 
 const AdminResult = ({ history, match }) => {
@@ -75,25 +76,37 @@ const AdminResult = ({ history, match }) => {
                 <AdminHeader title='Results' />
 
                 {loading ? <Spinner /> :
+                    <>
+                        <div className='btnContainer right'>
+                            <ReactHTMLTableToExcel
+                                id="test-table-xls-button"
+                                className="mtn__btn mtn__black"
+                                table="myTable"
+                                filename={`${params} Election Results`}
+                                sheet="tablexls"
+                                buttonText="Download as XLS" />
+                        </div>
 
-                    <table className={styles.table}>
-                        <thead className={styles.thead}>
-                            <th className={styles.th}>Candidate</th>
-                            <th className={styles.th}>Votes</th>
-                        </thead>
-                        <tbody>
+                        <table className={styles.table} id="myTable">
+                            <thead className={styles.thead}>
+                                <th className={styles.th}>Candidate</th>
+                                <th className={styles.th}>Votes</th>
+                            </thead>
+                            <tbody>
 
-                            {data.map((item, i) => (
-                                <tr key={i} className={styles.tr}>
-                                    <td className={styles.td}>{item.EmployeeName}</td>
-                                    <td className={styles.td}>{voteCount(item.ID)}</td>
+                                {data.map((item, i) => (
+                                    <tr key={i} className={styles.tr}>
+                                        <td className={styles.td}>{item.EmployeeName}</td>
+                                        <td className={styles.td}>{voteCount(item.ID)}</td>
 
-                                </tr>
-                            ))}
+                                    </tr>
+                                ))}
 
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </>
+
 
                     // <MaterialTable
                     //     title=""

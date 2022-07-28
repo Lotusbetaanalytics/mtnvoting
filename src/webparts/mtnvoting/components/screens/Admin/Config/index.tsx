@@ -21,7 +21,9 @@ const AdminConfig = ({ history }) => {
     const [columns, setColumns] = React.useState([
         { title: "Constituency", field: "Title", type: "string" as const },
         { title: "Number of Applicable Candidate", field: "NomineeCount", type: "string" as const },
-        { title: "Date of Voting Exercise", field: "Date", type: "string" as const },
+        { title: "Start Date", field: "Date", type: "string" as const },
+        { title: "End Date", field: "EndDate", type: "string" as const },
+        { title: "Time", field: "Time", type: "string" as const },
         // { title: "Country", field: "Country", type: "string" as const },
         { title: "Region", field: "Region", type: "string" as const },
         { title: "Location", field: "Location", type: "string" as const },
@@ -37,7 +39,10 @@ const AdminConfig = ({ history }) => {
     // const [country, setCountry] = React.useState("")
     const [NomineeCount, setNomineeCount] = React.useState(null)
     const [Date, setDate] = React.useState("")
+    const [endDate, setEndDate] = React.useState("")
+    const [time, setTime] = React.useState("")
     const [open, setOpen] = React.useState(false)
+    const [iopen, setiOpen] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
     const [edit, setEdit] = React.useState(false)
     const [id, setID] = React.useState(null)
@@ -69,6 +74,8 @@ const AdminConfig = ({ history }) => {
             Title: Title,
             NomineeCount: NomineeCount,
             Date: Date,
+            EndDate: endDate,
+            Time: time,
             Region: region,
             Location: location,
             // Country: country,
@@ -94,6 +101,8 @@ const AdminConfig = ({ history }) => {
             Title: Title,
             NomineeCount: NomineeCount,
             Date: Date,
+            EndDate: endDate,
+            Time: time,
             Region: region,
             Location: location,
             // Country: country
@@ -126,8 +135,16 @@ const AdminConfig = ({ history }) => {
         setTitle("")
         setNomineeCount("")
         setDate("")
+        setEndDate("")
+        setTime("")
         setLocation("")
         setRegion("")
+    }
+    const iopenHandler = () => {
+        setiOpen(true)
+        setDate("")
+        setEndDate("")
+        setTime("")
     }
     const regionHandler = (e) => {
         setRegion(e.target.value)
@@ -170,6 +187,40 @@ const AdminConfig = ({ history }) => {
             console.error(e);
         });
     }
+
+    const allHandler =() => {
+        sp.web.lists.getByTitle(`Constituency`).items.get().then
+            ((res) => {
+                if (res.length > 0) {
+                    setLoading(true)
+                    for (let i = 0; i < res.length; i++) {
+                        sp.web.lists.getByTitle("Constituency").items.getById(res[i].ID).update({
+                            Date: Date,
+                            EndDate: endDate,
+                            Time: time,
+                        }).then((res) => {
+                        
+                        }).catch((e) => {
+                            swal("Warning!", "An Error Occured, Try Again!", "error");
+                            console.error(e);
+                        });
+                        if(i == res.length - 1){
+                            setLoading(false)
+                            setiOpen(false)
+                    swal("Success", "Success", "success");
+                        sp.web.lists.getByTitle(`Constituency`).items.get().then
+                    ((res) => {
+                        setData(res)
+                    })
+                 
+                          }
+                    }
+                 
+                  
+                }
+            })
+
+    }
     return (
         <div className='appContainer'>
             <AdminNavigation config={`active`} />
@@ -178,6 +229,7 @@ const AdminConfig = ({ history }) => {
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
                     <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Start Voting Exercise</button>
+                    <button onClick={iopenHandler} className="mtn__btn mtn__black" type='button'>Set Voting Date</button>
                 </div>
                 <MaterialTable
                     title=""
@@ -217,6 +269,8 @@ const AdminConfig = ({ history }) => {
                                 setTitle(rowData.Title)
                                 setNomineeCount(rowData.NomineeCount)
                                 setDate(rowData.Date)
+                                setEndDate(rowData.EndDate)
+                                setTime(rowData.Time)
                                 setRegion(rowData.Region)
                                 sp.web.lists.getByTitle(`Location`).items.filter(`Region eq '${rowData.Region}'`).get().then
                                     ((res) => {
@@ -285,9 +339,21 @@ const AdminConfig = ({ history }) => {
                                 size='mtn__adult'
                             />
                             <DateInput
-                                title="Date of Voting Exercise"
+                                title="Start Date of Voting Exercise"
                                 value={Date}
                                 onChange={(e) => setDate(e.target.value)} type="text"
+                               
+                            />
+                            <DateInput
+                                title="End Date of Voting Exercise"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)} type="text"
+                               
+                            />
+                             <Input
+                                title="Time"
+                                value={time}
+                                onChange={(e) => setTime(e.target.value)} type="time"
                                 size='mtn__adult'
                             />
                             <Select
@@ -333,6 +399,50 @@ const AdminConfig = ({ history }) => {
 
                     }
                     onClose={() => setOpen(false)}
+
+                    footer=""
+
+                />
+                 <Modal
+                    isVisible={iopen}
+                    title="Election Date"
+                    size='lg'
+                    content={
+
+                        loading ? <Spinner /> : <div className="mtn__InputFlex">
+                            
+                            <DateInput
+                                title="Start Date of Voting Exercise"
+                                value={Date}
+                                onChange={(e) => setDate(e.target.value)} type="text"
+                               
+                            />
+                            <DateInput
+                                title="End Date of Voting Exercise"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)} type="text"
+                               
+                            />
+                             <Input
+                                title="Time"
+                                value={time}
+                                onChange={(e) => setTime(e.target.value)} type="time"
+                                size='mtn__adult'
+                            />
+                           
+                            <div className='btnContainer'>
+                                <button
+                                    onClick={allHandler}
+                                    type="button"
+                                    className='mtn__btn mtn__yellow'
+                                >Set Date</button>
+                            </div>
+
+
+                        </div>
+
+                    }
+                    onClose={() => setiOpen(false)}
 
                     footer=""
 
