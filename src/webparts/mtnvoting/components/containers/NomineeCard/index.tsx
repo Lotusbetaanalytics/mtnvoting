@@ -68,7 +68,7 @@ const NomineeCard = ({
               <BsCheck />
             </div>
           ) : disabled ? (
-            <div className="btnDisabled">Select</div>
+            <div className="btnDisabled">Vote</div>
           ) : !voteCount ? (
             <div className="btnDisabled">Select</div>
           ) : voteCount === selectedNominees.length ? (

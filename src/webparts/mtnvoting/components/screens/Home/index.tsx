@@ -39,7 +39,7 @@ const LandingPage = () => {
             <div className={styles.pgInCard}>
               <Link to="/registration">
                 <HiUserGroup />
-                <p>Employee</p>
+                <p>Registration</p>
               </Link>
             </div>
           </div>
@@ -48,7 +48,7 @@ const LandingPage = () => {
             <div className={styles.pgInCard}>
               <Link to="/candidate">
                 <BsFillPersonFill />
-                <p>Candidate</p>
+                <p>Aspirant</p>
               </Link>
             </div>
           </div>
