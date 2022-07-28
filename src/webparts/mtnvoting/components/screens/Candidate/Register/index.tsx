@@ -34,9 +34,9 @@ const CandidateRegister = ({ context }) => {
   const [disciplinary, setDisciplinary] = React.useState("");
   const [passport, setPassport] = React.useState("");
   const [startDate, setStartDate] = React.useState("");
-  const [endDate, setEndDate] = React.useState("");
+  
   const [disciplinaryCouncil, setDisciplinaryCouncil] = React.useState("");
-
+  const [endDate,setEndDate] = React.useState("")
   const [terms, setTerms] = React.useState("");
   const [constituency, setConstituency] = React.useState("");
   const [constituencies, setConstituencies] = React.useState([]);
@@ -90,6 +90,20 @@ const CandidateRegister = ({ context }) => {
               return;
             }
           })
+          // get registration closing date
+          sp.web.lists.getByTitle(`Constituency`).items.get()
+                    .then((res) => {
+                    let todayDate = new Date(Date.now())
+                    let regEndDate = new Date(res[0].EndDate)
+                   // check current date and closing date
+                    if (todayDate > regEndDate) {
+                      swal("Error", "Aspirant registration has closed", "error");
+                      history.push("/candidate");
+                      return;
+                    }   
+            })
+
+           
 
         sp.web.lists
           .getByTitle(`Region`)
@@ -106,6 +120,9 @@ const CandidateRegister = ({ context }) => {
           });
       });
   }, []);
+
+
+
 
   const approveHandler = () => {
     if (
