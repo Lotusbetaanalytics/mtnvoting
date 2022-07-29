@@ -13,6 +13,7 @@ const CandidateDashboard = () => {
     const [voteDate, setVoteDate] = React.useState("");
     const [location, setLocation] = React.useState("");
     const [endDate,setEndDate] = React.useState("")
+    const [startDate,setStartDate] = React.useState("")
    
  
     React.useEffect(() => {
@@ -40,10 +41,10 @@ const CandidateDashboard = () => {
 
                     })
 //get registration close date
-                    sp.web.lists.getByTitle(`Constituency`).items.get()
+                    sp.web.lists.getByTitle(`AspirantRegistration`).items.get()
                     .then((res) => {
-                      console.log(res[0].EndDate)
-                    
+                     
+                        setStartDate(res[0].StartDate)
                     setEndDate(res[0].EndDate)   
             })
             })
@@ -62,7 +63,8 @@ const CandidateDashboard = () => {
                 <div className={styles.cardContainer}>
                     <Card title="Total number of accumulated vote" count={voteNumber} color="mtn__white" url={""} />
                     <Card2 title="Date of voting exercise" info={voteDate} color="mtn__white" />
-                    <Card2 title="Closing date of aspirant registration" info={endDate} color="mtn__white" />
+                    <Card2 title="Aspirant registration starting date" info={startDate} color="mtn__white" />
+                    <Card2 title="Aspirant registration closing date" info={endDate} color="mtn__white" />
 
                 </div>
             </div>

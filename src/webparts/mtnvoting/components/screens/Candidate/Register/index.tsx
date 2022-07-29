@@ -91,8 +91,9 @@ const CandidateRegister = ({ context }) => {
             }
           })
           // get registration closing date
-          sp.web.lists.getByTitle(`Constituency`).items.get()
+          sp.web.lists.getByTitle(`AspirantRegistration`).items.get()
                     .then((res) => {
+                     
                     let todayDate = new Date(Date.now())
                     let regEndDate = new Date(res[0].EndDate)
                    // check current date and closing date
