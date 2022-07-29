@@ -31,6 +31,7 @@ import {
   AdminViewRevoked,
   AdminResult,
    Voting,
+   Aspirant,
   } from "./screens";
 import "./global.scss";
 import "./assets/icon.scss";
@@ -81,6 +82,7 @@ export default class Mtnvoting extends React.Component<IMtnvotingProps, {}> {
             <Route path="/admin/reason" exact component={AdminReason} />
             <Route path="/admin/region" exact component={AdminRegion} />
             <Route path="/admin/location" exact component={AdminLocation} />
+            <Route path="/admin/aspirant" exact component={Aspirant} />
             <Route path="/admin/pending" exact component={AdminPending} />
             <Route
               path="/admin/pending/:id"

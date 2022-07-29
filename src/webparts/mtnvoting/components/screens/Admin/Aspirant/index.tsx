@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, Select } from '../../../containers'
+import { AdminNavigation, Card, AdminHeader, MenuBar, Input, Modal, Spinner, DateInput, Select, Helpers } from '../../../containers'
 import MaterialTable from "material-table";
 import { sp, } from "@pnp/sp"
 import swal from 'sweetalert';
 
 
-const AdminLocation = ({ history }) => {
+const Aspirant = ({ history }) => {
 
     type IType =
         | "string"
@@ -19,70 +19,91 @@ const AdminLocation = ({ history }) => {
 
 
     const [columns, setColumns] = React.useState([
-        { title: "Location", field: "Title", type: "string" as const },
-        { title: "Region", field: "Region", type: "string" as const },
+        { title: "Start Date", field: "StartDate", type: "string" as const },
+        { title: "End Date", field: "EndDate", type: "string" as const },
+        { title: "Time", field: "Time", type: "string" as const },
     ]);
 
     const [data, setData] = React.useState([])
-    const [Location, setLocation] = React.useState("")
-    const [regions, setRegions] = React.useState([])
-    const [Region, setRegion] = React.useState("")
+
+    const [Date, setDate] = React.useState("")
+    const [endDate, setEndDate] = React.useState("")
+    const [time, setTime] = React.useState("")
     const [open, setOpen] = React.useState(false)
     const [loading, setLoading] = React.useState(false)
     const [edit, setEdit] = React.useState(false)
     const [id, setID] = React.useState(null)
 
     React.useEffect(() => {
-        sp.web.lists.getByTitle(`Location`).items.get().then
+        sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
             ((res) => {
                 setData(res)
             })
-        sp.web.lists.getByTitle(`Region`).items.get().then
-            ((resp) => {
-                setRegions(resp)
-            })
-
     }, [])
 
     // Menubar Items
     const menu = [
         { name: "Approvals", url: "/admin/add", },
-        { name: "Aspirant Registration", url: "/admin/aspirant" },
-        { name: "Voting Exercise", url: "/admin/config", },
-        { name: "Region", url: "/admin/region", },
-        { name: "Location", url: "/admin/location", active: true, },
+        { name: "Aspirant Registration", url: "/admin/aspirant", active: true, },
+        { name: "Voting Exercise", url: "/admin/config" },
+        { name: "Region", url: "/admin/region" },
+        { name: "Location", url: "/admin/location" },
         { name: "Revoke Reasons", url: "/admin/reason" },
     ];
 
     const submitHandler = (e) => {
         e.preventDefault()
-        sp.web.lists.getByTitle("Location").items.add({
-            Title: Location,
-            Region: Region,
-        }).then((res) => {
-            setOpen(false)
-            swal("Success", "Location added Successfully", "success");
-            sp.web.lists.getByTitle(`Location`).items.get().then
-                ((res) => {
-                    setData(res)
-                })
+        sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
+            ((res) => {
+                if (res.length > 0) {
+                    sp.web.lists.getByTitle("AspirantRegistration").items.getById(res[0].ID).update({
+                        StartDate: Date,
+                        EndDate: endDate,
+                        Time: time,
+                    }).then((res) => {
+                        setOpen(false)
+                        swal("Success", "Success", "success");
+                        sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
+                            ((res) => {
+                                setData(res)
+                            })
+                    }).catch((e) => {
+                        swal("Warning!", "An Error Occured, Try Again!", "error");
+                        console.error(e);
+                    });
+                } else {
+                    sp.web.lists.getByTitle("AspirantRegistration").items.add({
+                        StartDate: Date,
+                        EndDate: endDate,
+                        Time: time,
+                    }).then((res) => {
+                        setOpen(false)
+                        swal("Success", "Success", "success");
+                        sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
+                            ((res) => {
+                                setData(res)
+                            })
 
-        }).catch((e) => {
-            swal("Warning!", "An Error Occured, Try Again!", "error");
-            console.error(e);
-        });
+                    }).catch((e) => {
+                        swal("Warning!", "An Error Occured, Try Again!", "error");
+                        console.error(e);
+                    });
+                }
+            })
+
 
     }
 
     const editHandler = (e) => {
         e.preventDefault()
-        sp.web.lists.getByTitle("Location").items.getById(id).update({
-            Title: Location,
-            Region: Region,
+        sp.web.lists.getByTitle("AspirantRegistration").items.getById(id).update({
+            StartDate: Date,
+            EndDate: endDate,
+            Time: time,
         }).then((res) => {
             setOpen(false)
-            swal("Success", "Location Edited Successfully", "success");
-            sp.web.lists.getByTitle(`Location`).items.get().then
+            swal("Success", "Success", "success");
+            sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
                 ((res) => {
                     setData(res)
                 })
@@ -90,13 +111,12 @@ const AdminLocation = ({ history }) => {
             swal("Warning!", "An Error Occured, Try Again!", "error");
             console.error(e);
         });
-
     }
     const deleteHandler = (id) => {
         if (window.confirm("Are you sure you want to delete")) {
-            sp.web.lists.getByTitle("Location").items.getById(id).delete().then((res) => {
-                swal("Success", "Location has been deleted", "success");
-                sp.web.lists.getByTitle(`Location`).items.get().then
+            sp.web.lists.getByTitle("AspirantRegistration").items.getById(id).delete().then((res) => {
+                swal("Success", "deleted Successfully", "success");
+                sp.web.lists.getByTitle(`AspirantRegistration`).items.get().then
                     ((res) => {
                         setData(res)
                     })
@@ -106,16 +126,20 @@ const AdminLocation = ({ history }) => {
     const openHandler = () => {
         setOpen(true)
         setEdit(false)
-        setRegion("")
+        setDate("")
+        setEndDate("")
+        setTime("")
     }
+
+
     return (
         <div className='appContainer'>
             <AdminNavigation config={`active`} />
             <div className='contentsRight'>
-                <AdminHeader title='Location' />
+                <AdminHeader title='Voting Exercise' />
                 <MenuBar menu={menu} />
                 <div className='btnContainer right'>
-                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Add Location</button>
+                    <button onClick={openHandler} className="mtn__btn mtn__yellow" type='button'>Set Registration Date</button>
                 </div>
                 <MaterialTable
                     title=""
@@ -152,10 +176,12 @@ const AdminLocation = ({ history }) => {
                                 setEdit(true)
                                 setOpen(true)
                                 setID(rowData.ID)
-                                setRegion(rowData.Title)
-
+                                setDate(rowData.StartDate)
+                                setEndDate(rowData.EndDate)
+                                setTime(rowData.Time)
                             },
                         },
+
                         {
                             icon: "visibility",
                             iconProps: { style: { fontSize: "20px", color: "gold" } },
@@ -179,33 +205,39 @@ const AdminLocation = ({ history }) => {
                 />
                 <Modal
                     isVisible={open}
-                    title="Region"
+                    title="Registration Date"
                     size='lg'
                     content={
 
                         loading ? <Spinner /> : <div className="mtn__InputFlex">
-                            <Select
-                                value={Region}
-                                onChange={(e) => setRegion(e.target.value)}
-                                required={false}
-                                title="Region"
-                                options={regions}
-                                size="mtn__adult"
-                                filter={true}
-                                filterOption='Title'
+
+                            <DateInput
+                                title="Start Date"
+                                value={Date}
+                                onChange={(e) => setDate(e.target.value)} type="text"
+
+                            />
+                            <DateInput
+                                title="End Date"
+                                value={endDate}
+                                onChange={(e) => setEndDate(e.target.value)} type="text"
+
                             />
                             <Input
-                                title="Location"
-                                value={Location}
-                                onChange={(e) => setLocation(e.target.value)} type="text"
+                                title="Time"
+                                value={time}
+                                onChange={(e) => setTime(e.target.value)} type="time"
                                 size='mtn__adult'
                             />
 
-                            <button
-                                onClick={edit ? editHandler : submitHandler}
-                                type="button"
-                                className='mtn__btn mtn__yellow'
-                            >{edit ? "Edit Location" : "Add Location"}</button>
+                            <div className='btnContainer'>
+                                <button
+                                    onClick={edit ? editHandler : submitHandler}
+                                    type="button"
+                                    className='mtn__btn mtn__yellow'
+                                >{edit ? "Edit Date" : "Set Date"}</button>
+                            </div>
+
 
                         </div>
 
@@ -215,9 +247,10 @@ const AdminLocation = ({ history }) => {
                     footer=""
 
                 />
+
             </div>
         </div>
     )
 }
 
-export default AdminLocation
+export default Aspirant

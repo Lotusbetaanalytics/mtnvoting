@@ -89,6 +89,7 @@ const AdminResult = ({ history, match }) => {
 
                         <table className={styles.table} id="myTable">
                             <thead className={styles.thead}>
+                                <th className={styles.th}>Election Date</th>
                                 <th className={styles.th}>Candidate</th>
                                 <th className={styles.th}>Votes</th>
                             </thead>
@@ -96,8 +97,10 @@ const AdminResult = ({ history, match }) => {
 
                                 {data.map((item, i) => (
                                     <tr key={i} className={styles.tr}>
+                                         <td className={styles.td}>{item.EndDate}</td>
                                         <td className={styles.td}>{item.EmployeeName}</td>
                                         <td className={styles.td}>{voteCount(item.ID)}</td>
+                                       
 
                                     </tr>
                                 ))}

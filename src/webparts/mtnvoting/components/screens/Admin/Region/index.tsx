@@ -40,6 +40,7 @@ const AdminRegion = ({ history }) => {
     // Menubar Items
     const menu = [
         { name: "Approvals", url: "/admin/add", },
+        { name: "Aspirant Registration", url: "/admin/aspirant" },
         { name: "Voting Exercise", url: "/admin/config", },
         { name: "Region", url: "/admin/region", active: true, },
         { name: "Location", url: "/admin/location" },

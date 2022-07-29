@@ -5,6 +5,7 @@ export { default as AdminRegion } from "./Admin/Region";
 export { default as AdminReason } from "./Admin/Reasons";
 export { default as AdminReport } from "./Admin/Reports";
 export { default as AdminLocation } from "./Admin/Location";
+export { default as Aspirant } from "./Admin/Aspirant";
 export { default as AdminViewPending } from "./Admin/Pending/View";
 export { default as AdminApproved } from "./Admin/Approved";
 export { default as AdminViewApproved } from "./Admin/Approved/View";

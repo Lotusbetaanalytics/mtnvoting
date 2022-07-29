@@ -129,7 +129,7 @@ const AdminReport = ({ history }) => {
                         columns={columns}
                         data={data}
                         options={{
-                            exportButton: true,
+                            exportButton:false,
                             actionsCellStyle: {
                                 backgroundColor: "none",
                                 color: "#FF00dd",

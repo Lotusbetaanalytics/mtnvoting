@@ -46,6 +46,7 @@ const Administrator = ({context}) => {
     // Menubar Items
     const menu = [
         { name: "Approvals", url: "/admin/add", active: true, },
+        { name: "Aspirant Registration", url: "/admin/aspirant" },
         { name: "Voting Exercise", url: "/admin/config", },
         { name: "Region", url: "/admin/region" },
         { name: "Location", url: "/admin/location" },
