@@ -114,7 +114,7 @@ const Voting = () => {
         if (res.length > 0) {
           setVoteCount(res[0].NomineeCount);
           const today = new Date(Date.now()).toLocaleDateString();
-          const votingDate = new Date(res[0].Date).toLocaleDateString();
+          const votingDate = new Date(res[0].EndDate).toLocaleDateString();
 
           if (today === votingDate) {
             setChecking(false);
