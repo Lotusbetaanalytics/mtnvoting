@@ -235,6 +235,8 @@ const Voting = () => {
     { width: 1200, itemsToShow: 4 },
   ];
 
+
+
   return (
     <>
       <div className={styles.votingPageContainer}>
@@ -254,6 +256,7 @@ const Voting = () => {
             <div>Loading...</div>
           ) : (
             <>
+            {/* @ts-ignore */}
               <Carousel
                 breakPoints={breakPoints}
                 isRTL={false}
