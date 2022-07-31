@@ -93,7 +93,7 @@ const CandidateRegister = ({ context }) => {
           // get registration closing date
           sp.web.lists.getByTitle(`AspirantRegistration`).items.get()
                     .then((res) => {
-                     
+                      console.log(res[0].EndDate)
                     let todayDate = new Date(Date.now())
                     let regEndDate = new Date(res[0].EndDate)
                    // check current date and closing date
@@ -132,7 +132,7 @@ const CandidateRegister = ({ context }) => {
       !region ||
       !location ||
       !service ||
-      !disciplinary
+      !disciplinary || !photoUrl
     ) {
       swal("Warning!", "All Fields are required", "error");
     } else {
@@ -369,7 +369,10 @@ const CandidateRegister = ({ context }) => {
         <div className="mtn__InputContainer mtn__adult">
           <ul>
             {agendas.map((item, i) => (
-              <li key={i} className="plane">{item} <div className="remove"><FaTrash onClick={() => removeHandler(item)} /></div></li>
+              <li key={i} className="plane">{item} <div className="remove">
+                <FaTrash onClick={() => removeHandler(item)} /> 
+                </div>
+                </li>
             ))}
           </ul>
         </div>

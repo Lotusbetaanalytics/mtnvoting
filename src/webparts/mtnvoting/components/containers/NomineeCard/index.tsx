@@ -70,12 +70,12 @@ const NomineeCard = ({
           ) : disabled ? (
             <div className="btnDisabled">Vote</div>
           ) : !voteCount ? (
-            <div className="btnDisabled">Select</div>
+            <div className="btnDisabled">Vote</div>
           ) : voteCount === selectedNominees.length ? (
-            <div className="btnDisabled">Select</div>
+            <div className="btnDisabled">Vote</div>
           ) : (
             <div className="btnUnSelected" onClick={voteNow}>
-              Select
+              Vote
             </div>
           )}
         </div>
