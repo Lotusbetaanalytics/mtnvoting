@@ -33,3 +33,20 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
+.employee__Title {
+  width: 25%;
+  background-color: #ffc423;
+  color: black;
+  padding: 1rem;
+  height: 65px;
+  border-radius: 30px;
+  margin-top: 10px;
+  // margin-left: -40px;
+}
+.employee__Title h3 {
+  margin-top: 2px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  // margin-bottom: 10px;
+}
