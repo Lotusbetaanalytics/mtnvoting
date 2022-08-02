@@ -237,7 +237,7 @@ const EmployeeRegistration = ({ history }) => {
               <Modal
                 isVisible={openSubmitModal}
                 title="Terms and Condition"
-                size="md"
+                size="lg"
                 content={
                   <div className="terms">
                     {loading ? (

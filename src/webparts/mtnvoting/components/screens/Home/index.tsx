@@ -38,7 +38,7 @@ const LandingPage = () => {
           <div className={styles.pageCard}>
             <div className={styles.pgInCard}>
               <Link to="/registration">
-                <HiUserGroup />
+                <div className={styles.register}><HiUserGroup /> </div>
                 <p>Register to vote</p>
               </Link>
             </div>
